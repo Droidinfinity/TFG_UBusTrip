@@ -5,9 +5,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.upm.ubustrip.GreetingPreview
-import com.upm.ubustrip.MainActivity
-import com.upm.ubustrip.login.LoginScreen
-import com.upm.ubustrip.ui.theme.MyApplicationTheme
+import com.upm.ubustrip.features.login.LoginScreen
 
 @Composable
 fun AppNavigation(){
