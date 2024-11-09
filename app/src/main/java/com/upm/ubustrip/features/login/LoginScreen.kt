@@ -308,7 +308,7 @@ fun NoTienesCuneta() {
 
             }
 
-            .padding(top = ( screenHeightPx.dp - position.y.toInt().dp )-100.dp )
+          //  .padding(top = ( screenHeightPx.dp - position.y.toInt().dp )-100.dp )
     ) {
 
         //val finalPosition = position.y.toInt().dp -10.dp - screenHeightPx.dp
