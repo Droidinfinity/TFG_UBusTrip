@@ -1,4 +1,4 @@
-package com.upm.ubustrip.features.searchBar
+package com.upm.ubustrip.features.search
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
