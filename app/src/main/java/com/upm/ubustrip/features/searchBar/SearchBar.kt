@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Search
@@ -46,14 +47,17 @@ fun CustomSearchBar() {
     Box(
         Modifier
             .fillMaxWidth()
-            .height(100.dp)
+            .height(50.dp)
+            .statusBarsPadding()
+
     ) {
         SearchBarCore(
             modifier = Modifier
                 .fillMaxWidth()
                 .height(56.dp)
                 .align(Alignment.TopCenter)
-                .semantics { traversalIndex = 0f },
+                .semantics { traversalIndex = 0f }
+                .statusBarsPadding(),
             inputField = {
                 // Campo de texto de entrada para la búsqueda
                 TextField(
@@ -82,7 +86,7 @@ fun CustomSearchBar() {
                         }
                     },
                     colors = TextFieldDefaults.textFieldColors(
-                        containerColor = Color.LightGray,
+                        containerColor = Color.LightGray.copy(alpha = 0.1f),
                         focusedIndicatorColor = Color.Transparent,
                         unfocusedIndicatorColor = Color.Transparent
                     ),
@@ -126,7 +130,6 @@ fun SearchBarCore(
         shape = shape,
         tonalElevation = tonalElevation,
         shadowElevation = shadowElevation,
-        color = Color.Blue
     ) {
         Column {
             // Campo de entrada (búsqueda)

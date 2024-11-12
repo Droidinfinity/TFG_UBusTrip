@@ -1,5 +1,6 @@
 package com.upm.ubustrip.features.menu
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.filled.Search
@@ -29,6 +30,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarColors
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -115,6 +117,7 @@ fun TopBar(viewModel: MenuViewModel) {
 
     CenterAlignedTopAppBar(
         title = { CustomSearchBar()},
+        modifier = Modifier.statusBarsPadding(),
 
         )
 
