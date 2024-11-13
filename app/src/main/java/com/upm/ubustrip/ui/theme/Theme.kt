@@ -50,9 +50,11 @@ fun MyApplicationTheme(
         else -> LightColorScheme
     }
 
+
+
     MaterialTheme(
         colorScheme = colorScheme,
-        typography = Typography,
+        typography = UbusTripMainTypography,
         content = content
     )
 }
