@@ -45,9 +45,6 @@ import com.upm.ubustrip.ui.theme.UbusTripFilledGoogleButtom
 fun TopBar(viewModel: MenuViewModel) {
 
     val barTitle by viewModel.barTitle
-    var topBarMode by rememberSaveable {
-        mutableStateOf(0) //indica que tipo de topBar debe salir: 0-> Normal 1-> Búsqueda
-    }
 
     val systemUiController = rememberSystemUiController()
     systemUiController.setStatusBarColor(
@@ -63,12 +60,11 @@ fun TopBar(viewModel: MenuViewModel) {
     ) {
 
         TopAppBar(
-            title = { if (topBarMode == 0) TopAppBarContent() else CustomSearchBar() },
+            title = { TopAppBarContent() },
             modifier = Modifier.statusBarsPadding().height(50.dp),
             colors = TopAppBarDefaults.topAppBarColors(
                 containerColor = Color.White,         // Color de fondo de la TopAppBar
                 titleContentColor = Color.Black,       // Color del título
-                actionIconContentColor = Color.Yellow  // Color de los íconos de acciones
             )
 
         )

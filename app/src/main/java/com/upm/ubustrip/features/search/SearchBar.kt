@@ -40,7 +40,7 @@ import androidx.compose.ui.unit.dp
 @Preview
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun CustomSearchBar() {
+fun CustomSearchBar(modifier: Modifier) {
     var searchText by remember { mutableStateOf(TextFieldValue("")) }
     var expanded by rememberSaveable { mutableStateOf(false) }
 
@@ -54,7 +54,7 @@ fun CustomSearchBar() {
         SearchBarCore(
             modifier = Modifier
                 .fillMaxWidth()
-                .height(56.dp)
+                .height(50.dp)
                 .align(Alignment.TopCenter)
                 .semantics { traversalIndex = 0f }
                 .statusBarsPadding(),

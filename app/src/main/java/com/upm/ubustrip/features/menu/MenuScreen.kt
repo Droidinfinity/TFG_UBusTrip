@@ -28,7 +28,6 @@ data class TabBarItem(
 )
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun Menu(navigator: NavController) {
 
