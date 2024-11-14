@@ -56,7 +56,7 @@ fun TopBar(viewModel: MenuViewModel) {
         modifier = Modifier
             .fillMaxWidth(),
         color = UbusTripBottomBar,
-        shadowElevation = 8.dp,
+        shadowElevation = 2.dp,
     ) {
 
         TopAppBar(

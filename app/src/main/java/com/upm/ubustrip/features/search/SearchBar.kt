@@ -4,6 +4,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -32,16 +33,21 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.semantics.traversalIndex
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 
 @Preview
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun CustomSearchBar(modifier: Modifier) {
+fun CustomSearchBar(viewModel: SearchBarViewModel) {
+
+    //Texto de la búsqueda
     var searchText by remember { mutableStateOf(TextFieldValue("")) }
+    //Determina si el contenido aparece
     var expanded by rememberSaveable { mutableStateOf(false) }
 
     Box(
@@ -49,65 +55,56 @@ fun CustomSearchBar(modifier: Modifier) {
             .fillMaxWidth()
             .height(50.dp)
             .statusBarsPadding()
+            .padding(end = 30.dp),
 
-    ) {
-        SearchBarCore(
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(50.dp)
-                .align(Alignment.TopCenter)
-                .semantics { traversalIndex = 0f }
-                .statusBarsPadding(),
-            inputField = {
-                // Campo de texto de entrada para la búsqueda
-                TextField(
-                    value = searchText,
-                    onValueChange = {
-                        searchText = it
-                        expanded = it.text.isNotEmpty() // Expande el contenido cuando hay texto
-                    },
-                    placeholder = {
-                        Text("Buscar...")
-                    },
-                    leadingIcon = {
-                        Icon(
-                            imageVector = Icons.Default.Search,
-                            contentDescription = "Buscar"
-                        )
-                    },
-                    trailingIcon = {
-                        if (searchText.text.isNotEmpty()) {
-                            IconButton(onClick = { searchText = TextFieldValue("") }) {
-                                Icon(
-                                    imageVector = Icons.Default.Close,
-                                    contentDescription = "Borrar búsqueda"
-                                )
-                            }
+        ) {
+        SearchBarCore(modifier = Modifier
+            .fillMaxWidth()
+            .height(50.dp)
+            .align(Alignment.TopCenter)
+            .semantics { traversalIndex = 0f }
+            .statusBarsPadding(), inputField = {
+
+            // Campo de texto de entrada para la búsqueda
+            TextField(
+                textStyle = TextStyle(fontSize = 17.sp),
+                value = searchText,
+                onValueChange = {
+                    searchText = it
+                    expanded = it.text.isNotEmpty() // Expande el contenido cuando hay texto
+                    viewModel.updateDesplegadoState(it.text.isNotEmpty())
+                },
+                placeholder = {
+                    Text("Buscar paradas y líneas", fontSize = 17.sp, lineHeight = 4.sp)
+                },
+                leadingIcon = {
+                    Icon(
+                        imageVector = Icons.Default.Search, contentDescription = "Buscar"
+                    )
+                },
+                trailingIcon = {
+                    if (searchText.text.isNotEmpty()) { //Solo se muestr cuando hay texto
+                        IconButton(onClick = {
+                            searchText = TextFieldValue("")
+                            viewModel.updateDesplegadoState(false)
+                        }) {
+                            Icon(
+                                imageVector = Icons.Default.Close,
+                                contentDescription = "Borrar búsqueda"
+                            )
                         }
-                    },
-                    colors = TextFieldDefaults.textFieldColors(
-                        containerColor = Color.LightGray.copy(alpha = 0.1f),
-                        focusedIndicatorColor = Color.Transparent,
-                        unfocusedIndicatorColor = Color.Transparent
-                    ),
-                    modifier = Modifier.fillMaxWidth()
-                )
-            },
-            expanded = expanded,
-            onExpandedChange = { expanded = it },
-            content = {
-                // Contenido que se muestra cuando la barra está expandida
-                Column(
-                    Modifier
-                        .fillMaxWidth()
-                        .padding(8.dp)
-                ) {
-                    Text("Sugerencia 1")
-                    Text("Sugerencia 2")
-                    Text("Sugerencia 3")
-                }
-            }
-        )
+                    }
+                },
+                colors = TextFieldDefaults.textFieldColors(
+                    containerColor = Color.LightGray.copy(alpha = 0.1f),
+                    focusedIndicatorColor = Color.Transparent,
+                    unfocusedIndicatorColor = Color.Transparent
+                ), modifier = Modifier
+                    .fillMaxWidth()
+                    .height(10.dp)
+            )
+            //Fin del textField
+        }, expanded = expanded, onExpandedChange = { expanded = it }, content = { })
     }
 }
 
@@ -131,14 +128,7 @@ fun SearchBarCore(
         tonalElevation = tonalElevation,
         shadowElevation = shadowElevation,
     ) {
-        Column {
-            // Campo de entrada (búsqueda)
-            inputField()
 
-            // Contenido expandible
-            if (expanded) {
-                content()
-            }
-        }
+        inputField()
     }
 }

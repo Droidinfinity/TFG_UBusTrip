@@ -2,16 +2,19 @@ package com.upm.ubustrip.features.search
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBarsPadding
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SearchBar
 import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
@@ -26,25 +29,24 @@ import com.upm.ubustrip.ui.theme.UbusTripBottomBar
 @Composable
 fun SearchScreen(navigator: NavController) {
 
-    Scaffold(topBar = { SearchTopAppBar() },
-        content = {paddingValues -> SearchContent(paddingValues) })
+    val searchModelView = SearchBarViewModel()
+
+    Scaffold(topBar = { SearchTopAppBar(viewModel = searchModelView) },
+        content = { paddingValues -> SearchContent(paddingValues, viewModel = searchModelView) })
 
 
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun SearchTopAppBar() {
-
-    val searchBarModifier = Modifier.padding(end = 40.dp)
+fun SearchTopAppBar(viewModel: SearchBarViewModel) {
 
     Surface(
         modifier = Modifier.fillMaxWidth(),
         color = UbusTripBottomBar,
-        shadowElevation = 2.dp,
     ) {
         TopAppBar(
-            title = { CustomSearchBar(searchBarModifier) },
+            title = { CustomSearchBar(viewModel = viewModel) },
             modifier = Modifier
                 .statusBarsPadding(),
             colors = TopAppBarDefaults.topAppBarColors(
@@ -61,8 +63,27 @@ fun SearchTopAppBar() {
 }
 
 @Composable
-fun SearchContent(paddingValues: PaddingValues){
+fun SearchContent(paddingValues: PaddingValues, viewModel: SearchBarViewModel) {
 
-    Box(modifier = Modifier.background(Color.White).fillMaxSize())
+    Box(modifier = Modifier
+        .background(Color.White)
+        .fillMaxSize()
+        .padding(paddingValues)) {
+
+        if (viewModel.desplegado.value)
+            LazyColumn(modifier = Modifier.fillMaxSize()) {
+
+                items(20) { index ->
+                    Text(
+                        text = "Elemento $index",
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(16.dp)
+                    )
+                }
+            }
+    }
+
 
 }
+
