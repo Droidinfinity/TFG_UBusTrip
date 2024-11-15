@@ -2,17 +2,22 @@ package com.upm.ubustrip.features.myAccount
 
 import android.annotation.SuppressLint
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
@@ -20,36 +25,50 @@ import androidx.navigation.NavController
 @Composable
 fun MyAccountScreen(navController: NavController) {
 
-    Scaffold(
-        topBar = { MyAccountTopBar() },
-        content = { paddingValues -> ProfileContent(paddingValues) }
+    Column {
 
-    )
+        //Parte de arriba
+        MyProfileCard()
+        OptionsCard(false, tile = "Hola", content = "Mundo")
+        OptionsCard(true, tile = "Este es", content = "Un botón cliclable")
 
+
+    }//Fin del Colum
 
 }
 
 @Composable
-fun ProfileContent(paddingValues: PaddingValues) {
+fun OptionsCard(isClickable : Boolean = false, onClick : ()-> Unit = {},tile : String,content : String) {
 
-    CircularGradientBackground()
-
-    Box(modifier = Modifier
-        .fillMaxWidth()
-        .fillMaxHeight()
-        .padding(paddingValues)
-        .background(Color.Red)){
-
-        Column(
+    Box(modifier = Modifier.clickable(enabled = isClickable, onClick = onClick)) {
+        Box(
             modifier = Modifier
                 .fillMaxWidth()
-                .fillMaxHeight()
-                .padding(paddingValues)
-                .background(Color.Red)
-        ) { }
+                .padding(top = 20.dp)
+        ) {
+            Column {
 
+                Text(
+                    text = tile,
+                    color = Color.Gray,
+                    modifier = Modifier.padding(start = 10.dp)
+                )
+                Spacer(modifier = Modifier.height(5.dp))
+                Text(
+                    text = content,
+                    modifier = Modifier.padding(start = 20.dp)
+                )
+                Spacer(modifier = Modifier.height(15.dp))
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(1.dp)
+                        .background(Color.LightGray)
+
+                )
+
+            }
+        }
     }
 
-
 }
-
