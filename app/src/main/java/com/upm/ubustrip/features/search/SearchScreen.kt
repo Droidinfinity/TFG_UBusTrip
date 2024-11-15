@@ -17,29 +17,48 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.material3.TopAppBarScrollBehavior
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.input.nestedscroll.nestedScroll
+import androidx.compose.ui.layout.onGloballyPositioned
+import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.upm.ubustrip.features.menu.TopAppBarContent
 import com.upm.ubustrip.ui.theme.UbusTripBottomBar
 
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SearchScreen(navigator: NavController) {
 
     val searchModelView = SearchBarViewModel()
+    val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
 
-    Scaffold(topBar = { SearchTopAppBar(viewModel = searchModelView) },
-        content = { paddingValues -> SearchContent(paddingValues, viewModel = searchModelView) })
+    Scaffold(topBar = {
+        SearchTopAppBar(
+            viewModel = searchModelView,
+            scrollBehavior = scrollBehavior
+        )
+    },
+        content = { paddingValues ->
+            SearchContent(
+                paddingValues,
+                viewModel = searchModelView,
+                scrollBehavior = scrollBehavior
+            )
+        })
 
 
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun SearchTopAppBar(viewModel: SearchBarViewModel) {
+fun SearchTopAppBar(viewModel: SearchBarViewModel, scrollBehavior: TopAppBarScrollBehavior) {
+
 
     Surface(
         modifier = Modifier.fillMaxWidth(),
@@ -47,6 +66,7 @@ fun SearchTopAppBar(viewModel: SearchBarViewModel) {
     ) {
         TopAppBar(
             title = { CustomSearchBar(viewModel = viewModel) },
+            scrollBehavior = scrollBehavior,
             modifier = Modifier
                 .statusBarsPadding(),
             colors = TopAppBarDefaults.topAppBarColors(
@@ -59,19 +79,43 @@ fun SearchTopAppBar(viewModel: SearchBarViewModel) {
 
     }
 
-
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun SearchContent(paddingValues: PaddingValues, viewModel: SearchBarViewModel) {
+fun SearchContent(
+    paddingValues: PaddingValues,
+    viewModel: SearchBarViewModel,
+    scrollBehavior: TopAppBarScrollBehavior
+) {
 
-    Box(modifier = Modifier
-        .background(Color.White)
-        .fillMaxSize()
-        .padding(paddingValues)) {
+    //elementos necesarios para dismissear el teclado en caso de hacer scroll
+    val focusManager = LocalFocusManager.current
+    val keyboardController = LocalSoftwareKeyboardController.current
+    //--------------------------------------------------------------------
+
+    Box(
+        modifier = Modifier
+            .background(Color.White)
+            .fillMaxSize()
+            .padding(paddingValues)
+    ) {
 
         if (viewModel.desplegado.value)
-            LazyColumn(modifier = Modifier.fillMaxSize()) {
+            LazyColumn(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .nestedScroll(scrollBehavior.nestedScrollConnection) //detectamos el scroll para notificar a la appTopBar
+                    .onGloballyPositioned { //dismiseamos el teclado en caso de scroll
+
+                        if (viewModel.previousState.value) {
+                            focusManager.clearFocus()
+                            keyboardController?.hide()
+                        }
+
+                    }
+
+            ) {
 
                 items(20) { index ->
                     Text(

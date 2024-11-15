@@ -8,6 +8,7 @@ import androidx.navigation.compose.rememberNavController
 import com.upm.ubustrip.GreetingPreview
 import com.upm.ubustrip.features.login.LoginScreen
 import com.upm.ubustrip.features.menu.Menu
+import com.upm.ubustrip.features.myAccount.MyAccountScreen
 import com.upm.ubustrip.features.search.SearchScreen
 
 @Composable
@@ -20,6 +21,7 @@ fun AppNavigation(){
         composable(route = AppScreens.FirstScreen.route) { GreetingPreview(navController) }
         composable(route = AppScreens.LogInScreen.route) { LoginScreen(navController) }
         composable(route = AppScreens.SearchScreen.route) { SearchScreen(navController) }
+        composable(route = AppScreens.AccountScreen.route) { MyAccountScreen(navController) }
 
     }
 

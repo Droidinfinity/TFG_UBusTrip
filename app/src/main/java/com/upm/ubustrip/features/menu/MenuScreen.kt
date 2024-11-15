@@ -31,7 +31,7 @@ data class TabBarItem(
 @Composable
 fun Menu(navigator: NavController) {
 
-    // setting up the individual tabs
+    // tabs para la navegación
     val homeTab = TabBarItem(
         title = "Favoritos",
         selectedIcon = Icons.Filled.Star,
@@ -49,7 +49,7 @@ fun Menu(navigator: NavController) {
         title = "Mi Cuenta",
         selectedIcon = Icons.Filled.AccountCircle,
         unselectedIcon = Icons.Outlined.AccountCircle,
-        navLocation = "miCuentaScreen"
+        navLocation = "accountScreen"
     )
 
     // creating a list of all the tabs

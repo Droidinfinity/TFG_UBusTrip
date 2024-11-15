@@ -51,6 +51,7 @@ fun BottomBar(
                     navController.navigate(tabBarItem.navLocation)
 
                     viewModel.updateTitle(tabBarItem.title)
+                    selectedTabIndex = 0
                 }, icon = {
                     TabBarIconView(
                         isSelected = selectedTabIndex == index,
