@@ -14,12 +14,20 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.NavController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.rememberNavController
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.auth
+import com.google.firebase.auth.ktx.auth
+import com.google.firebase.ktx.Firebase
 import com.upm.ubustrip.appNavigation.AppNavigation
 import com.upm.ubustrip.appNavigation.AppScreens
 import com.upm.ubustrip.ui.theme.MyApplicationTheme
 
 class MainActivity : ComponentActivity() {
+
+
     override fun onCreate(savedInstanceState: Bundle?) {
+
+
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {

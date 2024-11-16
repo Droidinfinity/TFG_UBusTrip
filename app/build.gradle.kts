@@ -1,6 +1,7 @@
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
+    id("com.google.gms.google-services")
 }
 
 android {
@@ -30,8 +31,8 @@ android {
         }
     }
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_1_8
-        targetCompatibility = JavaVersion.VERSION_1_8
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
     }
     kotlinOptions {
         jvmTarget = "1.8"
@@ -62,7 +63,9 @@ dependencies {
     implementation("androidx.navigation:navigation-compose:2.8.3")
     implementation ("com.google.accompanist:accompanist-systemuicontroller:0.30.1")
     implementation ("androidx.compose.ui:ui-text-google-fonts:1.6.0")
+    implementation(platform("com.google.firebase:firebase-bom:33.6.0"))
     implementation(libs.androidx.navigation.runtime.ktx)
+    implementation(libs.firebase.auth.ktx)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)

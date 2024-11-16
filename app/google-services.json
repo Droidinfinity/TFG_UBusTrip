@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "150475440568",
+    "project_id": "ubustrip-81feb",
+    "storage_bucket": "ubustrip-81feb.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:150475440568:android:1b2b3f406e3eaaacd58f4d",
+        "android_client_info": {
+          "package_name": "com.upm.ubustrip"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyATGCZPbhj5uGLlhm8i9SQQ71mVF49ueLU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
