@@ -13,3 +13,5 @@ val Pink40 = Color(0xFF7D5260)
 //COLORES PARA LA APP
 val UbusTripFilledButton1Color = Color(0xff163047)
 val UbusTripFilledGoogleButtom = Color(color = 0xff8ea2f8)
+val UbusTripBottomBar = Color(color = 0XFFB3E5FC)
+val UbusTripBottomBarSelected = Color(color = 0XFF81D4FA)

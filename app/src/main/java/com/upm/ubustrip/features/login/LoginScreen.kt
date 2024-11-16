@@ -121,7 +121,7 @@ fun HeaderImage() {
             ),
             contentDescription = "Header",
             modifier = Modifier
-                .padding(top = 100.dp)
+                .padding(top = 20.dp)
                 .size(width = 200.dp, 200.dp)
         )
 
