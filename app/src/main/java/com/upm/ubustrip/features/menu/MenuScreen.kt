@@ -1,6 +1,8 @@
 package com.upm.ubustrip.features.menu
 
 import android.annotation.SuppressLint
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountCircle
@@ -16,7 +18,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.navigation.NavController
+import com.google.android.gms.auth.api.signin.GoogleSignIn
+import com.google.android.gms.common.api.ApiException
+import com.google.firebase.auth.GoogleAuthProvider
+import com.upm.ubustrip.appNavigation.AppScreens
 import com.upm.ubustrip.features.favorites.Favorites
+import com.upm.ubustrip.firebase.LoginViewModel
 
 
 data class TabBarItem(
@@ -29,7 +36,20 @@ data class TabBarItem(
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
-fun Menu(navigator: NavController) {
+fun Menu(
+    navigator: NavController,
+    menuViewModel: MenuViewModel,
+    loginViewModel: LoginViewModel = androidx.lifecycle.viewmodel.compose.viewModel()
+) {
+
+    val isLogged = loginViewModel.getAuth().currentUser != null
+    var accountNavigation = ""
+
+    if(isLogged)
+        accountNavigation = "accountScreen"
+    else
+        accountNavigation = "loginScreen"
+
 
     // tabs para la navegación
     val homeTab = TabBarItem(
@@ -49,23 +69,23 @@ fun Menu(navigator: NavController) {
         title = "Mi Cuenta",
         selectedIcon = Icons.Filled.AccountCircle,
         unselectedIcon = Icons.Outlined.AccountCircle,
-        navLocation = "accountScreen"
+        navLocation = accountNavigation
     )
 
-    // creating a list of all the tabs
+
     val tabBarItems = listOf(homeTab, settingsTab, moreTab)
 
 
-    // A surface container using the 'background' color from the theme
+
     Surface(
         modifier = Modifier.fillMaxSize(),
     ) {
         Scaffold(
             bottomBar = { BottomBar(tabBarItems, navigator, viewModel = MenuViewModel()) },
             topBar = { TopBar(viewModel = MenuViewModel()) },
-            content = { paddingValues ->  Favorites(paddingValues) }
+            content = { paddingValues -> Favorites(paddingValues) }
 
-            )
+        )
     }
 
 

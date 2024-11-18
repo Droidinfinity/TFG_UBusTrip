@@ -28,7 +28,7 @@ fun MyAccountScreen(navController: NavController) {
     Column {
 
         //Parte de arriba
-        MyProfileCard()
+        MyProfileCard(navController = navController)
         OptionsCard(false, tile = "Hola", content = "Mundo")
         OptionsCard(true, tile = "Este es", content = "Un botón cliclable")
 

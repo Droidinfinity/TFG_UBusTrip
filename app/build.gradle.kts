@@ -31,8 +31,8 @@ android {
         }
     }
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_17
-        targetCompatibility = JavaVersion.VERSION_17
+        sourceCompatibility = JavaVersion.VERSION_1_8
+        targetCompatibility = JavaVersion.VERSION_1_8
     }
     kotlinOptions {
         jvmTarget = "1.8"
@@ -64,6 +64,7 @@ dependencies {
     implementation ("com.google.accompanist:accompanist-systemuicontroller:0.30.1")
     implementation ("androidx.compose.ui:ui-text-google-fonts:1.6.0")
     implementation(platform("com.google.firebase:firebase-bom:33.6.0"))
+    implementation("com.google.android.gms:play-services-auth:21.2.0")
     implementation(libs.androidx.navigation.runtime.ktx)
     implementation(libs.firebase.auth.ktx)
     testImplementation(libs.junit)

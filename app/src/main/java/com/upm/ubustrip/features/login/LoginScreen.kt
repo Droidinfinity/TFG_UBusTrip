@@ -1,6 +1,8 @@
 package com.upm.ubustrip.features.login
 
 import android.annotation.SuppressLint
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -35,6 +37,7 @@ import androidx.compose.ui.layout.positionInRoot
 import androidx.compose.ui.layout.positionInWindow
 import androidx.compose.ui.layout.positionOnScreen
 import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.Font
@@ -45,7 +48,14 @@ import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import com.google.android.gms.auth.api.signin.GoogleSignIn
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions
+import com.google.android.gms.common.api.ApiException
+import com.google.firebase.auth.GoogleAuthProvider
 import com.upm.ubustrip.R
+import com.upm.ubustrip.appNavigation.AppNavigation
+import com.upm.ubustrip.appNavigation.AppScreens
+import com.upm.ubustrip.firebase.LoginViewModel
 import com.upm.ubustrip.ui.theme.UbusTripFilledButton1Color
 import com.upm.ubustrip.ui.theme.UbusTripFilledGoogleButtom
 
@@ -53,11 +63,11 @@ import com.upm.ubustrip.ui.theme.UbusTripFilledGoogleButtom
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
-fun LoginScreen(navController: NavController) {
+fun LoginScreen(navController: NavController, loginViewModel: LoginViewModel) {
 
 
     Scaffold(
-        content = { Login() }
+        content = { Login(loginViewModel = loginViewModel, navController = navController) }
     )
 
 
@@ -65,7 +75,7 @@ fun LoginScreen(navController: NavController) {
 
 
 @Composable
-fun Login() {
+fun Login(loginViewModel: LoginViewModel,navController: NavController) {
 
     var position by remember { mutableStateOf(Offset(0f, 0f)) }
 
@@ -96,12 +106,12 @@ fun Login() {
 
         Box(modifier = Modifier.padding(top = 30.dp, bottom = 30.dp)) {
 
-            BotonLogin() {}
+            BotonLogin()
 
         }
         ContinuaCon()
         Box(modifier = Modifier.padding(bottom = 30.dp))
-        BotonGoogleLogin() { }
+        BotonGoogleLogin(loginViewModel = loginViewModel, navController = navController )
         NoTienesCuneta()
 
 
@@ -183,13 +193,20 @@ fun ButtomOlvidateC(onClick: () -> Unit) {
 }
 
 @Composable
-fun BotonLogin(onClick: () -> Unit) {
+fun BotonLogin() {
 
     val configuration = LocalConfiguration.current
     val screenWidthPx = configuration.screenWidthDp - 50
 
+
+
+
     Button(
-        onClick = { onClick() },
+        onClick = {
+
+
+
+        },
         shape = RoundedCornerShape(16.dp), // Ajusta el radio para redondear los bordes
         modifier = Modifier
             .size(width = screenWidthPx.dp, height = 50.dp),
@@ -200,15 +217,52 @@ fun BotonLogin(onClick: () -> Unit) {
 }
 
 @Composable
-fun BotonGoogleLogin(onClick: () -> Unit) {
+fun BotonGoogleLogin(loginViewModel: LoginViewModel, navController: NavController) {
 
     val configuration = LocalConfiguration.current
     val buttonWidthPx = configuration.screenWidthDp - 50
     // var position by remember { mutableStateOf(Offset(0f, 0f)) }
 
+    val context = LocalContext.current
+
+    loginViewModel.setNavController(navController = navController)
+
+    //RELACIONADO AL LOGIN Y USUARIO
+    val launcher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts
+            .StartActivityForResult()
+    ) {
+
+        val task = GoogleSignIn.getSignedInAccountFromIntent(it.data)
+        try {
+
+            val account = task.getResult(ApiException::class.java)
+            val credential = GoogleAuthProvider.getCredential(account.idToken,null)
+            loginViewModel.sigInWhithGoogleCredential(credential){
+
+                // navigator.navigate(route = AppScreens.MenuScreen)
+
+            }
+
+        }catch (ex: Exception){}
+    }
+
 
     Button(
-        onClick = { onClick() },
+        onClick = {
+
+            val opciones = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                .requestIdToken(loginViewModel.getGoogleToken())
+                .requestEmail()
+                .build()
+
+            val googleSignInCliente = GoogleSignIn.getClient(context,opciones)
+            launcher.launch(googleSignInCliente.signInIntent)
+
+
+
+
+        },
         shape = RoundedCornerShape(16.dp), // Ajusta el radio para redondear los bordes
         modifier = Modifier
             .size(width = buttonWidthPx.dp, height = 50.dp)

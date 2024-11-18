@@ -35,15 +35,15 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import com.upm.ubustrip.R
 
 
 @OptIn(ExperimentalMaterial3Api::class)
 
-@Preview
 @Composable
-fun MyProfileCard() {
+fun MyProfileCard(navController: NavController) {
 
     val systemUiController = rememberSystemUiController()
     systemUiController.setSystemBarsColor(Color.Transparent)
@@ -64,7 +64,7 @@ fun MyProfileCard() {
         Column(modifier = Modifier.statusBarsPadding()) {
 
             //Barra de navegación (solo ir atrás)
-            TopNavigationBar(Modifier.padding(top = 5.dp))
+            TopNavigationBar(Modifier.padding(top = 5.dp), navController = navController)
            // ------------------------------------------------------
             Spacer(modifier = Modifier.height(40.dp))
 
@@ -135,7 +135,7 @@ fun CircularGradientBackground() {
 
 
 @Composable
-fun TopNavigationBar(modifier: Modifier) {
+fun TopNavigationBar(modifier: Modifier,navController: NavController) {
 
 
     Row(
@@ -144,7 +144,7 @@ fun TopNavigationBar(modifier: Modifier) {
 
     ) {
         IconButton(
-            onClick = {}
+            onClick = {navController.popBackStack()}
 
         ) {
             Icon(

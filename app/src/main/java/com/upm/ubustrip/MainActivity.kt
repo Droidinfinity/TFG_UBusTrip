@@ -33,31 +33,19 @@ class MainActivity : ComponentActivity() {
         setContent {
             AppNavigation()
 
+
             }
         }
     }
 
 
 @Composable
-fun Greeting(name: String, modifier: Modifier = Modifier) {
-    Text(
-        text = "Hello $name!",
-        modifier = modifier
-    )
-}
-
-
-@Composable
 fun GreetingPreview(navController: NavController) {
     MyApplicationTheme {
 
-        Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-            Greeting(
-                name = "Android",
-                modifier = Modifier.padding(innerPadding)
-            )
-        }
+        //TODO: En caso de que haya onboardings, es probable que haya que modificar esta parte
 
+        //NAVAGACIÓN AL MENÚ
         navController.navigate(route = AppScreens.LogInScreen.route)
 
 
