@@ -96,7 +96,6 @@ fun Login(loginViewModel: LoginViewModel,navController: NavController) {
             text = "INICIA SESIÓN",
             fontSize = 40.sp,
             fontWeight = FontWeight.Bold,
-            fontFamily = font,
             modifier = Modifier.padding(top = 20.dp)
         )
 
@@ -240,11 +239,11 @@ fun BotonGoogleLogin(loginViewModel: LoginViewModel, navController: NavControlle
             val credential = GoogleAuthProvider.getCredential(account.idToken,null)
             loginViewModel.sigInWhithGoogleCredential(credential){
 
-                // navigator.navigate(route = AppScreens.MenuScreen)
 
             }
 
         }catch (ex: Exception){}
+
     }
 
 
@@ -258,6 +257,8 @@ fun BotonGoogleLogin(loginViewModel: LoginViewModel, navController: NavControlle
 
             val googleSignInCliente = GoogleSignIn.getClient(context,opciones)
             launcher.launch(googleSignInCliente.signInIntent)
+
+            GoogleSignIn.getClient(context,opciones).signOut() //para que no recuerde la cuenta a la hora de hacer log out
 
 
 

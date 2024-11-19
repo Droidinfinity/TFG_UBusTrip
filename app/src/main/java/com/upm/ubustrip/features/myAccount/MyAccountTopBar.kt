@@ -36,14 +36,16 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import coil.compose.AsyncImage
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import com.upm.ubustrip.R
+import com.upm.ubustrip.firebase.LoginViewModel
 
 
 @OptIn(ExperimentalMaterial3Api::class)
 
 @Composable
-fun MyProfileCard(navController: NavController) {
+fun MyProfileCard(navController: NavController, loginViewModel: LoginViewModel) {
 
     val systemUiController = rememberSystemUiController()
     systemUiController.setSystemBarsColor(Color.Transparent)
@@ -51,6 +53,8 @@ fun MyProfileCard(navController: NavController) {
     val configuration = LocalConfiguration.current
     val screenHeightPx = (configuration.screenHeightDp / 2) - 40
 
+    val currentUser = loginViewModel.getAuth().currentUser //Usuario
+    val userName = currentUser?.displayName
 
     Box(
         modifier = Modifier
@@ -65,7 +69,7 @@ fun MyProfileCard(navController: NavController) {
 
             //Barra de navegación (solo ir atrás)
             TopNavigationBar(Modifier.padding(top = 5.dp), navController = navController)
-           // ------------------------------------------------------
+            // ------------------------------------------------------
             Spacer(modifier = Modifier.height(40.dp))
 
             //Imagén de perfíl y nombre-------------------------------
@@ -74,14 +78,22 @@ fun MyProfileCard(navController: NavController) {
                     horizontalArrangement = Arrangement.Center,
                     modifier = Modifier.fillMaxWidth()
                 )
-                { CircularImage(modifier = Modifier.size(150.dp)) }
+                { CircularImage(modifier = Modifier.size(150.dp), loginViewModel = loginViewModel) }
 
                 Spacer(modifier = Modifier.height(15.dp))
 
                 Row(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.Center
-                ) { Text("USUARIO", color = Color.White, fontSize = 18.sp) }
+                ) {
+
+                    if (userName == null)
+                        Text("USUARIO", color = Color.White, fontSize = 18.sp)
+                    else
+                        Text(userName, color = Color.White, fontSize = 18.sp)
+
+
+                }
             }
             //-------------------------------------------------------------
         }
@@ -135,16 +147,16 @@ fun CircularGradientBackground() {
 
 
 @Composable
-fun TopNavigationBar(modifier: Modifier,navController: NavController) {
+fun TopNavigationBar(modifier: Modifier, navController: NavController) {
 
 
     Row(
 
         modifier = modifier.fillMaxWidth(),
 
-    ) {
+        ) {
         IconButton(
-            onClick = {navController.popBackStack()}
+            onClick = { navController.popBackStack() }
 
         ) {
             Icon(
@@ -157,7 +169,8 @@ fun TopNavigationBar(modifier: Modifier,navController: NavController) {
 
 
 
-        Text("PERFÍL Y AJUSTES",
+        Text(
+            "PERFÍL Y AJUSTES",
             fontSize = 20.sp,
             fontWeight = FontWeight.Bold,
             color = Color.White,
@@ -168,19 +181,32 @@ fun TopNavigationBar(modifier: Modifier,navController: NavController) {
     }
 
 
-
 }
 
 
 @Composable
-fun CircularImage(modifier: Modifier) {
+fun CircularImage(modifier: Modifier, loginViewModel: LoginViewModel) {
     //TODO: Usará la imagen de la cuenta en cuestión
-    Image(
-        painter = painterResource(id = R.drawable.ubustrip_icon),
-        contentDescription = null,
-        modifier = modifier
-            .clip(CircleShape)
-    )
+
+    val currentUser = loginViewModel.getAuth().currentUser
+    val userPhotoUrl = currentUser?.photoUrl
+
+    if (userPhotoUrl == null)
+        Image(
+            painter = painterResource(id = R.drawable.ubustrip_icon),
+            contentDescription = null,
+            modifier = modifier
+                .clip(CircleShape)
+        )
+    else
+        AsyncImage(
+            model = userPhotoUrl,
+            contentDescription = "Imagen de perfil",
+            modifier = modifier
+                .clip(CircleShape),
+            placeholder = painterResource(R.drawable.ubustrip_icon)
+        )
+
 }
 
 

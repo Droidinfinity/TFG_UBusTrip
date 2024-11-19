@@ -19,18 +19,29 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import com.upm.ubustrip.firebase.LoginViewModel
 
-@SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
+@SuppressLint("UnusedMaterial3ScaffoldPaddingParameter", "SuspiciousIndentation")
 
 @Composable
-fun MyAccountScreen(navController: NavController) {
+fun MyAccountScreen(navController: NavController,loginViewModel: LoginViewModel) {
+
+    val sesion = loginViewModel.getAuth() //Usuario
+    val userEmail = loginViewModel.getAuth().currentUser?.email
 
     Column {
 
         //Parte de arriba
-        MyProfileCard(navController = navController)
-        OptionsCard(false, tile = "Hola", content = "Mundo")
-        OptionsCard(true, tile = "Este es", content = "Un botón cliclable")
+        MyProfileCard(navController = navController, loginViewModel = loginViewModel)
+        if(userEmail!=null)
+        OptionsCard(false, tile = "Email", content = userEmail)
+        OptionsCard(true, tile = "Sesión", content = "Cerrar sesión", textColor = Color.Red, onClick = {
+            sesion.signOut()
+            navController.popBackStack()
+
+        }
+
+        )
 
 
     }//Fin del Colum
@@ -38,7 +49,7 @@ fun MyAccountScreen(navController: NavController) {
 }
 
 @Composable
-fun OptionsCard(isClickable : Boolean = false, onClick : ()-> Unit = {},tile : String,content : String) {
+fun OptionsCard(isClickable : Boolean = false, onClick : ()-> Unit = {},tile : String,content : String,textColor: Color = Color.Black) {
 
     Box(modifier = Modifier.clickable(enabled = isClickable, onClick = onClick)) {
         Box(
@@ -56,7 +67,8 @@ fun OptionsCard(isClickable : Boolean = false, onClick : ()-> Unit = {},tile : S
                 Spacer(modifier = Modifier.height(5.dp))
                 Text(
                     text = content,
-                    modifier = Modifier.padding(start = 20.dp)
+                    modifier = Modifier.padding(start = 20.dp),
+                    color = textColor
                 )
                 Spacer(modifier = Modifier.height(15.dp))
                 Box(

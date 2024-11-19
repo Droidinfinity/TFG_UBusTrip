@@ -27,7 +27,7 @@ fun AppNavigation(){
         composable(route = AppScreens.FirstScreen.route) { GreetingPreview(navController) }
         composable(route = AppScreens.LogInScreen.route) { LoginScreen(navController, loginViewModel = loginViewModel) }
         composable(route = AppScreens.SearchScreen.route) { SearchScreen(navController) }
-        composable(route = AppScreens.AccountScreen.route) { MyAccountScreen(navController) }
+        composable(route = AppScreens.AccountScreen.route) { MyAccountScreen(navController, loginViewModel = loginViewModel) }
 
     }
 
