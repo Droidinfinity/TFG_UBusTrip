@@ -57,8 +57,8 @@ import com.upm.ubustrip.appNavigation.AppNavigation
 import com.upm.ubustrip.appNavigation.AppScreens
 import com.upm.ubustrip.firebase.LoginViewModel
 import com.upm.ubustrip.ui.theme.UbusTripFilledButton1Color
+import com.upm.ubustrip.ui.theme.UbusTripFilledButton2Color
 import com.upm.ubustrip.ui.theme.UbusTripFilledGoogleButtom
-
 
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
@@ -75,7 +75,7 @@ fun LoginScreen(navController: NavController, loginViewModel: LoginViewModel) {
 
 
 @Composable
-fun Login(loginViewModel: LoginViewModel,navController: NavController) {
+fun Login(loginViewModel: LoginViewModel, navController: NavController) {
 
     var position by remember { mutableStateOf(Offset(0f, 0f)) }
 
@@ -110,8 +110,8 @@ fun Login(loginViewModel: LoginViewModel,navController: NavController) {
         }
         ContinuaCon()
         Box(modifier = Modifier.padding(bottom = 30.dp))
-        BotonGoogleLogin(loginViewModel = loginViewModel, navController = navController )
-        NoTienesCuneta()
+        BotonGoogleLogin(loginViewModel = loginViewModel, navController = navController)
+        NoTienesCuneta(navController = navController)
 
 
     }
@@ -204,12 +204,11 @@ fun BotonLogin() {
         onClick = {
 
 
-
         },
         shape = RoundedCornerShape(16.dp), // Ajusta el radio para redondear los bordes
         modifier = Modifier
             .size(width = screenWidthPx.dp, height = 50.dp),
-        colors = ButtonDefaults.buttonColors(containerColor = UbusTripFilledButton1Color)
+        colors = ButtonDefaults.buttonColors(containerColor = UbusTripFilledButton2Color)
     ) {
         Text("Iniciar sesión")
     }
@@ -236,13 +235,14 @@ fun BotonGoogleLogin(loginViewModel: LoginViewModel, navController: NavControlle
         try {
 
             val account = task.getResult(ApiException::class.java)
-            val credential = GoogleAuthProvider.getCredential(account.idToken,null)
-            loginViewModel.sigInWhithGoogleCredential(credential){
+            val credential = GoogleAuthProvider.getCredential(account.idToken, null)
+            loginViewModel.sigInWhithGoogleCredential(credential) {
 
 
             }
 
-        }catch (ex: Exception){}
+        } catch (ex: Exception) {
+        }
 
     }
 
@@ -255,12 +255,11 @@ fun BotonGoogleLogin(loginViewModel: LoginViewModel, navController: NavControlle
                 .requestEmail()
                 .build()
 
-            val googleSignInCliente = GoogleSignIn.getClient(context,opciones)
+            val googleSignInCliente = GoogleSignIn.getClient(context, opciones)
             launcher.launch(googleSignInCliente.signInIntent)
 
-            GoogleSignIn.getClient(context,opciones).signOut() //para que no recuerde la cuenta a la hora de hacer log out
-
-
+            GoogleSignIn.getClient(context, opciones)
+                .signOut() //para que no recuerde la cuenta a la hora de hacer log out
 
 
         },
@@ -269,10 +268,10 @@ fun BotonGoogleLogin(loginViewModel: LoginViewModel, navController: NavControlle
             .size(width = buttonWidthPx.dp, height = 50.dp)
             .onGloballyPositioned { layoutCoordinates ->
                 // Guarda la posición en `position` en coordenadas globales
-             //   position = layoutCoordinates
-                 //   .positionInRoot()
+                //   position = layoutCoordinates
+                //   .positionInRoot()
             },
-        colors = ButtonDefaults.buttonColors(containerColor = UbusTripFilledGoogleButtom)
+        colors = ButtonDefaults.buttonColors(containerColor = UbusTripFilledButton1Color)
     ) {
 
         Image(
@@ -341,7 +340,7 @@ fun ContinuaCon() {
 
 
 @Composable
-fun NoTienesCuneta() {
+fun NoTienesCuneta(navController: NavController) {
 
     val configuration = LocalConfiguration.current
     val density = LocalDensity.current
@@ -359,15 +358,15 @@ fun NoTienesCuneta() {
                 // Guarda la posición como Offset
                 position = layoutCoordinates.positionInRoot()
 
-                val finaly = screenHeightPx.dp - position.y.toInt().dp -10.dp
+                val finaly = screenHeightPx.dp - position.y.toInt().dp - 10.dp
 
             }
 
-          //  .padding(top = ( screenHeightPx.dp - position.y.toInt().dp )-100.dp )
+        //  .padding(top = ( screenHeightPx.dp - position.y.toInt().dp )-100.dp )
     ) {
 
         //val finalPosition = position.y.toInt().dp -10.dp - screenHeightPx.dp
-        TextButtonRegistrate {  }
+        TextButtonRegistrate(onClick = { navController.navigate(AppScreens.RegisterScreen.route)})
 
     }
 

@@ -183,10 +183,10 @@ fun TopNavigationBar(modifier: Modifier, navController: NavController) {
 
 }
 
-
+// Usará la imagen de la cuenta en cuestión
 @Composable
 fun CircularImage(modifier: Modifier, loginViewModel: LoginViewModel) {
-    //TODO: Usará la imagen de la cuenta en cuestión
+
 
     val currentUser = loginViewModel.getAuth().currentUser
     val userPhotoUrl = currentUser?.photoUrl
