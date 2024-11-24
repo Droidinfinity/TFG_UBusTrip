@@ -24,6 +24,10 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarDuration
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TextFieldDefaults
@@ -31,6 +35,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -52,6 +57,8 @@ import com.upm.ubustrip.appNavigation.AppScreens
 import com.upm.ubustrip.firebase.LoginViewModel
 import com.upm.ubustrip.ui.theme.UbusTripFilledButton1Color
 import com.upm.ubustrip.ui.theme.UbusTripFilledButton2Color
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.launch
 
 @Composable
 fun SignUp(
@@ -63,7 +70,38 @@ fun SignUp(
     val systemUiController = rememberSystemUiController()
     systemUiController.setSystemBarsColor(Color.Transparent)
 
-    CircularGradientBackground()
+    val snackbarHostState = remember { SnackbarHostState() } // Controla el estado del Snackbar
+    val coroutineScope = rememberCoroutineScope()
+
+    Scaffold(
+        content = { paddingValues ->
+
+            Box(modifier = Modifier.padding(paddingValues))
+            CircularGradientBackground()
+            Content(
+                accountViewModel = accountViewModel,
+                navController = navController,
+                loginViewModel = loginViewModel,
+                snackbarHostState = snackbarHostState,
+                coroutineScope = coroutineScope
+            )
+
+
+        },
+        snackbarHost = { SnackbarHost(hostState = snackbarHostState) }
+    )
+
+
+}
+
+@Composable
+fun Content(
+    accountViewModel: NewAccountViewModel,
+    loginViewModel: LoginViewModel,
+    navController: NavController,
+    snackbarHostState: SnackbarHostState,
+    coroutineScope: CoroutineScope
+) {
 
     Box(
         modifier = Modifier
@@ -92,6 +130,8 @@ fun SignUp(
             )
 
             Spacer(modifier = Modifier.height(40.dp))
+            NameTextFied(viewModel = accountViewModel)
+            Spacer(modifier = Modifier.height(10.dp))
             CorreoTextFied(viewModel = accountViewModel)
             Spacer(modifier = Modifier.height(20.dp))
             ContrasenaTextFied(
@@ -109,13 +149,39 @@ fun SignUp(
             BotonRegistro(
                 loginViewModel = loginViewModel,
                 accountViewModel = accountViewModel,
-                navController = navController
+                navController = navController,
+                snackbarHostState = snackbarHostState,
+                coroutineScope = coroutineScope
             )
             Spacer(modifier = Modifier.height(10.dp))
             ButtomMasTarde(navController = navController)
 
         }
     }
+
+}
+
+@Composable
+fun NameTextFied(viewModel: NewAccountViewModel) {
+
+    var name by remember { mutableStateOf("") }
+    var isError by remember { mutableStateOf(false) }
+
+    OutlinedTextField(
+        value = name,
+        onValueChange = {
+            name = it
+            if (name.length < 3)
+                isError = true
+            else
+                isError = false
+            viewModel.setName(name = name)
+        },
+        label = { if (!isError) Text("Nombre") else Text("Nombre no válido") },
+        modifier = Modifier.padding(top = 20.dp),
+        isError = isError,
+        colors = OutlinedTextFieldDefaults.colors(errorBorderColor = Color.Red)
+    )
 
 
 }
@@ -217,7 +283,9 @@ fun ContrasenaTextFied(
 fun BotonRegistro(
     loginViewModel: LoginViewModel,
     accountViewModel: NewAccountViewModel,
-    navController: NavController
+    navController: NavController,
+    snackbarHostState: SnackbarHostState,
+    coroutineScope: CoroutineScope
 ) {
 
     val configuration = LocalConfiguration.current
@@ -231,11 +299,16 @@ fun BotonRegistro(
             val password = accountViewModel.getPassword()
             val repeatedPassword = accountViewModel.getRepeatedPassword()
             val email = accountViewModel.getEmail()
+            val name = accountViewModel.getName()
 
-            if (isPasswordValid(password) && password == repeatedPassword) {
+            if (isPasswordValid(password) && password == repeatedPassword && name.length >= 3) {
 
                 if (isValidEmail(email))
-                    loginViewModel.createUserWithEmailAndPassword(email, password) {
+                    loginViewModel.createUserWithEmailAndPassword(
+                        email = email,
+                        password = password,
+                        name = name
+                    ) {
 
                         navController.popBackStack()
                         navController.popBackStack()
@@ -243,7 +316,14 @@ fun BotonRegistro(
 
                     }
 
-            }
+            } else
+                coroutineScope.launch {
+                    snackbarHostState.showSnackbar(
+                        message = "Datos inválidos",
+                        actionLabel = "OK",
+                        duration = SnackbarDuration.Short,
+                    )
+                }
 
         },
         shape = RoundedCornerShape(16.dp), // Ajusta el radio para redondear los bordes

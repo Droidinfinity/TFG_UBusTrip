@@ -8,6 +8,8 @@ class NewAccountViewModel : ViewModel() {
     private var _password = mutableStateOf("")
     private var _passwordRepeated = mutableStateOf("")
     private var _email = ""
+    private var _name = ""
+
 
 
     fun setPassword(password: String) {
@@ -41,6 +43,18 @@ class NewAccountViewModel : ViewModel() {
     fun getEmail(): String {
 
         return this._email
+    }
+
+    fun setName(name: String) {
+
+        this._name = name
+
+    }
+
+    fun getName(): String {
+
+        return this._name
+
     }
 
 

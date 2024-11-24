@@ -7,6 +7,7 @@ import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavController
 import com.google.firebase.auth.AuthCredential
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.userProfileChangeRequest
 import com.upm.ubustrip.appNavigation.AppScreens
 import kotlinx.coroutines.launch
 
@@ -55,16 +56,41 @@ class LoginViewModel : ViewModel() {
 
         }
 
-    fun createUserWithEmailAndPassword(email: String, password: String, home: () -> Unit) {
+    fun createUserWithEmailAndPassword(
+        email: String,
+        password: String,
+        name: String,
+        home: () -> Unit
+    ) {
 
         if (_loading.value == false) { //si no se esta creando ningun usuario...
 
             _loading.value = true
             auth.createUserWithEmailAndPassword(email, password)
                 .addOnCompleteListener { task ->
-                    if (task.isSuccessful)
-                        home()
-                    else
+                    if (task.isSuccessful) {
+
+                        val user = auth.currentUser
+                        user?.let {
+
+                            val profileSetUp = userProfileChangeRequest {
+                                displayName = name
+                            }
+                            it.updateProfile(profileSetUp).addOnCompleteListener { profileTask ->
+
+                                if (profileTask.isSuccessful) {
+                                    Log.d("Registro", "Nombre del usuario actualizado")
+                                    home()
+                                } else
+                                    Log.d("Registro", "Error al actualizar el perfil del usuario")
+
+
+                            }
+
+                        }
+
+
+                    } else
                         Log.d("Registro", "Registro email  Inorrecto")
 
                 }
