@@ -45,9 +45,11 @@ class LoginViewModel : ViewModel() {
                 auth.signInWithEmailAndPassword(email, password)
                     .addOnCompleteListener { task ->
 
-                        if (task.isSuccessful) Log.d("Login", "Login Correcto")
-                        _navController.popBackStack() //si nos hemos logueado de forma correcta dissmiseamos la pantalla de login
-                        _navController.navigate(route = AppScreens.AccountScreen.route)
+                        if (task.isSuccessful) {
+                            Log.d("Login", "Login Correcto")
+                            _navController.popBackStack() //si nos hemos logueado de forma correcta dissmiseamos la pantalla de login
+                            _navController.navigate(route = AppScreens.AccountScreen.route)
+                        } else home()
                     }
 
             } catch (ex: Exception) {

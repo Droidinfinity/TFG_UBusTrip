@@ -18,8 +18,13 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarDuration
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
@@ -27,6 +32,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCompositionContext
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -44,6 +50,7 @@ import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -59,15 +66,33 @@ import com.upm.ubustrip.firebase.LoginViewModel
 import com.upm.ubustrip.ui.theme.UbusTripFilledButton1Color
 import com.upm.ubustrip.ui.theme.UbusTripFilledButton2Color
 import com.upm.ubustrip.ui.theme.UbusTripFilledGoogleButtom
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.launch
 
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
-fun LoginScreen(navController: NavController, loginViewModel: LoginViewModel) {
+fun LoginScreen(
+    navController: NavController,
+    loginViewModel: LoginViewModel,
+    loginScreenViewModel: LoginScreenViewModel
+) {
+
+    val snackbarHostState = remember { SnackbarHostState() } // Controla el estado del Snackbar
+    val coroutineScope = rememberCoroutineScope()
 
 
     Scaffold(
-        content = { Login(loginViewModel = loginViewModel, navController = navController) }
+        content = {
+            Login(
+                loginViewModel = loginViewModel,
+                navController = navController,
+                loginScreenViewModel = loginScreenViewModel,
+                coroutineScope = coroutineScope,
+                snackbarHostState = snackbarHostState
+            )
+        },
+        snackbarHost = { SnackbarHost(hostState = snackbarHostState) }
     )
 
 
@@ -75,16 +100,17 @@ fun LoginScreen(navController: NavController, loginViewModel: LoginViewModel) {
 
 
 @Composable
-fun Login(loginViewModel: LoginViewModel, navController: NavController) {
+fun Login(
+    loginViewModel: LoginViewModel,
+    navController: NavController,
+    loginScreenViewModel: LoginScreenViewModel,
+    coroutineScope: CoroutineScope,
+    snackbarHostState: SnackbarHostState
+) {
 
-    var position by remember { mutableStateOf(Offset(0f, 0f)) }
 
     val modifier = Modifier.fillMaxSize()
-    val font = FontFamily(
-        Font(R.font.bangers, FontWeight.Normal),
-        Font(R.font.bangers, FontWeight.Bold),
-        Font(R.font.bangers, FontWeight.Normal)
-    )
+
     Column(
         modifier = modifier,
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -99,13 +125,18 @@ fun Login(loginViewModel: LoginViewModel, navController: NavController) {
             modifier = Modifier.padding(top = 20.dp)
         )
 
-        CorreoTextFied()
-        ContrasenaTextFied()
+        CorreoTextFied(loginScreenViewModel = loginScreenViewModel)
+        ContrasenaTextFied(loginScreenViewModel = loginScreenViewModel)
         OlvidateContrasena()
 
         Box(modifier = Modifier.padding(top = 30.dp, bottom = 30.dp)) {
 
-            BotonLogin()
+            BotonLogin(
+                loginScreenViewModel = loginScreenViewModel,
+                loginViewModel = loginViewModel,
+                snackbarHostState = snackbarHostState,
+                coroutineScope = coroutineScope
+            )
 
         }
         ContinuaCon()
@@ -140,27 +171,49 @@ fun HeaderImage() {
 }
 
 @Composable
-fun CorreoTextFied() {
+fun CorreoTextFied(loginScreenViewModel: LoginScreenViewModel) {
     var correo by remember { mutableStateOf("") }
 
     OutlinedTextField(
         value = correo,
-        onValueChange = { correo = it },
+        onValueChange = {
+            correo = it
+            loginScreenViewModel.setEmail(correo)
+        },
         label = { Text("Correo") },
         modifier = Modifier.padding(top = 20.dp)
     )
 }
 
 @Composable
-fun ContrasenaTextFied() {
+fun ContrasenaTextFied(loginScreenViewModel: LoginScreenViewModel) {
     var password by remember { mutableStateOf("") }
+    var isEnabled by remember { mutableStateOf(false) }
 
     OutlinedTextField(
         value = password,
-        onValueChange = { password = it },
+        onValueChange = {
+            password = it
+            loginScreenViewModel.setPassword(password = password)
+        },
         label = { Text("Contraseña") },
-        visualTransformation = PasswordVisualTransformation(),
-        modifier = Modifier.padding(top = 5.dp)
+        visualTransformation = if (!isEnabled) PasswordVisualTransformation() else VisualTransformation.None,
+        modifier = Modifier.padding(top = 5.dp),
+        trailingIcon = {
+            IconButton(content = {
+                Icon(
+                    painter = if (!isEnabled) painterResource(R.drawable.ojo) else painterResource(R.drawable.invisible),
+                    contentDescription = ""
+                )
+            }, onClick = {
+
+                if (isEnabled)
+                    isEnabled = false
+                else
+                    isEnabled = true
+
+            })
+        }
     )
 }
 
@@ -192,16 +245,43 @@ fun ButtomOlvidateC(onClick: () -> Unit) {
 }
 
 @Composable
-fun BotonLogin() {
+fun BotonLogin(
+    loginScreenViewModel: LoginScreenViewModel,
+    loginViewModel: LoginViewModel,
+    coroutineScope: CoroutineScope,
+    snackbarHostState: SnackbarHostState
+) {
 
     val configuration = LocalConfiguration.current
     val screenWidthPx = configuration.screenWidthDp - 50
 
 
-
-
     Button(
         onClick = {
+
+            var email = loginScreenViewModel.getEmail()
+            var password = loginScreenViewModel.getPassword()
+
+            if (email.isNotEmpty() && password.isNotEmpty())
+                loginViewModel.signInWithEmailAndPassword(email = email, password = password) {
+
+                    coroutineScope.launch {
+                        snackbarHostState.showSnackbar(
+                            message = "Error al iniciar sesión, correo o contraseña erroneos",
+                            actionLabel = "OK",
+                            duration = SnackbarDuration.Short,
+                        )
+                    }
+
+                }
+            else
+                coroutineScope.launch {
+                    snackbarHostState.showSnackbar(
+                        message = "Campo/s vacios",
+                        actionLabel = "OK",
+                        duration = SnackbarDuration.Short,
+                    )
+                }
 
 
         },
@@ -366,7 +446,7 @@ fun NoTienesCuneta(navController: NavController) {
     ) {
 
         //val finalPosition = position.y.toInt().dp -10.dp - screenHeightPx.dp
-        TextButtonRegistrate(onClick = { navController.navigate(AppScreens.RegisterScreen.route)})
+        TextButtonRegistrate(onClick = { navController.navigate(AppScreens.RegisterScreen.route) })
 
     }
 
