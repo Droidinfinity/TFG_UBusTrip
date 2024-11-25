@@ -127,7 +127,7 @@ fun Login(
 
         CorreoTextFied(loginScreenViewModel = loginScreenViewModel)
         ContrasenaTextFied(loginScreenViewModel = loginScreenViewModel)
-        OlvidateContrasena()
+        OlvidateContrasena(navController = navController)
 
         Box(modifier = Modifier.padding(top = 30.dp, bottom = 30.dp)) {
 
@@ -218,7 +218,7 @@ fun ContrasenaTextFied(loginScreenViewModel: LoginScreenViewModel) {
 }
 
 @Composable
-fun OlvidateContrasena() {
+fun OlvidateContrasena(navController: NavController) {
 
     Column(
         modifier = Modifier.fillMaxWidth(),
@@ -226,7 +226,7 @@ fun OlvidateContrasena() {
 
     ) {
 
-        ButtomOlvidateC { }
+        ButtomOlvidateC(onClick = {navController.navigate(route = AppScreens.ForgotUPasswordScreen.route)})
 
     }
 

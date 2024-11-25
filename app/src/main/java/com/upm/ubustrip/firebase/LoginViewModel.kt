@@ -98,9 +98,21 @@ class LoginViewModel : ViewModel() {
                 }
             _loading.value = false
 
-//TODO: implementar que se pueda meter el nombre
+
         }
 
+    }
+
+    fun sendPasswordResetEmail(email: String, onSuccess: () -> Unit) {
+
+        FirebaseAuth.getInstance().sendPasswordResetEmail(email)
+            .addOnCompleteListener { task ->
+                if (task.isSuccessful) {
+                    onSuccess()
+                } else {
+                    //se podria manejar el error desde aquí, pero en este caso será mas cómodo desde el composable
+                }
+            }
     }
 
 
