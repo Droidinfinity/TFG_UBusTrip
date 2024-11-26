@@ -2,9 +2,11 @@ package com.upm.ubustrip.features.login
 
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
@@ -12,16 +14,18 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Icon
 import androidx.compose.material3.OutlinedTextField
-import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarDuration
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -34,11 +38,13 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
+import com.upm.ubustrip.R
 import com.upm.ubustrip.appNavigation.AppScreens
 import com.upm.ubustrip.features.register.NewAccountViewModel
 import com.upm.ubustrip.features.register.isPasswordValid
@@ -73,7 +79,8 @@ fun ForgotUPasswordScreen(
                 forgotUPassViewModel = forgotUPassViewModel,
                 loginViewModel = loginViewModel,
                 snackbarHostState = snackbarHostState,
-                coroutineScope = coroutineScope
+                coroutineScope = coroutineScope,
+                navController = navController
             )
 
         }
@@ -90,7 +97,8 @@ fun Content(
     forgotUPassViewModel: ForgotUPassViewModel,
     loginViewModel: LoginViewModel,
     coroutineScope: CoroutineScope,
-    snackbarHostState: SnackbarHostState
+    snackbarHostState: SnackbarHostState,
+    navController: NavController
 ) {
 
     Box(
@@ -115,6 +123,19 @@ fun Content(
             )
 
             Spacer(modifier = Modifier.height(100.dp))
+            IconoInterrogacion()
+            Spacer(modifier = Modifier.height(30.dp))
+            Text(
+                "¿Olvidaste tu contraseña?",
+                fontWeight = FontWeight.Bold,
+                fontSize = 25.sp,
+                modifier = Modifier.padding(start = 20.dp, bottom = 5.dp)
+            )
+            Text(
+                "Introduce tu correo y te enviaremos un email\n para realizar el cambio de contraseña",
+                modifier = Modifier.padding(start = 20.dp),
+                fontSize = 15.sp
+            )
             CorreoTextFied(viewModel = forgotUPassViewModel)
             Spacer(modifier = Modifier.height(30.dp))
             BotonRecuperacion(
@@ -123,6 +144,8 @@ fun Content(
                 forgotUPassViewModel = forgotUPassViewModel,
                 snackbarHostState = snackbarHostState
             )
+
+            TextButtonNoQuieroRecuperar(navController = navController)
 
         }
     }
@@ -242,4 +265,36 @@ fun BotonRecuperacion(
 fun isVAlidEmail(email: String): Boolean {
     val emailRegex = "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}(?:/[a-zA-Z]{2,})?$".toRegex()
     return emailRegex.matches(email)
+}
+
+@Composable
+fun IconoInterrogacion() {
+
+    val configuration = LocalConfiguration.current
+    val screenWidthPx = configuration.screenWidthDp / 4
+
+    Row(
+        modifier = Modifier.padding(start = screenWidthPx.dp)
+
+    ) {
+        Icon(
+            painter = painterResource(R.drawable.interrogacion_azul), contentDescription = "",
+            tint = Color.Unspecified,
+            modifier = Modifier.size(150.dp)
+        )
+    }
+
+
+}
+
+@Composable
+fun TextButtonNoQuieroRecuperar(navController: NavController) {
+    TextButton(
+        onClick = { navController.popBackStack() }
+    ) {
+
+         Spacer(modifier = Modifier.width(70.dp))
+        Text("¿Olvídalo, la he recordado.")
+
+    }
 }
