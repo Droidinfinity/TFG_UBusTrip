@@ -17,12 +17,13 @@ import com.upm.ubustrip.features.register.NewAccountViewModel
 import com.upm.ubustrip.features.register.SignUp
 import com.upm.ubustrip.features.search.SearchScreen
 import com.upm.ubustrip.firebase.LoginViewModel
+import com.upm.ubustrip.firebase.dbViewModel
 
 @Composable
 fun AppNavigation(){
 
     val navController = rememberNavController()
-
+    val dbViewModel : dbViewModel = dbViewModel()
     val menuViewModel : MenuViewModel = MenuViewModel()
     val loginViewModel : LoginViewModel = LoginViewModel()
     val newAccountViewModel : NewAccountViewModel = NewAccountViewModel()
@@ -31,7 +32,7 @@ fun AppNavigation(){
 
     NavHost(navController, startDestination = AppScreens.MenuScreen.route){
 
-        composable(route = AppScreens.MenuScreen.route) { Menu(navController, menuViewModel = menuViewModel, loginViewModel = loginViewModel) }
+        composable(route = AppScreens.MenuScreen.route) { Menu(navController, menuViewModel = menuViewModel, loginViewModel = loginViewModel, dbViewModel = dbViewModel) }
         composable(route = AppScreens.FirstScreen.route) { GreetingPreview(navController) }
         composable(route = AppScreens.LogInScreen.route) { LoginScreen(navController, loginViewModel = loginViewModel, loginScreenViewModel = loginScreenViewModel) }
         composable(route = AppScreens.SearchScreen.route) { SearchScreen(navController) }

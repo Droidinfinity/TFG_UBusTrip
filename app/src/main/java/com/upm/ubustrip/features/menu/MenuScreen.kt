@@ -24,6 +24,7 @@ import com.google.firebase.auth.GoogleAuthProvider
 import com.upm.ubustrip.appNavigation.AppScreens
 import com.upm.ubustrip.features.favorites.Favorites
 import com.upm.ubustrip.firebase.LoginViewModel
+import com.upm.ubustrip.firebase.dbViewModel
 
 
 data class TabBarItem(
@@ -39,7 +40,8 @@ data class TabBarItem(
 fun Menu(
     navigator: NavController,
     menuViewModel: MenuViewModel,
-    loginViewModel: LoginViewModel = androidx.lifecycle.viewmodel.compose.viewModel()
+    loginViewModel: LoginViewModel = androidx.lifecycle.viewmodel.compose.viewModel(),
+    dbViewModel: dbViewModel
 ) {
 
     val isLogged = loginViewModel.getAuth().currentUser != null
