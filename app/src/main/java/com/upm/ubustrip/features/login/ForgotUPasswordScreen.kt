@@ -2,7 +2,6 @@ package com.upm.ubustrip.features.login
 
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -45,11 +44,7 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import com.upm.ubustrip.R
-import com.upm.ubustrip.appNavigation.AppScreens
-import com.upm.ubustrip.features.register.NewAccountViewModel
-import com.upm.ubustrip.features.register.isPasswordValid
-import com.upm.ubustrip.features.register.isValidEmail
-import com.upm.ubustrip.firebase.LoginViewModel
+import com.upm.ubustrip.database.LoginViewModel
 import com.upm.ubustrip.ui.theme.UbusTripFilledButton2Color
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch

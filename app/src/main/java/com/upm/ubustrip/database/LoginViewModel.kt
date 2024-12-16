@@ -1,4 +1,4 @@
-package com.upm.ubustrip.firebase
+package com.upm.ubustrip.database
 
 import android.util.Log
 import androidx.lifecycle.MutableLiveData

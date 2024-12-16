@@ -1,7 +1,6 @@
 package com.upm.ubustrip.appNavigation
 
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.input.key.Key.Companion.Menu
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
@@ -16,14 +15,14 @@ import com.upm.ubustrip.features.myAccount.MyAccountScreen
 import com.upm.ubustrip.features.register.NewAccountViewModel
 import com.upm.ubustrip.features.register.SignUp
 import com.upm.ubustrip.features.search.SearchScreen
-import com.upm.ubustrip.firebase.LoginViewModel
-import com.upm.ubustrip.firebase.dbViewModel
+import com.upm.ubustrip.database.LoginViewModel
+import com.upm.ubustrip.database.DBViewModel
 
 @Composable
 fun AppNavigation(){
 
     val navController = rememberNavController()
-    val dbViewModel : dbViewModel = dbViewModel()
+    val dbViewModel : DBViewModel = DBViewModel()
     val menuViewModel : MenuViewModel = MenuViewModel()
     val loginViewModel : LoginViewModel = LoginViewModel()
     val newAccountViewModel : NewAccountViewModel = NewAccountViewModel()

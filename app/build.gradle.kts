@@ -2,6 +2,7 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
     id("com.google.gms.google-services")
+    id ("io.realm.kotlin")
 }
 
 android {
@@ -20,6 +21,13 @@ android {
             useSupportLibrary = true
         }
     }
+    packaging{
+
+        resources {
+            excludes += "META-INF/native-image/native-image.properties"
+            excludes += "META-INF/native-image/reflect-config.json"
+        }
+    }
 
     buildTypes {
         release {
@@ -31,11 +39,12 @@ android {
         }
     }
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_1_8
-        targetCompatibility = JavaVersion.VERSION_1_8
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
+
     }
     kotlinOptions {
-        jvmTarget = "1.8"
+        jvmTarget = "17"
     }
     buildFeatures {
         compose = true
@@ -68,6 +77,13 @@ dependencies {
     implementation("io.coil-kt:coil-compose:2.4.0")
     implementation ("com.google.firebase:firebase-firestore-ktx")
     implementation ("com.google.firebase:firebase-database-ktx")
+
+    implementation ("io.realm.kotlin:library-base:1.16.0")
+
+    implementation("org.mongodb:bson-kotlinx:5.2.1")
+
+    implementation("com.squareup.okhttp3:okhttp:4.11.0")
+
     implementation(libs.androidx.navigation.runtime.ktx)
     implementation(libs.firebase.auth.ktx)
     testImplementation(libs.junit)
