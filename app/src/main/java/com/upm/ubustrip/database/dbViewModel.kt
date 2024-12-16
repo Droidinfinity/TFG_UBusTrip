@@ -40,7 +40,7 @@ class DBViewModel : ViewModel() {
 
         // Crear la solicitud GET
         val request = Request.Builder()
-            .url("http://10.0.2.2:3000/api/buses") // Cambia por la URL de tu API
+            .url("http://10.0.2.2:3000/api/coleccionRutas") // Cambia por la URL de tu API
             .build()
 
         // Ejecutar la solicitud en un hilo secundario
