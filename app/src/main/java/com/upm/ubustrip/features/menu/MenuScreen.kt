@@ -4,9 +4,11 @@ import android.annotation.SuppressLint
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountCircle
+import androidx.compose.material.icons.filled.Build
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.filled.Star
 import androidx.compose.material.icons.outlined.AccountCircle
+import androidx.compose.material.icons.outlined.Build
 import androidx.compose.material.icons.outlined.Search
 import androidx.compose.material.icons.outlined.Star
 import androidx.compose.material3.Scaffold
@@ -67,8 +69,15 @@ fun Menu(
         navLocation = accountNavigation
     )
 
+    val linea = TabBarItem(
+        title = "linea(BETA)",
+        selectedIcon = Icons.Filled.Build,
+        unselectedIcon = Icons.Outlined.Build,
+        navLocation = "lineaRTScreen"
+    )
 
-    val tabBarItems = listOf(homeTab, settingsTab, moreTab)
+
+    val tabBarItems = listOf(homeTab, settingsTab, moreTab,linea)
 
 
 
