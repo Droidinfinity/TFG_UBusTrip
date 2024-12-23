@@ -5,19 +5,17 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -26,56 +24,99 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
-import com.upm.ubustrip.appNavigation.AppScreens
+
 
 @Composable
 fun LineaRTScreen() {
 
     val systemUiController = rememberSystemUiController()
     systemUiController.setSystemBarsColor(Color.Transparent)
+
     LazyColumn(
         modifier = Modifier
             .fillMaxSize()
-            .padding(horizontal = 32.dp), // Ajuste horizontal
-
-        horizontalAlignment = Alignment.CenterHorizontally,
+            .padding(horizontal = 32.dp),
+        verticalArrangement = Arrangement.Top
     ) {
-        // Lista de elementos (círculo y línea alternados)
-        items(70) { index ->
 
+        items(1) { index ->
 
-            if (index % 2 == 0) {
-                // Círculo
-                Circle()
-            } else {
-                // Línea
+            Column {
+                CircleWithText()
+                Line()
+                CircleWithText()
                 Line()
             }
         }
+
     }
+
+
 }
 
 @Composable
-fun Circle() {
-    Box(
+fun CircleWithText() {
+    Row(
         modifier = Modifier
-            .size(20.dp) // Tamaño del círculo
-            .background(color = Color.Blue, shape = CircleShape)
-    )
+            .fillMaxWidth(),
+
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        // Círculo
+        Box(
+            modifier = Modifier
+                .size(30.dp) // Tamaño del círculo
+                .background(color = Color.Blue, shape = CircleShape)
+        )
+
+        Spacer(modifier = Modifier.width(8.dp)) // Espacio entre el círculo y el texto
+
+        // Texto al lado del círculo
+        Text(
+            text = "Parada",
+
+            )
+    }
 }
 
 @Composable
 fun Line() {
-    Canvas(
+    Box(
         modifier = Modifier
             .fillMaxWidth()
-            .height(100.dp) // Altura de la línea
+            .height(700.dp) // Altura total
+
     ) {
-        drawLine(
-            color = Color.Gray,
-            start = Offset(size.width / 2, 0f),
-            end = Offset(size.width / 2, size.height),
-            strokeWidth = 4.dp.toPx() // Grosor de la línea
-        )
+        // Línea
+        Canvas(
+            modifier = Modifier
+                .width(4.dp) // Grosor de la línea
+                .fillMaxHeight() // Llena el alto disponible
+                .align(Alignment.CenterStart) // Alineada a la izquierda
+                .padding(start = 15.dp) // Alineamos con el medio del círculo
+        ) {
+            drawLine(
+                color = Color.Gray,
+                start = Offset(0f, 0f),
+                end = Offset(0f, size.height),
+                strokeWidth = 4.dp.toPx() // Grosor de la línea
+            )
+        }
+        Column {
+
+            Spacer(Modifier.height(100.dp)) //DESPLAZAMIENTO DEL BUS
+            // Box superpuesto
+            Box(
+                modifier = Modifier
+                    .size(30.dp) // Tamaño del Box cuadrado
+                    .background(Color.Red) // Color del Box
+
+            )
+
+        }
+
+
     }
+
+
 }

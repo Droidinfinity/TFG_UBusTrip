@@ -36,6 +36,7 @@ import androidx.compose.ui.unit.sp
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import com.upm.ubustrip.R
 import com.upm.ubustrip.features.search.CustomSearchBar
+import com.upm.ubustrip.ui.theme.UBusTripGreenBeta
 import com.upm.ubustrip.ui.theme.UbusTripBottomBar
 import com.upm.ubustrip.ui.theme.UbusTripFilledButton1Color
 import com.upm.ubustrip.ui.theme.UbusTripFilledGoogleButtom
@@ -93,6 +94,12 @@ fun TopAppBarContent() {
 
             fontWeight = FontWeight.Bold,
             color = UbusTripFilledButton1Color
+        )
+
+        Text(
+            text = "ALPHA",
+            color = UBusTripGreenBeta,
+            fontWeight = FontWeight.Bold
         )
 
     }
