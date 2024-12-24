@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -33,27 +34,32 @@ import com.upm.ubustrip.models.Segmento
 fun LineaRTScreen() {
 
     val s = Segmento("gkuuFjxrTQCOAgBOSCo@Ge@EoAKuAO_@Ca@Ac@?_@B", numeroSegmento = 2)
-    CordenadasUtils.distanciaCoordenadasHaversineSegmento(s)
+    s.esSegmentoInicial = true
+   /* CordenadasUtils.distanciaCoordenadasHaversineSegmento(s)
     CordenadasUtils.distanciaHaversineHastaCoordenada(s, Coordenada(40.41941,-3.54195))
+*/
+    //val systemUiController = rememberSystemUiController()
+    //systemUiController.setSystemBarsColor(Color.Transparent)
 
-    val systemUiController = rememberSystemUiController()
-    systemUiController.setSystemBarsColor(Color.Transparent)
+    Column {
 
-    LazyColumn(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(horizontal = 32.dp),
-        verticalArrangement = Arrangement.Top
-    ) {
+        Spacer(Modifier.height(200.dp))
+        LazyColumn(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(horizontal = 32.dp),
+            verticalArrangement = Arrangement.Top
+        ) {
 
-        items(1) { index ->
+            items(1) { index ->
 
-            Column {
-                CircleWithText()
-                Line()
-                CircleWithText()
-                Line()
+                Column {
+
+                    LineaSegmento(s)
+
+                }
             }
+
         }
 
     }
@@ -87,11 +93,11 @@ fun CircleWithText() {
 }
 
 @Composable
-fun Line() {
+fun Line(height : Int) {
     Box(
         modifier = Modifier
             .fillMaxWidth()
-            .height(700.dp) // Altura total
+            .height(height.dp) // Altura total
 
     ) {
         // Línea
@@ -109,27 +115,52 @@ fun Line() {
                 strokeWidth = 4.dp.toPx() // Grosor de la línea
             )
         }
-        Column {
 
-            Spacer(Modifier.height(100.dp)) //DESPLAZAMIENTO DEL BUS
-            // Box superpuesto
-            Box(
-                modifier = Modifier
-                    .size(30.dp) // Tamaño del Box cuadrado
-                    .background(Color.Red) // Color del Box
-
-            )
-
-        }
 
 
     }
 
 
+
+
 }
 
 @Composable
-fun LineaSegmento(segmento: Segmento){
+fun LineaSegmento(segmento: Segmento) {
+
+    val distanciaSemento = CordenadasUtils.distanciaCoordenadasHaversineSegmento(segmento)
+    if (segmento.esSegmentoInicial){
+
+        Box{
+
+            Column {
+
+                CircleWithText()
+                Line(distanciaSemento.toInt())
+
+            }
+
+            //MOVIMIENTO DEL BUS------------------------------------------------------
+            Column {
+
+                Spacer(Modifier.height(30.dp)) //Tamaño del circulo (hay que considerarlo)
+                Spacer(Modifier.height(0.dp)) //desplazamiento del bus
+                // Box superpuesto
+                Box(
+                    modifier = Modifier
+                        .size(30.dp) // Tamaño del Box cuadrado
+                        .background(Color.Red) // Color del Box
+
+                )
+
+            }
+        }
+
+
+
+
+
+    } //fin si era segmento inicial
 
 
 
