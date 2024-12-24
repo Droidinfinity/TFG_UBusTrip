@@ -24,10 +24,17 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
+import com.upm.ubustrip.models.Coordenada
+import com.upm.ubustrip.models.CordenadasUtils
+import com.upm.ubustrip.models.Segmento
 
 
 @Composable
 fun LineaRTScreen() {
+
+    val s = Segmento("gkuuFjxrTQCOAgBOSCo@Ge@EoAKuAO_@Ca@Ac@?_@B", numeroSegmento = 2)
+    CordenadasUtils.distanciaCoordenadasHaversineSegmento(s)
+    CordenadasUtils.distanciaHaversineHastaCoordenada(s, Coordenada(40.41941,-3.54195))
 
     val systemUiController = rememberSystemUiController()
     systemUiController.setSystemBarsColor(Color.Transparent)
@@ -117,6 +124,13 @@ fun Line() {
 
 
     }
+
+
+}
+
+@Composable
+fun LineaSegmento(segmento: Segmento){
+
 
 
 }
