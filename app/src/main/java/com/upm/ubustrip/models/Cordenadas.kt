@@ -3,11 +3,13 @@ package com.upm.ubustrip.models
 import android.util.Log
 import kotlin.math.*
 
+//CLASE COORDENADA
 data class Coordenada(var longitud: Double, var latitud: Double) {
 
 
 }
 
+//TRAPICHEOS QUE PODEMOS HACER CON LAS COORDENADAS
 class CordenadasUtils() {
 
     companion object {
@@ -42,18 +44,21 @@ class CordenadasUtils() {
 
                 if (index + 1 < segmento.segmento.size) {
 
-                    distanciaT+= distanciaCoordenadasHaversine(element, segmento.segmento[index+1])
+                    distanciaT += distanciaCoordenadasHaversine(
+                        element,
+                        segmento.segmento[index + 1]
+                    )
 
                 }
 
             }
 
-            Log.d("segmento",distanciaT.toString())
+            Log.d("segmento", distanciaT.toString())
             return distanciaT
         }
 
         //vemos la distancia que hay hasta la coordenada dada
-        fun distanciaHaversineHastaCoordenada(segmento: Segmento,cord : Coordenada) : Double{
+        fun distanciaHaversineHastaCoordenada(segmento: Segmento, cord: Coordenada): Double {
 
             var distanciaT = 0.0
 
@@ -64,15 +69,33 @@ class CordenadasUtils() {
 
                 if (index + 1 < segmento.segmento.size) {
 
-                    distanciaT+= distanciaCoordenadasHaversine(element, segmento.segmento[index+1])
+                    distanciaT += distanciaCoordenadasHaversine(
+                        element,
+                        segmento.segmento[index + 1]
+                    )
 
                 }
 
             }
-            Log.d("segmento","Distancia hasta cord: $distanciaT")
+            Log.d("segmento", "Distancia hasta cord: $distanciaT")
 
             return distanciaT
 
+        }
+
+        fun coordenadaDentroDeRadio(radio: Double, co1: Coordenada, co2: Coordenada): Double {
+
+            //GUIA
+            //co1 centro del radio
+            //co2 coordenada a comprobar si está dento del radio
+
+            var distanciaT = -1.0
+            val distanciaPunto = distanciaCoordenadasHaversine(co1,co2)
+
+            if (distanciaPunto<=radio)
+                distanciaT = distanciaPunto
+
+            return distanciaT
         }
 
 

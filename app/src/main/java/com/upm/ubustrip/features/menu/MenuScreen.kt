@@ -19,7 +19,7 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.navigation.NavController
 import com.upm.ubustrip.features.favorites.Favorites
 import com.upm.ubustrip.database.LoginViewModel
-import com.upm.ubustrip.database.DBViewModel
+
 
 
 data class TabBarItem(
@@ -36,7 +36,6 @@ fun Menu(
     navigator: NavController,
     menuViewModel: MenuViewModel,
     loginViewModel: LoginViewModel = androidx.lifecycle.viewmodel.compose.viewModel(),
-    dbViewModel: DBViewModel
 ) {
 
     val isLogged = loginViewModel.getAuth().currentUser != null

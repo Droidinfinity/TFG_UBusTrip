@@ -1,5 +1,6 @@
 package com.upm.ubustrip.features.linea
 
+import android.util.Log
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -34,9 +35,18 @@ import com.upm.ubustrip.models.Segmento
 @Composable
 fun LineaRTScreen() {
 
-    val linea: String = ""
+    val listaBus = mutableListOf<Bus>()
+    listaBus.add(Bus("a",Coordenada(40.42018,-3.54167 ),1))
+    listaBus.add(Bus("b",Coordenada(40.42087,-3.54156 ),1))
+
+    listaBus.add(Bus("c",Coordenada(40.42275,-3.54189 ),1))
+    listaBus.add(Bus("d",Coordenada(40.42042,-3.54280 ),1))
+
     val s = Segmento("gkuuFjxrTQCOAgBOSCo@Ge@EoAKuAO_@Ca@Ac@?_@B", numeroSegmento = 2)
     s.esSegmentoInicial = true
+
+    Log.d("buses",s.buscarBuses(listaBus).toString())
+    Log.d("buses","Buses restantes: ${listaBus.toString()}")
     /* CordenadasUtils.distanciaCoordenadasHaversineSegmento(s)
      CordenadasUtils.distanciaHaversineHastaCoordenada(s, Coordenada(40.41941,-3.54195))
  */
@@ -161,20 +171,3 @@ fun LineaSegmento(segmento: Segmento) {
 
 }
 
-fun buscarBusesSegmento(segmento: Segmento, buses: MutableList<Bus>) : MutableList<Bus> {
-
-    val busesSegmento = mutableListOf<Bus>()
-
-    for (bus in buses){
-
-      if(bus.ultimoSegmentoVisitado<=segmento.numeroSegmento){
-
-          
-
-      }
-
-    }
-
-    return busesSegmento
-
-}

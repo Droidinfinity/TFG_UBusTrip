@@ -5,6 +5,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.upm.ubustrip.GreetingPreview
+import com.upm.ubustrip.database.AppDatabase
 import com.upm.ubustrip.features.login.ForgotUPassViewModel
 import com.upm.ubustrip.features.login.ForgotUPasswordScreen
 import com.upm.ubustrip.features.login.LoginScreen
@@ -16,14 +17,13 @@ import com.upm.ubustrip.features.register.NewAccountViewModel
 import com.upm.ubustrip.features.register.SignUp
 import com.upm.ubustrip.features.search.SearchScreen
 import com.upm.ubustrip.database.LoginViewModel
-import com.upm.ubustrip.database.DBViewModel
 import com.upm.ubustrip.features.linea.LineaRTScreen
 
 @Composable
 fun AppNavigation(){
 
     val navController = rememberNavController()
-    val dbViewModel : DBViewModel = DBViewModel()
+    val dbViewModel : AppDatabase = AppDatabase()
     val menuViewModel : MenuViewModel = MenuViewModel()
     val loginViewModel : LoginViewModel = LoginViewModel()
     val newAccountViewModel : NewAccountViewModel = NewAccountViewModel()
@@ -32,7 +32,7 @@ fun AppNavigation(){
 
     NavHost(navController, startDestination = AppScreens.MenuScreen.route){
 
-        composable(route = AppScreens.MenuScreen.route) { Menu(navController, menuViewModel = menuViewModel, loginViewModel = loginViewModel, dbViewModel = dbViewModel) }
+        composable(route = AppScreens.MenuScreen.route) { Menu(navController, menuViewModel = menuViewModel, loginViewModel = loginViewModel) }
         composable(route = AppScreens.FirstScreen.route) { GreetingPreview(navController) }
         composable(route = AppScreens.LogInScreen.route) { LoginScreen(navController, loginViewModel = loginViewModel, loginScreenViewModel = loginScreenViewModel) }
         composable(route = AppScreens.SearchScreen.route) { SearchScreen(navController) }
