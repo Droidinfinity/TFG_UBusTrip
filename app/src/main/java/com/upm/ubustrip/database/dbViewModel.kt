@@ -10,10 +10,7 @@ import okhttp3.OkHttpClient
 import okhttp3.Request
 
 
-data class Bus(val busId: String, val concesion: String)
-
-
-class DBViewModel : ViewModel() {
+class AppDatabase {
 
 
     init {

@@ -25,6 +25,7 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
+import com.upm.ubustrip.models.Bus
 import com.upm.ubustrip.models.Coordenada
 import com.upm.ubustrip.models.CordenadasUtils
 import com.upm.ubustrip.models.Segmento
@@ -33,11 +34,12 @@ import com.upm.ubustrip.models.Segmento
 @Composable
 fun LineaRTScreen() {
 
+    val linea: String = ""
     val s = Segmento("gkuuFjxrTQCOAgBOSCo@Ge@EoAKuAO_@Ca@Ac@?_@B", numeroSegmento = 2)
     s.esSegmentoInicial = true
-   /* CordenadasUtils.distanciaCoordenadasHaversineSegmento(s)
-    CordenadasUtils.distanciaHaversineHastaCoordenada(s, Coordenada(40.41941,-3.54195))
-*/
+    /* CordenadasUtils.distanciaCoordenadasHaversineSegmento(s)
+     CordenadasUtils.distanciaHaversineHastaCoordenada(s, Coordenada(40.41941,-3.54195))
+ */
     //val systemUiController = rememberSystemUiController()
     //systemUiController.setSystemBarsColor(Color.Transparent)
 
@@ -93,7 +95,7 @@ fun CircleWithText() {
 }
 
 @Composable
-fun Line(height : Int) {
+fun Line(height: Int) {
     Box(
         modifier = Modifier
             .fillMaxWidth()
@@ -117,10 +119,7 @@ fun Line(height : Int) {
         }
 
 
-
     }
-
-
 
 
 }
@@ -129,9 +128,9 @@ fun Line(height : Int) {
 fun LineaSegmento(segmento: Segmento) {
 
     val distanciaSemento = CordenadasUtils.distanciaCoordenadasHaversineSegmento(segmento)
-    if (segmento.esSegmentoInicial){
+    if (segmento.esSegmentoInicial) {
 
-        Box{
+        Box {
 
             Column {
 
@@ -157,11 +156,25 @@ fun LineaSegmento(segmento: Segmento) {
         }
 
 
-
-
-
     } //fin si era segmento inicial
 
 
+}
+
+fun buscarBusesSegmento(segmento: Segmento, buses: MutableList<Bus>) : MutableList<Bus> {
+
+    val busesSegmento = mutableListOf<Bus>()
+
+    for (bus in buses){
+
+      if(bus.ultimoSegmentoVisitado<=segmento.numeroSegmento){
+
+          
+
+      }
+
+    }
+
+    return busesSegmento
 
 }
