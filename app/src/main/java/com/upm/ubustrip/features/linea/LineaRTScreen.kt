@@ -45,8 +45,7 @@ fun LineaRTScreen() {
     val s = Segmento("gkuuFjxrTQCOAgBOSCo@Ge@EoAKuAO_@Ca@Ac@?_@B", numeroSegmento = 2)
     s.esSegmentoInicial = true
 
-    Log.d("buses",s.buscarBuses(listaBus).toString())
-    Log.d("buses","Buses restantes: ${listaBus.toString()}")
+
     /* CordenadasUtils.distanciaCoordenadasHaversineSegmento(s)
      CordenadasUtils.distanciaHaversineHastaCoordenada(s, Coordenada(40.41941,-3.54195))
  */
@@ -68,6 +67,7 @@ fun LineaRTScreen() {
                 Column {
 
                     LineaSegmento(s)
+                    LineaSegmento(s)
 
                 }
             }
@@ -79,8 +79,11 @@ fun LineaRTScreen() {
 
 }
 
+
+
+
 @Composable
-fun CircleWithText() {
+fun CircleWithText(text : String) {
     Row(
         modifier = Modifier
             .fillMaxWidth(),
@@ -98,7 +101,7 @@ fun CircleWithText() {
 
         // Texto al lado del círculo
         Text(
-            text = "Parada",
+            text = text,
 
             )
     }
@@ -137,6 +140,14 @@ fun Line(height: Int) {
 @Composable
 fun LineaSegmento(segmento: Segmento) {
 
+    val listaBus = mutableListOf<Bus>()
+    listaBus.add(Bus("a",Coordenada(40.42018,-3.54167 ),1))
+    listaBus.add(Bus("b",Coordenada(40.42087,-3.54156 ),1))
+
+    listaBus.add(Bus("c",Coordenada(40.42275,-3.54189 ),1))
+    listaBus.add(Bus("d",Coordenada(40.42042,-3.54280 ),1))
+
+    segmento.paradaInicial = "Avda.Contitución"
     val distanciaSemento = CordenadasUtils.distanciaCoordenadasHaversineSegmento(segmento)
     if (segmento.esSegmentoInicial) {
 
@@ -144,25 +155,32 @@ fun LineaSegmento(segmento: Segmento) {
 
             Column {
 
-                CircleWithText()
+                CircleWithText(segmento.paradaInicial!!)
                 Line(distanciaSemento.toInt())
 
             }
 
-            //MOVIMIENTO DEL BUS------------------------------------------------------
-            Column {
+            //BUSCAMOS TODOS LOS BUSES QUE HAYAN ES ESE SEGMENTO
+            for(bus in segmento.buscarBuses(listaBus)){
 
-                Spacer(Modifier.height(30.dp)) //Tamaño del circulo (hay que considerarlo)
-                Spacer(Modifier.height(0.dp)) //desplazamiento del bus
-                // Box superpuesto
-                Box(
-                    modifier = Modifier
-                        .size(30.dp) // Tamaño del Box cuadrado
-                        .background(Color.Red) // Color del Box
+                val posicionBus = CordenadasUtils.distanciaHaversineHastaCoordenada(segmento,bus.second)
+                //MOVIMIENTO DEL BUS------------------------------------------------------
+                Column {
 
-                )
+                    Spacer(Modifier.height(30.dp)) //Tamaño del circulo (hay que considerarlo)
+                    Spacer(Modifier.height(posicionBus.dp)) //desplazamiento del bus
+                    // Box superpuesto
+                    Box(
+                        modifier = Modifier
+                            .size(30.dp) // Tamaño del Box cuadrado
+                            .background(Color.Red) // Color del Box
+
+                    )
+
+                }
 
             }
+
         }
 
 
