@@ -31,6 +31,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import com.upm.ubustrip.models.Bus
 import com.upm.ubustrip.models.Coordenada
@@ -40,32 +41,19 @@ import com.upm.ubustrip.ui.theme.UBusTripBlueColor
 
 
 @Composable
-fun LineaRTScreen(viewModel: LineaRTSViewModel) {
+fun LineaRTScreen(viewModel: LineaRTSViewModel,navController: NavController,lineaId : String, paradaId : String) {
 
     //para que la barra de notificaciones se funda con la appBar
     val systemUiController = rememberSystemUiController()
     systemUiController.setStatusBarColor(UBusTripBlueColor)
     //-------------------------------------------------------
 
-    val listaBus = mutableListOf<Bus>()
-    listaBus.add(Bus("a", Coordenada(40.42018, -3.54167), 1))
-    listaBus.add(Bus("b", Coordenada(40.42087, -3.54156), 1))
-
-    listaBus.add(Bus("c", Coordenada(40.42275, -3.54189), 1))
-    listaBus.add(Bus("d", Coordenada(40.42042, -3.54280), 1))
-
-    val s = Segmento("gkuuFjxrTQCOAgBOSCo@Ge@EoAKuAO_@Ca@Ac@?_@B", numeroSegmento = 2)
-    s.esSegmentoInicial = true
-
-
-    /* CordenadasUtils.distanciaCoordenadasHaversineSegmento(s)
-     CordenadasUtils.distanciaHaversineHastaCoordenada(s, Coordenada(40.41941,-3.54195))
- */
-
-
+    //le pasamos las ids al viewmodel para que obtenga los modelos
+    viewModel.lineaId = lineaId
+    viewModel.paradaId = paradaId
 
     Scaffold(
-        topBar = { TopBarLineaRTS(viewModel = viewModel) },
+        topBar = { TopBarLineaRTS(viewModel = viewModel, navController = navController) },
         content = { paddingValues ->
             ContenidoParada(
                 Modifier.padding(paddingValues = paddingValues),
@@ -94,7 +82,8 @@ fun ContenidoParada(modifier: Modifier, viewModel: LineaRTSViewModel) {
                 modifier = Modifier.fillMaxSize(),
                 contentAlignment = Alignment.Center
             ) {
-                Text("Pantalla Opción 2")
+                Spacer(Modifier.height(20.dp))
+                LineaGraficada()
             }
         }
 

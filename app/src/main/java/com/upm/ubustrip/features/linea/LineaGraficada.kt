@@ -1,5 +1,6 @@
 package com.upm.ubustrip.features.linea
 
+import android.annotation.SuppressLint
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -15,9 +16,11 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
@@ -27,22 +30,41 @@ import com.upm.ubustrip.models.Bus
 import com.upm.ubustrip.models.Coordenada
 import com.upm.ubustrip.models.CordenadasUtils
 import com.upm.ubustrip.models.Segmento
+import com.upm.ubustrip.ui.theme.UBusTripBlueColor
+import com.upm.ubustrip.ui.theme.UbusTripBusRTColor
+import kotlinx.coroutines.launch
 
+@SuppressLint("CoroutineCreationDuringComposition")
 @Composable
 fun LineaGraficada(){
 
+    //Desplazamiento a la ubicación de la parada
+    val listState = rememberLazyListState()
+    val coroutineScope = rememberCoroutineScope()
+
+    coroutineScope.launch { //creamos nuevo hilo para el desplazamiento
+        listState.animateScrollToItem(8)
+    }
+
+    val s = Segmento("gkuuFjxrTQCOAgBOSCo@Ge@EoAKuAO_@Ca@Ac@?_@B", numeroSegmento = 2)
+    s.esSegmentoInicial = true
+
+
     LazyColumn(
+        state = listState,
         modifier = Modifier
             .fillMaxSize()
             .padding(horizontal = 32.dp),
         verticalArrangement = Arrangement.Top
     ) {
 
-        items(1) { index ->
+        items(3) { index ->
 
             Column {
 
-
+            LineaSegmento(s)
+                LineaSegmento(s)
+                LineaSegmento(s)
 
             }
         }
@@ -67,7 +89,7 @@ fun CircleWithText(text : String) {
         Box(
             modifier = Modifier
                 .size(30.dp) // Tamaño del círculo
-                .background(color = Color.Blue, shape = CircleShape)
+                .background(color = Color(0xffC62828), shape = CircleShape)
         )
 
         Spacer(modifier = Modifier.width(8.dp)) // Espacio entre el círculo y el texto
@@ -145,8 +167,8 @@ fun LineaSegmento(segmento: Segmento) {
                     // Box superpuesto
                     Box(
                         modifier = Modifier
-                            .size(30.dp) // Tamaño del Box cuadrado
-                            .background(Color.Red) // Color del Box
+                            .size(30.dp) // Tamaño del bus
+                            .background(UbusTripBusRTColor) // Color del bus
 
                     )
 

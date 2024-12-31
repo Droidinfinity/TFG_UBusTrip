@@ -1,6 +1,6 @@
 package com.upm.ubustrip.models
 
-class Linea() {
+class LineaModel() {
 
     var linea = mutableListOf<Segmento>()
 

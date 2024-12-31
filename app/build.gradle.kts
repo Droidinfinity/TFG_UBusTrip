@@ -2,7 +2,7 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
     id("com.google.gms.google-services")
-    id ("io.realm.kotlin")
+    id("io.realm.kotlin")
 }
 
 android {
@@ -21,7 +21,7 @@ android {
             useSupportLibrary = true
         }
     }
-    packaging{
+    packaging {
 
         resources {
             excludes += "META-INF/native-image/native-image.properties"
@@ -70,15 +70,16 @@ dependencies {
     implementation(libs.androidx.ui.tooling.preview)
     implementation(libs.androidx.material3)
     implementation("androidx.navigation:navigation-compose:2.8.3")
-    implementation ("com.google.accompanist:accompanist-systemuicontroller:0.30.1")
-    implementation ("androidx.compose.ui:ui-text-google-fonts:1.6.0")
+    implementation("com.google.accompanist:accompanist-systemuicontroller:0.30.1")
+    implementation("androidx.compose.ui:ui-text-google-fonts:1.6.0")
     implementation(platform("com.google.firebase:firebase-bom:33.6.0"))
     implementation("com.google.android.gms:play-services-auth:21.2.0")
     implementation("io.coil-kt:coil-compose:2.4.0")
-    implementation ("com.google.firebase:firebase-firestore-ktx")
-    implementation ("com.google.firebase:firebase-database-ktx")
+    implementation("com.google.firebase:firebase-firestore-ktx")
+    implementation("com.google.firebase:firebase-database-ktx")
+    implementation("com.google.android.gms:play-services-location:21.0.1")
 
-    implementation ("io.realm.kotlin:library-base:1.16.0")
+    implementation("io.realm.kotlin:library-base:1.16.0")
 
     implementation("org.mongodb:bson-kotlinx:5.2.1")
 
