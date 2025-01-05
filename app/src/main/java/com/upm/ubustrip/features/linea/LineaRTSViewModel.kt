@@ -4,15 +4,13 @@ import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import com.upm.ubustrip.models.Bus
-import com.upm.ubustrip.models.LineaModel
-import com.upm.ubustrip.models.Segmento
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
+import com.upm.ubustrip.models.LineaRTModel
+
 
 class LineaRTSViewModel : ViewModel() {
 
     var busesLinea = mutableListOf<Bus>()
-    var linea = LineaModel()
+    //var linea = LineaRTModel()
     var lineaId = ""
     var paradaId = ""
 

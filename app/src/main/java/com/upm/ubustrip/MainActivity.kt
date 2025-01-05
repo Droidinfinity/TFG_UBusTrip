@@ -11,6 +11,11 @@ import com.upm.ubustrip.appNavigation.AppNavigation
 import com.upm.ubustrip.appNavigation.AppScreens
 import com.upm.ubustrip.ui.theme.MyApplicationTheme
 import  android.Manifest
+import com.upm.ubustrip.database.AppDatabase
+import com.upm.ubustrip.models.LineaRTModel
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 class MainActivity : ComponentActivity() {
 
@@ -20,7 +25,8 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
 
         solicitarPermisoUbicacion()
-
+        val l = LineaRTModel("6774351ab34b449419e3638f")
+       // CoroutineScope(Dispatchers.IO).launch { AppDatabase.get("lineas/6774351ab34b449419e3638f") }
         enableEdgeToEdge()
         setContent {
             AppNavigation()
@@ -66,7 +72,6 @@ fun GreetingPreview(navController: NavController) {
     MyApplicationTheme {
 
         //TODO: En caso de que haya onboardings, es probable que haya que modificar esta parte
-
         //NAVAGACIÓN AL MENÚ
         navController.navigate(route = AppScreens.LogInScreen.route)
 

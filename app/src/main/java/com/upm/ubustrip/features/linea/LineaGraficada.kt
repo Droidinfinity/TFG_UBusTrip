@@ -47,7 +47,7 @@ fun LineaGraficada(){
     }
 
     val s = Segmento("gkuuFjxrTQCOAgBOSCo@Ge@EoAKuAO_@Ca@Ac@?_@B", numeroSegmento = 2)
-    s.esSegmentoInicial = true
+
 
 
     LazyColumn(
@@ -142,15 +142,14 @@ fun LineaSegmento(segmento: Segmento) {
     listaBus.add(Bus("c", Coordenada(40.42275,-3.54189 ),1))
     listaBus.add(Bus("d", Coordenada(40.42042,-3.54280 ),1))
 
-    segmento.paradaInicial = "Avda.Contitución"
     val distanciaSemento = CordenadasUtils.distanciaCoordenadasHaversineSegmento(segmento)
-    if (segmento.esSegmentoInicial) {
+    if (!segmento.esSegmentoFinal) { //si no es el segmento final
 
         Box {
 
             Column {
 
-                CircleWithText(segmento.paradaInicial!!)
+                CircleWithText("Nombre parada")
                 Line(distanciaSemento.toInt())
 
             }

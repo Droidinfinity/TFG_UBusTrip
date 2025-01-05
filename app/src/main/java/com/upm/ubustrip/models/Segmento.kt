@@ -1,19 +1,16 @@
 package com.upm.ubustrip.models
 
-import android.util.Log
 import com.upm.ubustrip.features.polylines.Polyline
 
 class Segmento(
     polyline: String,
-    esSegmentoInicial: Boolean = false,
     esSegmentoFinal: Boolean = false,
     numeroSegmento: Int
 ) {
 
     var segmento = mutableListOf<Coordenada>()
-    var paradaInicial: String? = null
-    var paradaFinal: String? = null
-    var esSegmentoInicial: Boolean = false
+    var paradaId: String? = null
+
     var esSegmentoFinal: Boolean = false
     var numeroSegmento: Int = -1
 
@@ -24,8 +21,8 @@ class Segmento(
         this.segmento =
             toCordenadasList(listaCoordenadas) //lo convertimos a una lista de tipo Coordenadas
 
-        //observamos si es segmento intermedio, inicial o final
-        this.esSegmentoInicial = esSegmentoInicial
+        //indicamos si es segmento final
+
         this.esSegmentoFinal = esSegmentoFinal
 
         //asignamos su numero de segmento
@@ -49,7 +46,7 @@ class Segmento(
     fun buscarBuses(buses: MutableList<Bus>): MutableList<Pair<Bus, Coordenada>> {
 
         val busesSegmento = mutableListOf<Pair<Bus, Coordenada>>()
-        val radio = 30.0 //radio de 15 metros, consideramos impresición en el GPS
+        val radio = 30.0 //radio de 30 metros, consideramos impresición en el GPS
 
         for (bus in buses) {
 

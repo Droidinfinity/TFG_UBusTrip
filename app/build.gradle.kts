@@ -78,7 +78,7 @@ dependencies {
     implementation("com.google.firebase:firebase-firestore-ktx")
     implementation("com.google.firebase:firebase-database-ktx")
     implementation("com.google.android.gms:play-services-location:21.0.1")
-
+    implementation("com.google.code.gson:gson:2.10.1")
     implementation("io.realm.kotlin:library-base:1.16.0")
 
     implementation("org.mongodb:bson-kotlinx:5.2.1")

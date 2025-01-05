@@ -41,7 +41,7 @@ import com.upm.ubustrip.ui.theme.UBusTripBlueColor
 
 
 @Composable
-fun LineaRTScreen(viewModel: LineaRTSViewModel,navController: NavController,lineaId : String, paradaId : String) {
+fun LineaRTScreen(viewModel: LineaRTSViewModel,navController: NavController, paradaId : String) {
 
     //para que la barra de notificaciones se funda con la appBar
     val systemUiController = rememberSystemUiController()
@@ -49,7 +49,6 @@ fun LineaRTScreen(viewModel: LineaRTSViewModel,navController: NavController,line
     //-------------------------------------------------------
 
     //le pasamos las ids al viewmodel para que obtenga los modelos
-    viewModel.lineaId = lineaId
     viewModel.paradaId = paradaId
 
     Scaffold(
@@ -72,12 +71,14 @@ fun ContenidoParada(modifier: Modifier, viewModel: LineaRTSViewModel) {
     Column(modifier = modifier) {
 
         when (selectedTabIndex) {
+            //caso TIEMPOS DE ESPERA
             0 -> Box(
                 modifier = Modifier.fillMaxSize(),
                 contentAlignment = Alignment.Center
             ) {
                 Text("Pantalla Opción 1")
             }
+            //caso TIEMPO REAL
             1 -> Box(
                 modifier = Modifier.fillMaxSize(),
                 contentAlignment = Alignment.Center
