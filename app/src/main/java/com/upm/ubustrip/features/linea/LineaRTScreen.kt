@@ -36,20 +36,18 @@ import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import com.upm.ubustrip.models.Bus
 import com.upm.ubustrip.models.Coordenada
 import com.upm.ubustrip.models.CordenadasUtils
+import com.upm.ubustrip.models.ParadaModel
 import com.upm.ubustrip.models.Segmento
 import com.upm.ubustrip.ui.theme.UBusTripBlueColor
 
 
 @Composable
-fun LineaRTScreen(viewModel: LineaRTSViewModel,navController: NavController, paradaId : String) {
+fun LineaRTScreen(viewModel: LineaRTSViewModel,navController: NavController) {
 
     //para que la barra de notificaciones se funda con la appBar
     val systemUiController = rememberSystemUiController()
     systemUiController.setStatusBarColor(UBusTripBlueColor)
     //-------------------------------------------------------
-
-    //le pasamos las ids al viewmodel para que obtenga los modelos
-    viewModel.paradaId = paradaId
 
     Scaffold(
         topBar = { TopBarLineaRTS(viewModel = viewModel, navController = navController) },

@@ -2,29 +2,37 @@ package com.upm.ubustrip.database
 
 
 import android.util.Log
-import androidx.lifecycle.ViewModel
-import com.google.firebase.firestore.FirebaseFirestore
-import com.google.firebase.firestore.ktx.firestore
-import com.google.firebase.ktx.Firebase
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import okhttp3.OkHttpClient
 import okhttp3.Request
 
 
+/**
+ *Gestiona las peticiones básicas (GET, POST, UPDATE,DELETE)  que se van a realizar a la base de datos asociada a al APP
+ */
 class AppDatabase {
 
-    //funciones estáticas
-    companion object {
 
-        private val _url = "http://10.0.2.2:3000/api"
+    /**
+     *Funciones estáticas para llamar a las operaciones CRUD
+     */
+    companion object MongoCRUD{
 
+
+        private const val URL = "http://10.0.2.2:3000/api"
+
+        /**
+         *Realiza una petición get a la Api con el endpoint aportado
+         * @param endpoint ruta de la api a la cual queremos realizar la petición
+         * @return json en formato string si recibe contenido, en caso contrario null
+         */
         suspend fun get(endpoint: String): String? {
             val client = OkHttpClient()
 
             // Crear la solicitud GET
             val request = Request.Builder()
-                .url("${_url}/$endpoint")
+                .url("${URL}/$endpoint")
                 .build()
 
             // Realizar la solicitud en el contexto de IO

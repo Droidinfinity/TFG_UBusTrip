@@ -19,7 +19,7 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.navigation.NavController
 import com.upm.ubustrip.features.favorites.Favorites
 import com.upm.ubustrip.database.LoginViewModel
-
+import com.upm.ubustrip.features.linea.LineaRTSViewModel
 
 
 data class TabBarItem(
@@ -36,6 +36,7 @@ fun Menu(
     navigator: NavController,
     menuViewModel: MenuViewModel,
     loginViewModel: LoginViewModel = androidx.lifecycle.viewmodel.compose.viewModel(),
+    lineaRTSViewModel: LineaRTSViewModel
 ) {
 
     val isLogged = loginViewModel.getAuth().currentUser != null
@@ -84,7 +85,7 @@ fun Menu(
         modifier = Modifier.fillMaxSize(),
     ) {
         Scaffold(
-            bottomBar = { BottomBar(tabBarItems, navigator, viewModel = MenuViewModel()) },
+            bottomBar = { BottomBar(tabBarItems, navigator, viewModel = MenuViewModel(), lineaViewModel = lineaRTSViewModel) },
             topBar = { TopBar(viewModel = MenuViewModel()) },
             content = { paddingValues -> Favorites(paddingValues) }
 

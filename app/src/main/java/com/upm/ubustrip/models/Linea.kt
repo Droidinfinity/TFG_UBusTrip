@@ -4,25 +4,12 @@ import android.util.Log
 import com.google.gson.Gson
 import com.upm.ubustrip.database.AppDatabase
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
 
-data class LineaData(
-    val _id: String,
-    val lineaId: String,
-    val segmentos: List<SegmentoData>,
-    val direccion: String,
-    val nombre: String
-)
-
-data class SegmentoData(
-    val polyline: String,
-    val paradaId: String
-)
 
 class LineaRTModel(id: String) {
+
 
     var id = ""
     var nombreLinea: String = ""
@@ -39,6 +26,7 @@ class LineaRTModel(id: String) {
             lineaData = getLineaById(id)
             if (lineaData != null)
                 asignarVariables(lineaData!!)
+            
 
         }
 
@@ -81,14 +69,14 @@ class LineaRTModel(id: String) {
             if (index == lineaData.segmentos.lastIndex) { //indicamos si es el último segmento
                 esUltimoSegmento = true
             }
-            if (segmento.polyline.length<=500) {
+
                 val s = Segmento(
                     polyline = segmento.polyline,
                     esSegmentoFinal = esUltimoSegmento,
                     numeroSegmento = index
                 )
                 segmentosLinea.add(s)
-            }
+
 
         }
 

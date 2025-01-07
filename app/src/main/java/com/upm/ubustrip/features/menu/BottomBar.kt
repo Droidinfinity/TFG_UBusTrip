@@ -19,12 +19,16 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import com.upm.ubustrip.features.linea.LineaRTSViewModel
 import com.upm.ubustrip.ui.theme.UbusTripBottomBar
 import com.upm.ubustrip.ui.theme.UbusTripBottomBarSelected
 
 @Composable
 fun BottomBar(
-    tabBarItems: List<TabBarItem>, navController: NavController, viewModel: MenuViewModel
+    tabBarItems: List<TabBarItem>,
+    navController: NavController,
+    viewModel: MenuViewModel,
+    lineaViewModel: LineaRTSViewModel
 ) {
 
     var selectedTabIndex by rememberSaveable {
@@ -48,6 +52,13 @@ fun BottomBar(
                     indicatorColor = UbusTripBottomBarSelected
                 ), selected = selectedTabIndex == index, onClick = {
                     selectedTabIndex = index
+                    //pruebas linea
+                    lineaViewModel.initPorParada(
+                        id = "67743f46812b47c0083d0065",
+                        nombreParada = "Av.Constitución-Pza.Marañón",
+                        lineas = mutableListOf("6774351ab34b449419e3638f"),
+                        numeroParada = "07173"
+                    )
                     navController.navigate(tabBarItem.navLocation)
 
                     viewModel.updateTitle(tabBarItem.title)

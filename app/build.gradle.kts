@@ -3,6 +3,11 @@ plugins {
     alias(libs.plugins.kotlin.android)
     id("com.google.gms.google-services")
     id("io.realm.kotlin")
+    id("org.jetbrains.dokka") version "1.9.10"
+}
+
+subprojects{
+    apply(plugin = "org.jetbrains.dokka")
 }
 
 android {
@@ -94,4 +99,17 @@ dependencies {
     androidTestImplementation(libs.androidx.ui.test.junit4)
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
+}
+
+tasks{
+    dokkaHtml {
+        outputDirectory.set(file("C:\\Users\\agusw\\Documents\\TFG\\docs\\dokka\\html"))
+        dokkaSourceSets {
+            configureEach {
+                reportUndocumented.set(false)  // Omito advertencias por métodos no documentados
+            }
+        }
+        
+    }
+
 }

@@ -42,7 +42,7 @@ fun TopBarLineaRTS(viewModel: LineaRTSViewModel, navController: NavController) {
             ),
             title = {
                 Text(
-                    "Parada",
+                    viewModel.paradaModel.nombreParada,
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis
                 )

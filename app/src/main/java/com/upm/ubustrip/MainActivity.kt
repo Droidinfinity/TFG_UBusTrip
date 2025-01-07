@@ -25,7 +25,7 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
 
         solicitarPermisoUbicacion()
-        val l = LineaRTModel("6774351ab34b449419e3638f")
+
        // CoroutineScope(Dispatchers.IO).launch { AppDatabase.get("lineas/6774351ab34b449419e3638f") }
         enableEdgeToEdge()
         setContent {
