@@ -82,7 +82,7 @@ fun ContenidoParada(modifier: Modifier, viewModel: LineaRTSViewModel) {
                 contentAlignment = Alignment.Center
             ) {
                 Spacer(Modifier.height(20.dp))
-                LineaGraficada()
+                LineaGraficada(viewModel = viewModel)
             }
         }
 

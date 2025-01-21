@@ -1,15 +1,22 @@
 package com.upm.ubustrip.models
 
+import android.util.Log
 import com.upm.ubustrip.features.polylines.Polyline
+import com.upm.ubustrip.viewModels.ParadaViewModel
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 class Segmento(
     polyline: String,
     esSegmentoFinal: Boolean = false,
-    numeroSegmento: Int
+    numeroSegmento: Int,
+    paradaId : String? = null
 ) {
 
     var segmento = mutableListOf<Coordenada>()
-    var paradaId: String? = null
+    lateinit var parada : Parada
+    private val paradaViewModel = ParadaViewModel()
 
     var esSegmentoFinal: Boolean = false
     var numeroSegmento: Int = -1
@@ -27,6 +34,13 @@ class Segmento(
 
         //asignamos su numero de segmento
         this.numeroSegmento = numeroSegmento
+
+        if (paradaId != null) {
+            CoroutineScope(Dispatchers.IO).launch {
+                parada = paradaViewModel.getParadaById(paradaId)
+                Log.d("Segmento", "Parada cargada: ${parada?.nombreParada} $paradaId")
+            }
+        }
 
     }
 
@@ -46,7 +60,7 @@ class Segmento(
     fun buscarBuses(buses: MutableList<Bus>): MutableList<Pair<Bus, Coordenada>> {
 
         val busesSegmento = mutableListOf<Pair<Bus, Coordenada>>()
-        val radio = 30.0 //radio de 30 metros, consideramos impresición en el GPS
+        val radio = 15.0 //radio de 15 metros, consideramos impresición en el GPS
 
         for (bus in buses) {
 

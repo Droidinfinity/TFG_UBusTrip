@@ -34,55 +34,61 @@ import com.upm.ubustrip.ui.theme.UBusTripBlueColor
 import com.upm.ubustrip.ui.theme.UbusTripBusRTColor
 import kotlinx.coroutines.launch
 
+/**
+ * Representa la interfaz gráfica para mostrar las líneas graficadas de una parada.
+ *
+ * @param viewModel [LineaRTSViewModel] viewModel asociado.
+ */
 @SuppressLint("CoroutineCreationDuringComposition")
 @Composable
-fun LineaGraficada(){
+fun LineaGraficada(viewModel: LineaRTSViewModel) {
 
-    //Desplazamiento a la ubicación de la parada
+    // Desplazamiento a la ubicación de la parada
     val listState = rememberLazyListState()
     val coroutineScope = rememberCoroutineScope()
 
-    coroutineScope.launch { //creamos nuevo hilo para el desplazamiento
-        listState.animateScrollToItem(8)
+    coroutineScope.launch {
+        // Creamos un nuevo hilo para el desplazamiento
+        listState.animateScrollToItem(6)
     }
 
-    val s = Segmento("gkuuFjxrTQCOAgBOSCo@Ge@EoAKuAO_@Ca@Ac@?_@B", numeroSegmento = 2)
-
-
-
-    LazyColumn(
-        state = listState,
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(horizontal = 32.dp),
-        verticalArrangement = Arrangement.Top
-    ) {
-
-        items(3) { index ->
-
-            Column {
-
-            LineaSegmento(s)
-                LineaSegmento(s)
-                LineaSegmento(s)
-
-            }
+    // Si no hay líneas para esa parada, mostramos una pantalla de error
+    if (viewModel.lineasRTModel.isEmpty()) {
+        Box(
+            modifier = Modifier.fillMaxSize(),
+            contentAlignment = Alignment.Center
+        ) {
+            Text("Error. No se han podido cargar los datos")
         }
+    } else {
+        // En caso contrario, mostramos la línea graficada
+        LazyColumn(
+            state = listState,
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(horizontal = 32.dp),
+            verticalArrangement = Arrangement.Top
+        ) {
 
+            items(viewModel.lineasRTModel.first().segmentosLinea.size) { index ->
+                Column {
+                    LineaSegmento(viewModel.lineasRTModel.first().segmentosLinea[index])
+                }
+            }
+
+        }
     }
-
-
 }
 
-
-
-
+/**
+ * Representa un círculo con texto a su lado.
+ *
+ * @param text Texto que se mostrará junto al círculo.
+ */
 @Composable
-fun CircleWithText(text : String) {
+fun CircleWithText(text: String) {
     Row(
-        modifier = Modifier
-            .fillMaxWidth(),
-
+        modifier = Modifier.fillMaxWidth(),
         verticalAlignment = Alignment.CenterVertically
     ) {
         // Círculo
@@ -95,22 +101,22 @@ fun CircleWithText(text : String) {
         Spacer(modifier = Modifier.width(8.dp)) // Espacio entre el círculo y el texto
 
         // Texto al lado del círculo
-        Text(
-            text = text,
-
-            )
+        Text(text = text)
     }
 }
 
+/**
+ * Dibuja una línea vertical con una altura específica.
+ *
+ * @param height Altura de la línea en dp.
+ */
 @Composable
 fun Line(height: Int) {
     Box(
         modifier = Modifier
             .fillMaxWidth()
             .height(height.dp) // Altura total
-
     ) {
-        // Línea
         Canvas(
             modifier = Modifier
                 .width(4.dp) // Grosor de la línea
@@ -125,60 +131,70 @@ fun Line(height: Int) {
                 strokeWidth = 4.dp.toPx() // Grosor de la línea
             )
         }
-
-
     }
-
-
 }
 
+/**
+ * Representa un segmento de línea con su información y visualización correspondiente.
+ *
+ * @param segmento Objeto [Segmento] que contiene la información del segmento de la linea a graficar.
+ */
 @Composable
 fun LineaSegmento(segmento: Segmento) {
 
+    // TODO: Lista de autobuses debería estar en el ViewModel al traernos los datos de la base de datos
     val listaBus = mutableListOf<Bus>()
-    listaBus.add(Bus("a", Coordenada(40.42018,-3.54167 ),1))
-    listaBus.add(Bus("b", Coordenada(40.42087,-3.54156 ),1))
 
-    listaBus.add(Bus("c", Coordenada(40.42275,-3.54189 ),1))
-    listaBus.add(Bus("d", Coordenada(40.42042,-3.54280 ),1))
+    // Distancia del segmento calculada usando Haversine
+    val distanciaSegmento = CordenadasUtils.distanciaCoordenadasHaversineSegmento(segmento)
 
-    val distanciaSemento = CordenadasUtils.distanciaCoordenadasHaversineSegmento(segmento)
-    if (!segmento.esSegmentoFinal) { //si no es el segmento final
-
+    if (!segmento.esSegmentoFinal) {
+        // Si no es el segmento final
         Box {
-
             Column {
-
-                CircleWithText("Nombre parada")
-                Line(distanciaSemento.toInt())
-
+                CircleWithText(segmento.parada.nombreParada)
+                Line(distanciaSegmento.toInt())
             }
 
-            //BUSCAMOS TODOS LOS BUSES QUE HAYAN ES ESE SEGMENTO
-            for(bus in segmento.buscarBuses(listaBus)){
-
-                val posicionBus = CordenadasUtils.distanciaHaversineHastaCoordenada(segmento,bus.second)
-                //MOVIMIENTO DEL BUS------------------------------------------------------
+            // Buscamos todos los buses que hay en ese segmento
+            for (bus in segmento.buscarBuses(listaBus)) {
+                val posicionBus = CordenadasUtils.distanciaHaversineHastaCoordenada(segmento, bus.second)
+                // Movimiento del bus
                 Column {
-
-                    Spacer(Modifier.height(30.dp)) //Tamaño del circulo (hay que considerarlo)
-                    Spacer(Modifier.height(posicionBus.dp)) //desplazamiento del bus
-                    // Box superpuesto
+                    Spacer(Modifier.height(30.dp)) // Tamaño del círculo
+                    Spacer(Modifier.height(posicionBus.dp)) // Desplazamiento del bus
+                    // Representación del bus
                     Box(
                         modifier = Modifier
                             .size(30.dp) // Tamaño del bus
                             .background(UbusTripBusRTColor) // Color del bus
-
                     )
-
                 }
-
+            }
+        }
+    } else {
+        // Si es el último segmento
+        Box {
+            Column {
+                Line(distanciaSegmento.toInt())
+                CircleWithText("${segmento.parada.nombreParada} (FINAL DE LINEA)")
             }
 
+            // Buscamos todos los buses que hay en ese segmento
+            for (bus in segmento.buscarBuses(listaBus)) {
+                val posicionBus = CordenadasUtils.distanciaHaversineHastaCoordenada(segmento, bus.second)
+                // Movimiento del bus
+                Column {
+                    Spacer(Modifier.height(30.dp)) // Tamaño del círculo
+                    Spacer(Modifier.height(posicionBus.dp)) // Desplazamiento del bus
+                    // Representación del bus
+                    Box(
+                        modifier = Modifier
+                            .size(30.dp) // Tamaño del bus
+                            .background(UbusTripBusRTColor) // Color del bus
+                    )
+                }
+            }
         }
-
-
-    } //fin si era segmento inicial
-//TODO: EN CASO DE QUE NO SEA UN SEGMENTO FINAL
-
+    }
 }
