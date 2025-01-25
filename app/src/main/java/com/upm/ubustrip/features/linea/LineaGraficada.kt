@@ -34,6 +34,21 @@ import com.upm.ubustrip.ui.theme.UBusTripBlueColor
 import com.upm.ubustrip.ui.theme.UbusTripBusRTColor
 import kotlinx.coroutines.launch
 
+
+fun scrollToStop(viewModel: LineaRTSViewModel, segmentosLinea : MutableList<Segmento>): Int{ //scroleamos a la parada que esté en el viewModel
+
+    var index = 0
+
+    for ((i,segmento) in segmentosLinea.withIndex()){
+
+        if (segmento.parada.nombreParada == viewModel.parada.value!!.nombreParada)
+            index = i
+
+    }
+
+    return index
+}
+
 /**
  * Representa la interfaz gráfica para mostrar las líneas graficadas de una parada.
  *
@@ -47,13 +62,10 @@ fun LineaGraficada(viewModel: LineaRTSViewModel) {
     val listState = rememberLazyListState()
     val coroutineScope = rememberCoroutineScope()
 
-    coroutineScope.launch {
-        // Creamos un nuevo hilo para el desplazamiento
-        listState.animateScrollToItem(6)
-    }
+
 
     // Si no hay líneas para esa parada, mostramos una pantalla de error
-    if (viewModel.lineasRTModel.isEmpty()) {
+    if (viewModel.parada.value?.lineasParada?.isEmpty() == true || viewModel.parada.value == null || viewModel.lineasRTModel.value == null || viewModel.lineasRTModelMod.value<0) {
         Box(
             modifier = Modifier.fillMaxSize(),
             contentAlignment = Alignment.Center
@@ -61,6 +73,13 @@ fun LineaGraficada(viewModel: LineaRTSViewModel) {
             Text("Error. No se han podido cargar los datos")
         }
     } else {
+
+        //asignamos el desplazamiento a la parada escogida
+        coroutineScope.launch {
+            // Creamos un nuevo hilo para el desplazamiento
+            listState.animateScrollToItem(scrollToStop(viewModel = viewModel, segmentosLinea = viewModel.lineasRTModel.value!!.first().segmentosLinea))
+        }
+
         // En caso contrario, mostramos la línea graficada
         LazyColumn(
             state = listState,
@@ -70,9 +89,10 @@ fun LineaGraficada(viewModel: LineaRTSViewModel) {
             verticalArrangement = Arrangement.Top
         ) {
 
-            items(viewModel.lineasRTModel.first().segmentosLinea.size) { index ->
+            //todo: poder escoger mas de una linea, hay que eliminar el .first()
+            items(viewModel.lineasRTModel.value!!.first().segmentosLinea.size) { index ->
                 Column {
-                    LineaSegmento(viewModel.lineasRTModel.first().segmentosLinea[index])
+                    LineaSegmento(viewModel.lineasRTModel.value!!.first().segmentosLinea[index])
                 }
             }
 

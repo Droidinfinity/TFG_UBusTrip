@@ -29,12 +29,11 @@ import com.upm.ubustrip.ui.theme.UBusTripBlueColor
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TopBarLineaRTS(viewModel: LineaRTSViewModel, navController: NavController) {
-
+    val parada = viewModel.parada.value // Observamos el estado de la parada
     var selectedTabIndex by remember { mutableStateOf(0) }
     val opciones = listOf("Tiempos de espera", "Tiempo real", "Mapa")
 
     Column {
-
         CenterAlignedTopAppBar(
             colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
                 containerColor = UBusTripBlueColor,
@@ -42,7 +41,7 @@ fun TopBarLineaRTS(viewModel: LineaRTSViewModel, navController: NavController) {
             ),
             title = {
                 Text(
-                    viewModel.paradaModel.nombreParada,
+                    parada?.nombreParada ?: "Cargando...", // Maneja el estado nulo
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis
                 )
@@ -50,8 +49,7 @@ fun TopBarLineaRTS(viewModel: LineaRTSViewModel, navController: NavController) {
             navigationIcon = {
                 IconButton(onClick = {
                     navController.popBackStack()
-                    viewModel.setSelectedTabIndex(0) // reseteamos para que el tab asignado vuelva a ser el inicial
-
+                    viewModel.setSelectedTabIndex(0) // Reseteamos el tab seleccionado
                 }) {
                     Icon(
                         imageVector = Icons.AutoMirrored.Filled.ArrowBack,
@@ -60,12 +58,8 @@ fun TopBarLineaRTS(viewModel: LineaRTSViewModel, navController: NavController) {
                     )
                 }
             },
+        )
 
-
-            )
-
-
-        // TabRow para las opciones
         TabRow(selectedTabIndex = selectedTabIndex, indicator = { tabPositions ->
             SecondaryIndicator(
                 Modifier.tabIndicatorOffset(tabPositions[selectedTabIndex]),
@@ -80,13 +74,8 @@ fun TopBarLineaRTS(viewModel: LineaRTSViewModel, navController: NavController) {
                         viewModel.setSelectedTabIndex(index)
                     },
                     text = { Text(title, color = Color.Black) },
-
-                    )
+                )
             }
         }
-
-
     }
-
 }
-

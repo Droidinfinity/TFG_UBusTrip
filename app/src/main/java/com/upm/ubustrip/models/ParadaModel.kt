@@ -12,13 +12,13 @@ data class ParadaModel(
 )
 
 class Parada(
-    id: String,
+    var id: String? ,
     var nombreParada: String = "",
-    val lineasParada: MutableList<String> = mutableListOf(),
     var numeroParada: String  = ""
 ) {
 
-    var id: String? = null
+    var paradaId : String? = null
+    val lineasParada: MutableList<String> = mutableListOf()
 
     companion object {
 
@@ -56,11 +56,12 @@ class Parada(
         Log.d("parada", "Datos de la parada: $paradaModel")
         this.nombreParada = paradaModel.nombreParada
         this.numeroParada = paradaModel.numeroParada
+        this.paradaId = id
 
         //asignamos las lineas, si hay mas de una
-       /* for (linea in paradaModel.lineas) {
+        for (linea in paradaModel.lineas) {
             lineasParada.add(linea)
-        }*/
+        }
     }
 
 

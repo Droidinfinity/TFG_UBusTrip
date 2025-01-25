@@ -7,7 +7,9 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.upm.ubustrip.models.Bus
 import com.upm.ubustrip.models.LineaRTModel
+import com.upm.ubustrip.models.Parada
 import com.upm.ubustrip.models.ParadaModel
+import com.upm.ubustrip.viewModels.ParadaViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
@@ -16,43 +18,49 @@ import kotlinx.coroutines.withContext
 
 
 class LineaRTSViewModel : ViewModel() {
-
-
     var busesLinea = mutableListOf<Bus>()
 
-    lateinit var lineasRTModel : MutableList<LineaRTModel>
-    lateinit var paradaModel: ParadaModel
+    // Usamos MutableState para observar cambios en Composables
+    private val _parada = mutableStateOf<Parada?>(null)
+    val parada: State<Parada?> = _parada
 
-    // Variable mutable interna
+    private val _lineasRTModel =  mutableStateOf<MutableList<LineaRTModel>?>(mutableListOf())
+    val lineasRTModel : State<MutableList<LineaRTModel>?> = _lineasRTModel
+
+    private var _lineasRTModelMod = mutableStateOf<Int>(-1)
+    var lineasRTModelMod = _lineasRTModelMod
+
     private val _selectedTabIndex = mutableStateOf(0)
-
-    // Variable pública de solo de lectura
     val selectedTabIndex: State<Int> = _selectedTabIndex
 
-    // Función para cambiar el valor del valor seleccionado
     fun setSelectedTabIndex(index: Int) {
         _selectedTabIndex.value = index
     }
 
-    fun initPorParada(id: String, nombreParada: String, lineasIds: MutableList<String>, numeroParada: String) {
-        paradaModel = ParadaModel(
-            paradaId = id,
-            nombreParada = nombreParada,
-            lineas = lineasIds,
-            numeroParada = numeroParada
-        )
-        lineasRTModel = mutableListOf<LineaRTModel>() //inicializamos la lista
+    fun initPorParada(id: String) {
+
+        //limpieza
+        _parada.value = null
+        _lineasRTModel.value = mutableListOf()
+        _lineasRTModelMod.value = -1
+
 
         viewModelScope.launch {
-            for (lineaId in paradaModel.lineas) {
+            val paradaCargada = ParadaViewModel().getParadaById(id)
+            _parada.value = paradaCargada // Actualiza el estado observado
+
+            if (_parada.value !=null )
+            for (lineaId in parada.value!!.lineasParada) {
                 val linea = LineaRTModel.create(lineaId) // Espera a que la línea se cargue completamente
                 Log.d("lineaVM", "Línea cargada: ${linea.nombreLinea}")
                 withContext(Dispatchers.Main) {
-                    if(linea.nombreLinea != "")
-                    lineasRTModel.add(linea) // Agrega la línea a la lista después de cargarla
+
+                        lineasRTModel.value?.add(linea) // Agrega la línea a la lista después de cargarla
+                        lineasRTModelMod.value++
+
                 }
             }
+
         }
     }
-
 }
