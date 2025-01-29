@@ -5,6 +5,11 @@ import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.google.firebase.database.ChildEventListener
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
+import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.database.ValueEventListener
 import com.upm.ubustrip.models.Bus
 import com.upm.ubustrip.models.LineaRTModel
 import com.upm.ubustrip.models.Parada
@@ -19,6 +24,9 @@ import kotlinx.coroutines.withContext
 
 class LineaRTSViewModel : ViewModel() {
     var busesLinea = mutableListOf<Bus>()
+
+    val database = FirebaseDatabase.getInstance("https://ubustrip-81feb-default-rtdb.europe-west1.firebasedatabase.app")
+    val dbRef = database.reference // Referencia raíz de la base de datos
 
     // Usamos MutableState para observar cambios en Composables
     private val _parada = mutableStateOf<Parada?>(null)
@@ -46,6 +54,7 @@ class LineaRTSViewModel : ViewModel() {
 
 
         viewModelScope.launch {
+            getBus()
             val paradaCargada = ParadaViewModel().getParadaById(id)
             _parada.value = paradaCargada // Actualiza el estado observado
 
@@ -62,5 +71,41 @@ class LineaRTSViewModel : ViewModel() {
             }
 
         }
+    }
+
+
+    fun getBus(){
+
+        val busesIdRef = dbRef.child("lineas").child("6774351ab34b449419e3638f")
+        val childListener  = object : ChildEventListener {
+            override fun onChildAdded(snapshot: DataSnapshot, previousChildName: String?) {
+                Log.d("FirebaseDB", "Nuevo bus añadido: ${snapshot.key}")
+            }
+
+            override fun onChildChanged(snapshot: DataSnapshot, previousChildName: String?) {
+                val busData = snapshot.value as Map<*, *>
+                val busId = snapshot.key
+                Log.d("FirebaseDB", "Datos actualizados del bus $busId: ${busData["matricula"]}")
+            }
+
+            override fun onChildRemoved(snapshot: DataSnapshot) {
+                val busId = snapshot.key
+                Log.d("FirebaseDB", "Bus eliminado: $busId")
+            }
+
+            override fun onChildMoved(snapshot: DataSnapshot, previousChildName: String?) {
+                // Opcional: Implementar si el orden de los hijos cambia
+                //Se implementa porque la interfaz me obliga
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+                Log.e("FirebaseDB", "Error al escuchar cambios en buses", error.toException())
+            }
+        }
+
+
+        busesIdRef.addChildEventListener(childListener)
+
+
     }
 }
