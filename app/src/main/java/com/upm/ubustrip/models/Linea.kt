@@ -81,7 +81,8 @@ class LineaRTModel(
                 polyline = segmento.polyline,
                 esSegmentoFinal = esUltimoSegmento,
                 numeroSegmento = index,
-                paradaId = segmento.paradaId
+                paradaId = segmento.paradaId,
+                paradaFinalId = segmento.paradaFinalId
             )
             segmentosLinea.add(s)
         }

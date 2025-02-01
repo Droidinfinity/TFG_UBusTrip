@@ -41,6 +41,10 @@ class LineaRTSViewModel : ViewModel() {
     private val _selectedTabIndex = mutableStateOf(0)
     val selectedTabIndex: State<Int> = _selectedTabIndex
 
+    //Linite establecido para indicar que un segmento es muy largo para graficarlo en una linea
+    val MAX_DISTANCIA_SEGMENTO = 2500 //en metros
+    val RATIO_SEGMENTO = 5 //dividimos entre esta cantidad en caso de que se cumpla la condicion de arriba
+
     fun setSelectedTabIndex(index: Int) {
         _selectedTabIndex.value = index
     }
@@ -54,7 +58,7 @@ class LineaRTSViewModel : ViewModel() {
 
 
         viewModelScope.launch {
-            getBus()
+            getBus("")
             val paradaCargada = ParadaViewModel().getParadaById(id)
             _parada.value = paradaCargada // Actualiza el estado observado
 
@@ -74,7 +78,7 @@ class LineaRTSViewModel : ViewModel() {
     }
 
 
-    fun getBus(){
+    fun getBus(linea : String){
 
         val busesIdRef = dbRef.child("lineas").child("6774351ab34b449419e3638f")
         val childListener  = object : ChildEventListener {

@@ -41,7 +41,7 @@ fun scrollToStop(viewModel: LineaRTSViewModel, segmentosLinea : MutableList<Segm
 
     for ((i,segmento) in segmentosLinea.withIndex()){
 
-        if (segmento.parada.nombreParada == viewModel.parada.value!!.nombreParada)
+        if (segmento.parada?.nombreParada == viewModel.parada.value!!.nombreParada)
             index = i
 
     }
@@ -92,7 +92,7 @@ fun LineaGraficada(viewModel: LineaRTSViewModel) {
             //todo: poder escoger mas de una linea, hay que eliminar el .first()
             items(viewModel.lineasRTModel.value!!.first().segmentosLinea.size) { index ->
                 Column {
-                    LineaSegmento(viewModel.lineasRTModel.value!!.first().segmentosLinea[index])
+                    LineaSegmento(viewModel.lineasRTModel.value!!.first().segmentosLinea[index],viewModel)
                 }
             }
 
@@ -131,11 +131,16 @@ fun CircleWithText(text: String) {
  * @param height Altura de la línea en dp.
  */
 @Composable
-fun Line(height: Int) {
+fun Line(height: Int, viewModel: LineaRTSViewModel) {
+
+    var tamano = height
+    //si el segmento es muy largo, lo reducimos a una escala menor...
+    if (height>=viewModel.MAX_DISTANCIA_SEGMENTO)
+        tamano = (height/viewModel.RATIO_SEGMENTO).toInt()
     Box(
         modifier = Modifier
             .fillMaxWidth()
-            .height(height.dp) // Altura total
+            .height(tamano.dp) // Altura total
     ) {
         Canvas(
             modifier = Modifier
@@ -160,7 +165,7 @@ fun Line(height: Int) {
  * @param segmento Objeto [Segmento] que contiene la información del segmento de la linea a graficar.
  */
 @Composable
-fun LineaSegmento(segmento: Segmento) {
+fun LineaSegmento(segmento: Segmento,viewModel: LineaRTSViewModel) {
 
     // TODO: Lista de autobuses debería estar en el ViewModel al traernos los datos de la base de datos
     val listaBus = mutableListOf<Bus>()
@@ -168,17 +173,21 @@ fun LineaSegmento(segmento: Segmento) {
     // Distancia del segmento calculada usando Haversine
     val distanciaSegmento = CordenadasUtils.distanciaCoordenadasHaversineSegmento(segmento)
 
+
     if (!segmento.esSegmentoFinal) {
         // Si no es el segmento final
         Box {
             Column {
-                CircleWithText(segmento.parada.nombreParada)
-                Line(distanciaSegmento.toInt())
+                CircleWithText(segmento.parada?.nombreParada ?: "Parada desconocida")
+                Line(distanciaSegmento.toInt(),viewModel)
             }
 
             // Buscamos todos los buses que hay en ese segmento
             for (bus in segmento.buscarBuses(listaBus)) {
-                val posicionBus = CordenadasUtils.distanciaHaversineHastaCoordenada(segmento, bus.second)
+                var posicionBus = CordenadasUtils.distanciaHaversineHastaCoordenada(segmento, bus.second)
+                var tamSegmento = CordenadasUtils.distanciaCoordenadasHaversineSegmento(segmento = segmento)
+                if (tamSegmento>=viewModel.MAX_DISTANCIA_SEGMENTO)
+                    posicionBus = (posicionBus/viewModel.RATIO_SEGMENTO)
                 // Movimiento del bus
                 Column {
                     Spacer(Modifier.height(30.dp)) // Tamaño del círculo
@@ -192,17 +201,23 @@ fun LineaSegmento(segmento: Segmento) {
                 }
             }
         }
+        //TODO: Refactorizar el if con el else (codigo repetido) queda ver si eso afecta a los buses
     } else {
         // Si es el último segmento
         Box {
             Column {
-                Line(distanciaSegmento.toInt())
-                CircleWithText("${segmento.parada.nombreParada} (FINAL DE LINEA)")
+                CircleWithText(segmento.parada?.nombreParada ?: "Parada desconocida")
+                Line(distanciaSegmento.toInt(),viewModel)
+                CircleWithText(segmento.paradaFinal?.nombreParada ?: "Parada desconocida")
+
             }
 
             // Buscamos todos los buses que hay en ese segmento
             for (bus in segmento.buscarBuses(listaBus)) {
-                val posicionBus = CordenadasUtils.distanciaHaversineHastaCoordenada(segmento, bus.second)
+                var posicionBus = CordenadasUtils.distanciaHaversineHastaCoordenada(segmento, bus.second)
+                var tamSegmento = CordenadasUtils.distanciaCoordenadasHaversineSegmento(segmento = segmento)
+                if (tamSegmento>=viewModel.MAX_DISTANCIA_SEGMENTO)
+                    posicionBus = (posicionBus/viewModel.RATIO_SEGMENTO)
                 // Movimiento del bus
                 Column {
                     Spacer(Modifier.height(30.dp)) // Tamaño del círculo

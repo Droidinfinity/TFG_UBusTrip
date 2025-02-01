@@ -9,5 +9,6 @@ package com.upm.ubustrip.models
  */
 data class SegmentoData(
     val polyline: String,
-    val paradaId: String
+    val paradaId: String,
+    val paradaFinalId: String?
 )

@@ -54,7 +54,7 @@ fun BottomBar(
                     selectedTabIndex = index
                     //pruebas linea
                     lineaViewModel.initPorParada(
-                        id = "677439cf812b47c0083d005e"
+                        id = "679d3052a5f8ba8f3264385d"
                     )
                     navController.navigate(tabBarItem.navLocation)
 
