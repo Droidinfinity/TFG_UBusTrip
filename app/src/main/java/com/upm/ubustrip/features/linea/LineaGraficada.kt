@@ -3,6 +3,7 @@ package com.upm.ubustrip.features.linea
 import android.annotation.SuppressLint
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -18,28 +19,39 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Button
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import androidx.compose.ui.window.Dialog
 import com.upm.ubustrip.models.Bus
 import com.upm.ubustrip.models.Coordenada
 import com.upm.ubustrip.models.CordenadasUtils
 import com.upm.ubustrip.models.Segmento
 import com.upm.ubustrip.ui.theme.UBusTripBlueColor
 import com.upm.ubustrip.ui.theme.UbusTripBusRTColor
+import com.upm.ubustrip.ui.theme.UbusTripGreen700
 import kotlinx.coroutines.launch
 
 
-fun scrollToStop(viewModel: LineaRTSViewModel, segmentosLinea : MutableList<Segmento>): Int{ //scroleamos a la parada que esté en el viewModel
+fun scrollToStop(
+    viewModel: LineaRTSViewModel,
+    segmentosLinea: MutableList<Segmento>
+): Int { //scroleamos a la parada que esté en el viewModel
 
     var index = 0
 
-    for ((i,segmento) in segmentosLinea.withIndex()){
+    for ((i, segmento) in segmentosLinea.withIndex()) {
 
         if (segmento.parada?.nombreParada == viewModel.parada.value!!.nombreParada)
             index = i
@@ -63,9 +75,8 @@ fun LineaGraficada(viewModel: LineaRTSViewModel) {
     val coroutineScope = rememberCoroutineScope()
 
 
-
     // Si no hay líneas para esa parada, mostramos una pantalla de error
-    if (viewModel.parada.value?.lineasParada?.isEmpty() == true || viewModel.parada.value == null || viewModel.lineasRTModel.value == null || viewModel.lineasRTModelMod.value<0) {
+    if (viewModel.parada.value?.lineasParada?.isEmpty() == true || viewModel.parada.value == null || viewModel.lineasRTModel.value == null || viewModel.lineasRTModelMod.value < 0) {
         Box(
             modifier = Modifier.fillMaxSize(),
             contentAlignment = Alignment.Center
@@ -74,10 +85,16 @@ fun LineaGraficada(viewModel: LineaRTSViewModel) {
         }
     } else {
 
+
         //asignamos el desplazamiento a la parada escogida
         coroutineScope.launch {
             // Creamos un nuevo hilo para el desplazamiento
-            listState.animateScrollToItem(scrollToStop(viewModel = viewModel, segmentosLinea = viewModel.lineasRTModel.value!!.first().segmentosLinea))
+            listState.animateScrollToItem(
+                scrollToStop(
+                    viewModel = viewModel,
+                    segmentosLinea = viewModel.lineasRTModel.value!![viewModel.lineaSeleccionada.value].segmentosLinea
+                )
+            )
         }
 
         // En caso contrario, mostramos la línea graficada
@@ -89,10 +106,13 @@ fun LineaGraficada(viewModel: LineaRTSViewModel) {
             verticalArrangement = Arrangement.Top
         ) {
 
-            //todo: poder escoger mas de una linea, hay que eliminar el .first()
-            items(viewModel.lineasRTModel.value!!.first().segmentosLinea.size) { index ->
+
+            items(viewModel.lineasRTModel.value!![viewModel.lineaSeleccionada.value].segmentosLinea.size) { index ->
                 Column {
-                    LineaSegmento(viewModel.lineasRTModel.value!!.first().segmentosLinea[index],viewModel)
+                    LineaSegmento(
+                        viewModel.lineasRTModel.value!![viewModel.lineaSeleccionada.value].segmentosLinea[index],
+                        viewModel
+                    )
                 }
             }
 
@@ -135,8 +155,8 @@ fun Line(height: Int, viewModel: LineaRTSViewModel) {
 
     var tamano = height
     //si el segmento es muy largo, lo reducimos a una escala menor...
-    if (height>=viewModel.MAX_DISTANCIA_SEGMENTO)
-        tamano = (height/viewModel.RATIO_SEGMENTO).toInt()
+    if (height >= viewModel.MAX_DISTANCIA_SEGMENTO)
+        tamano = (height / viewModel.RATIO_SEGMENTO).toInt()
     Box(
         modifier = Modifier
             .fillMaxWidth()
@@ -165,7 +185,7 @@ fun Line(height: Int, viewModel: LineaRTSViewModel) {
  * @param segmento Objeto [Segmento] que contiene la información del segmento de la linea a graficar.
  */
 @Composable
-fun LineaSegmento(segmento: Segmento,viewModel: LineaRTSViewModel) {
+fun LineaSegmento(segmento: Segmento, viewModel: LineaRTSViewModel) {
 
     // TODO: Lista de autobuses debería estar en el ViewModel al traernos los datos de la base de datos
     val listaBus = mutableListOf<Bus>()
@@ -179,15 +199,17 @@ fun LineaSegmento(segmento: Segmento,viewModel: LineaRTSViewModel) {
         Box {
             Column {
                 CircleWithText(segmento.parada?.nombreParada ?: "Parada desconocida")
-                Line(distanciaSegmento.toInt(),viewModel)
+                Line(distanciaSegmento.toInt(), viewModel)
             }
 
             // Buscamos todos los buses que hay en ese segmento
             for (bus in segmento.buscarBuses(listaBus)) {
-                var posicionBus = CordenadasUtils.distanciaHaversineHastaCoordenada(segmento, bus.second)
-                var tamSegmento = CordenadasUtils.distanciaCoordenadasHaversineSegmento(segmento = segmento)
-                if (tamSegmento>=viewModel.MAX_DISTANCIA_SEGMENTO)
-                    posicionBus = (posicionBus/viewModel.RATIO_SEGMENTO)
+                var posicionBus =
+                    CordenadasUtils.distanciaHaversineHastaCoordenada(segmento, bus.second)
+                var tamSegmento =
+                    CordenadasUtils.distanciaCoordenadasHaversineSegmento(segmento = segmento)
+                if (tamSegmento >= viewModel.MAX_DISTANCIA_SEGMENTO)
+                    posicionBus = (posicionBus / viewModel.RATIO_SEGMENTO)
                 // Movimiento del bus
                 Column {
                     Spacer(Modifier.height(30.dp)) // Tamaño del círculo
@@ -207,17 +229,19 @@ fun LineaSegmento(segmento: Segmento,viewModel: LineaRTSViewModel) {
         Box {
             Column {
                 CircleWithText(segmento.parada?.nombreParada ?: "Parada desconocida")
-                Line(distanciaSegmento.toInt(),viewModel)
+                Line(distanciaSegmento.toInt(), viewModel)
                 CircleWithText(segmento.paradaFinal?.nombreParada ?: "Parada desconocida")
 
             }
 
             // Buscamos todos los buses que hay en ese segmento
             for (bus in segmento.buscarBuses(listaBus)) {
-                var posicionBus = CordenadasUtils.distanciaHaversineHastaCoordenada(segmento, bus.second)
-                var tamSegmento = CordenadasUtils.distanciaCoordenadasHaversineSegmento(segmento = segmento)
-                if (tamSegmento>=viewModel.MAX_DISTANCIA_SEGMENTO)
-                    posicionBus = (posicionBus/viewModel.RATIO_SEGMENTO)
+                var posicionBus =
+                    CordenadasUtils.distanciaHaversineHastaCoordenada(segmento, bus.second)
+                var tamSegmento =
+                    CordenadasUtils.distanciaCoordenadasHaversineSegmento(segmento = segmento)
+                if (tamSegmento >= viewModel.MAX_DISTANCIA_SEGMENTO)
+                    posicionBus = (posicionBus / viewModel.RATIO_SEGMENTO)
                 // Movimiento del bus
                 Column {
                     Spacer(Modifier.height(30.dp)) // Tamaño del círculo
@@ -233,3 +257,6 @@ fun LineaSegmento(segmento: Segmento,viewModel: LineaRTSViewModel) {
         }
     }
 }
+
+
+

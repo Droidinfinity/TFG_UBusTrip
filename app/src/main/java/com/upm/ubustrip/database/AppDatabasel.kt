@@ -22,9 +22,10 @@ class AppDatabase {
      *Funciones estáticas para llamar a las operaciones CRUD
      */
     companion object MongoCRUD{
-
-
-        private const val URL = "http://10.0.2.2:3000/api"
+        private val localhost = "10.0.2.2"
+        private val redURL = "192.168.1.130"
+        private val URL = "http:${localhost}:3000/api"
+         val REALTIME_DATABASE_URL = "https://ubustrip-81feb-default-rtdb.europe-west1.firebasedatabase.app"
 
         /**
          *Realiza una petición get a la Api con el endpoint aportado

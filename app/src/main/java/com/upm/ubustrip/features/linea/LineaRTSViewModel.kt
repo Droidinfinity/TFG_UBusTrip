@@ -10,6 +10,7 @@ import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
+import com.upm.ubustrip.database.AppDatabase
 import com.upm.ubustrip.models.Bus
 import com.upm.ubustrip.models.LineaRTModel
 import com.upm.ubustrip.models.Parada
@@ -25,12 +26,15 @@ import kotlinx.coroutines.withContext
 class LineaRTSViewModel : ViewModel() {
     var busesLinea = mutableListOf<Bus>()
 
-    val database = FirebaseDatabase.getInstance("https://ubustrip-81feb-default-rtdb.europe-west1.firebasedatabase.app")
+    val database = FirebaseDatabase.getInstance(AppDatabase.REALTIME_DATABASE_URL)
     val dbRef = database.reference // Referencia raíz de la base de datos
 
     // Usamos MutableState para observar cambios en Composables
     private val _parada = mutableStateOf<Parada?>(null)
     val parada: State<Parada?> = _parada
+
+     var lineaSeleccionada = mutableStateOf<Int>(0)
+
 
     private val _lineasRTModel =  mutableStateOf<MutableList<LineaRTModel>?>(mutableListOf())
     val lineasRTModel : State<MutableList<LineaRTModel>?> = _lineasRTModel
@@ -45,6 +49,7 @@ class LineaRTSViewModel : ViewModel() {
     val MAX_DISTANCIA_SEGMENTO = 2500 //en metros
     val RATIO_SEGMENTO = 5 //dividimos entre esta cantidad en caso de que se cumpla la condicion de arriba
 
+
     fun setSelectedTabIndex(index: Int) {
         _selectedTabIndex.value = index
     }
@@ -58,7 +63,8 @@ class LineaRTSViewModel : ViewModel() {
 
 
         viewModelScope.launch {
-            getBus("")
+            busesListener("6774351ab34b449419e3638f")
+
             val paradaCargada = ParadaViewModel().getParadaById(id)
             _parada.value = paradaCargada // Actualiza el estado observado
 
@@ -77,13 +83,19 @@ class LineaRTSViewModel : ViewModel() {
         }
     }
 
+    //TODO: Terminar de hacerlo funcional
+    private  fun busesListener(linea : String) {
 
-    fun getBus(linea : String){
+        Log.d("FirebaseDB", "Inicio fun")
 
-        val busesIdRef = dbRef.child("lineas").child("6774351ab34b449419e3638f")
+        val busesIdRef = dbRef.child("lineas").child(linea)
         val childListener  = object : ChildEventListener {
             override fun onChildAdded(snapshot: DataSnapshot, previousChildName: String?) {
-                Log.d("FirebaseDB", "Nuevo bus añadido: ${snapshot.key}")
+
+                val busData = snapshot.value as Map<*, *>
+                val ubicacionBus = busData["ubicacion"] as Map<*, *>
+
+                Log.d("FirebaseDB", "Nuevo bus añadido: ${ubicacionBus["lat"]}")
             }
 
             override fun onChildChanged(snapshot: DataSnapshot, previousChildName: String?) {
