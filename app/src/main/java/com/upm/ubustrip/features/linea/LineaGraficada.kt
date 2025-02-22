@@ -1,6 +1,7 @@
 package com.upm.ubustrip.features.linea
 
 import android.annotation.SuppressLint
+import android.util.Log
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -189,11 +190,12 @@ fun LineaSegmento(segmento: Segmento, viewModel: LineaRTSViewModel) {
 
     // TODO: Lista de autobuses debería estar en el ViewModel al traernos los datos de la base de datos
     val listaBus = mutableListOf<Bus>()
-
+    listaBus.add(Bus(ubicacion = Coordenada(longitud = 40.42555, latitud = -3.549921)))
+    listaBus.add(Bus(ubicacion = Coordenada(longitud = 40.42600, latitud = -3.551466)))
     // Distancia del segmento calculada usando Haversine
     val distanciaSegmento = CordenadasUtils.distanciaCoordenadasHaversineSegmento(segmento)
 
-
+    if(viewModel.refreshScreen.value>0)
     if (!segmento.esSegmentoFinal) {
         // Si no es el segmento final
         Box {
@@ -203,7 +205,7 @@ fun LineaSegmento(segmento: Segmento, viewModel: LineaRTSViewModel) {
             }
 
             // Buscamos todos los buses que hay en ese segmento
-            for (bus in segmento.buscarBuses(listaBus)) {
+            for (bus in segmento.buscarBuses(viewModel.busesLinea)) {
                 var posicionBus =
                     CordenadasUtils.distanciaHaversineHastaCoordenada(segmento, bus.second)
                 var tamSegmento =
@@ -235,7 +237,7 @@ fun LineaSegmento(segmento: Segmento, viewModel: LineaRTSViewModel) {
             }
 
             // Buscamos todos los buses que hay en ese segmento
-            for (bus in segmento.buscarBuses(listaBus)) {
+            for (bus in segmento.buscarBuses(viewModel.busesLinea)) {
                 var posicionBus =
                     CordenadasUtils.distanciaHaversineHastaCoordenada(segmento, bus.second)
                 var tamSegmento =

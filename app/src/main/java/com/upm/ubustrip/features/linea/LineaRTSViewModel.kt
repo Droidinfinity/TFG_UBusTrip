@@ -2,6 +2,7 @@ package com.upm.ubustrip.features.linea
 
 import android.util.Log
 import androidx.compose.runtime.State
+import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -12,6 +13,7 @@ import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
 import com.upm.ubustrip.database.AppDatabase
 import com.upm.ubustrip.models.Bus
+import com.upm.ubustrip.models.Coordenada
 import com.upm.ubustrip.models.LineaRTModel
 import com.upm.ubustrip.models.Parada
 import com.upm.ubustrip.models.ParadaModel
@@ -25,6 +27,7 @@ import kotlinx.coroutines.withContext
 
 class LineaRTSViewModel : ViewModel() {
     var busesLinea = mutableListOf<Bus>()
+    var refreshScreen = mutableStateOf(0)
 
     val database = FirebaseDatabase.getInstance(AppDatabase.REALTIME_DATABASE_URL)
     val dbRef = database.reference // Referencia raíz de la base de datos
@@ -50,6 +53,51 @@ class LineaRTSViewModel : ViewModel() {
     val RATIO_SEGMENTO = 5 //dividimos entre esta cantidad en caso de que se cumpla la condicion de arriba
 
 
+    //LISTENERS-----------------------------------------------------------
+    val childListener  = object : ChildEventListener {
+        override fun onChildAdded(snapshot: DataSnapshot, previousChildName: String?) {
+
+            val busData = snapshot.value as Map<*, *>
+            val ubicacionBus = busData["ubicacion"] as Map<*, *>
+
+            val bus = Bus(ubicacion = Coordenada(longitud = ubicacionBus["long"] as Double, latitud = ubicacionBus["lat"] as Double), matricula = busData["matricula"] as String)
+
+            busesLinea.add(bus)
+            refreshScreen.value++
+
+            Log.d("FirebaseDB", "Nuevo bus añadido: ${busData["matricula"]}")
+        }
+
+        override fun onChildChanged(snapshot: DataSnapshot, previousChildName: String?) {
+            val busData = snapshot.value as Map<*, *>
+            val ubicacionBus = busData["ubicacion"] as Map<*, *>
+            val busAnterior = busesLinea.find { it.matricula == busData["matricula"] }
+
+            val bus = Bus(ubicacion = Coordenada(longitud = ubicacionBus["long"] as Double, latitud = ubicacionBus["lat"] as Double))
+            busesLinea.remove(busAnterior)
+            busesLinea.add(bus)
+            refreshScreen.value++
+
+            Log.d("FirebaseDB", "Datos actualizados del bus ${busData["matricula"]}")
+        }
+
+        override fun onChildRemoved(snapshot: DataSnapshot) {
+            val busId = snapshot.key
+            Log.d("FirebaseDB", "Bus eliminado: $busId")
+        }
+
+        override fun onChildMoved(snapshot: DataSnapshot, previousChildName: String?) {
+            // Opcional: Implementar si el orden de los hijos cambia
+            //Se implementa porque la interfaz me obliga
+        }
+
+        override fun onCancelled(error: DatabaseError) {
+            Log.e("FirebaseDB", "Error al escuchar cambios en buses", error.toException())
+        }
+    }
+
+    //FIN LISTENERS----------------------------------------------------------------------------------
+
     fun setSelectedTabIndex(index: Int) {
         _selectedTabIndex.value = index
     }
@@ -60,6 +108,7 @@ class LineaRTSViewModel : ViewModel() {
         _parada.value = null
         _lineasRTModel.value = mutableListOf()
         _lineasRTModelMod.value = -1
+        busesLinea.clear()
 
 
         viewModelScope.launch {
@@ -89,38 +138,11 @@ class LineaRTSViewModel : ViewModel() {
         Log.d("FirebaseDB", "Inicio fun")
 
         val busesIdRef = dbRef.child("lineas").child(linea)
-        val childListener  = object : ChildEventListener {
-            override fun onChildAdded(snapshot: DataSnapshot, previousChildName: String?) {
-
-                val busData = snapshot.value as Map<*, *>
-                val ubicacionBus = busData["ubicacion"] as Map<*, *>
-
-                Log.d("FirebaseDB", "Nuevo bus añadido: ${ubicacionBus["lat"]}")
-            }
-
-            override fun onChildChanged(snapshot: DataSnapshot, previousChildName: String?) {
-                val busData = snapshot.value as Map<*, *>
-                val busId = snapshot.key
-                Log.d("FirebaseDB", "Datos actualizados del bus $busId: ${busData["matricula"]}")
-            }
-
-            override fun onChildRemoved(snapshot: DataSnapshot) {
-                val busId = snapshot.key
-                Log.d("FirebaseDB", "Bus eliminado: $busId")
-            }
-
-            override fun onChildMoved(snapshot: DataSnapshot, previousChildName: String?) {
-                // Opcional: Implementar si el orden de los hijos cambia
-                //Se implementa porque la interfaz me obliga
-            }
-
-            override fun onCancelled(error: DatabaseError) {
-                Log.e("FirebaseDB", "Error al escuchar cambios en buses", error.toException())
-            }
-        }
+        
 
 
         busesIdRef.addChildEventListener(childListener)
+
 
 
     }

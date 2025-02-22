@@ -93,8 +93,9 @@ class Segmento(
                 }
             }
         }
-
-        for (busE in busesSegmento) buses.remove(busE.first)
+        //COMENTADA PORQUE SI ELIMINO EL BUS DE LA REFERENCIA, AL REFRESCAR EL COMPOSABLE VUELVE A EJECUTAR EL MÉTODO
+        //(si se elimina el bus desaparecerá...)
+        //for (busE in busesSegmento) buses.remove(busE.first)
 
         return busesSegmento
     }
