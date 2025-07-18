@@ -37,6 +37,7 @@ class LineaRTSViewModel : ViewModel() {
     val parada: State<Parada?> = _parada
 
      var lineaSeleccionada = mutableStateOf<Int>(0)
+    var idLineaSeleccionada = ""
 
 
     private val _lineasRTModel =  mutableStateOf<MutableList<LineaRTModel>?>(mutableListOf())
@@ -112,7 +113,7 @@ class LineaRTSViewModel : ViewModel() {
 
 
         viewModelScope.launch {
-            busesListener("6774351ab34b449419e3638f")
+
 
             val paradaCargada = ParadaViewModel().getParadaById(id)
             _parada.value = paradaCargada // Actualiza el estado observado
@@ -133,17 +134,22 @@ class LineaRTSViewModel : ViewModel() {
     }
 
     //TODO: Terminar de hacerlo funcional
-    private  fun busesListener(linea : String) {
+    public fun initBusesListener(linea : String) {
 
         Log.d("FirebaseDB", "Inicio fun")
 
         val busesIdRef = dbRef.child("lineas").child(linea)
-        
-
 
         busesIdRef.addChildEventListener(childListener)
 
 
+    }
+    public fun removeBusesListener(linea:  String){
+
+        if (linea.isNotEmpty()){
+            val busesIdRef = dbRef.child("lineas").child(linea)
+            busesIdRef.removeEventListener(childListener)
+        }
 
     }
 }

@@ -93,11 +93,21 @@ fun ContenidoParada(modifier: Modifier, viewModel: LineaRTSViewModel) {
                 modifier = Modifier.fillMaxSize(),
                 contentAlignment = Alignment.Center
             ) {
+                if (viewModel.lineasRTModel.value?.size!! > 1)
                 ModalLineas(viewModel = viewModel, showDialog = showDialog, onDismiss = {
                     showDialog = false
                 })
+                else
+                    showDialog = false
                 if (!showDialog) {
                     Spacer(Modifier.height(20.dp))
+                    //Si solo existe una linea en esa parada, iniciamos el listener para esta parada
+                    if (viewModel.idLineaSeleccionada.isEmpty()){
+
+                        viewModel.idLineaSeleccionada = viewModel.lineasRTModel.value!![0].id
+                        viewModel.initBusesListener(viewModel.idLineaSeleccionada)
+                    }
+
                     LineaGraficada(viewModel = viewModel)
                 }
             }
@@ -138,6 +148,9 @@ fun ModalLineas(
                                     onDismiss()
                                     viewModel.lineaSeleccionada.value =
                                         viewModel.lineasRTModel.value!!.indexOf(linea)
+                                    viewModel.initBusesListener(linea = linea.id)
+                                    viewModel.idLineaSeleccionada = linea.id
+                                    Log.d("lin","${linea.id}")
                                     Log.d("Modal", "${viewModel.lineaSeleccionada.value}")
                                 },
                                 colors = ButtonColors(

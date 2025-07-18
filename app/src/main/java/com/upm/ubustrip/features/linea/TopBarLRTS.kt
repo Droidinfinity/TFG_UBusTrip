@@ -50,6 +50,8 @@ fun TopBarLineaRTS(viewModel: LineaRTSViewModel, navController: NavController) {
                 IconButton(onClick = {
                     navController.popBackStack()
                     viewModel.setSelectedTabIndex(0) // Reseteamos el tab seleccionado
+                    //eliminamos el listener al movernos para atrás
+                    viewModel.removeBusesListener(viewModel.idLineaSeleccionada)
                 }) {
                     Icon(
                         imageVector = Icons.AutoMirrored.Filled.ArrowBack,
