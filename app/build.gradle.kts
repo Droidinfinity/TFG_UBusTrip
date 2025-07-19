@@ -12,12 +12,12 @@ subprojects{
 
 android {
     namespace = "com.upm.ubustrip"
-    compileSdk = 34
+    compileSdk = 35
 
     defaultConfig {
         applicationId = "com.upm.ubustrip"
         minSdk = 24
-        targetSdk = 34
+        targetSdk = 35
         versionCode = 1
         versionName = "1.0-alpha.1"
 
@@ -25,6 +25,21 @@ android {
         vectorDrawables {
             useSupportLibrary = true
         }
+
+        val apiKey = project.findProperty("GOOGLE_MAPS_API_KEY") ?: ""
+        resValue("string", "GOOGLE_MAPS_API_KEY", apiKey.toString())
+
+        /*val localProps = Properties().apply {
+            val file = rootProject.file("local.properties")
+            if (file.exists()) {
+                load(file.inputStream())
+            }
+        }
+        val apiKey = localProps.getProperty("GOOGLE_MAPS_API_KEY") ?: ""
+        resValue("string", "GOOGLE_MAPS_API_KEY", apiKey)*/
+
+
+
     }
     packaging {
 
@@ -89,6 +104,10 @@ dependencies {
     implementation("org.mongodb:bson-kotlinx:5.2.1")
 
     implementation("com.squareup.okhttp3:okhttp:4.11.0")
+
+    // Android Maps Compose composables for the Maps SDK for Android
+    implementation("com.google.maps.android:maps-compose:6.4.1")
+    implementation ("com.google.android.gms:play-services-maps:18.2.0")
 
     implementation(libs.androidx.navigation.runtime.ktx)
     implementation(libs.firebase.auth.ktx)

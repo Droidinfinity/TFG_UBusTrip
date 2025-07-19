@@ -40,7 +40,7 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
-@Preview
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CustomSearchBar(viewModel: SearchBarViewModel) {
@@ -95,8 +95,9 @@ fun CustomSearchBar(viewModel: SearchBarViewModel) {
                         }
                     }
                 },
-                colors = TextFieldDefaults.textFieldColors(
-                    containerColor = Color.LightGray.copy(alpha = 0.1f),
+                colors = TextFieldDefaults.colors(
+                    focusedContainerColor = Color.LightGray.copy(alpha = 0.1f),
+                    unfocusedContainerColor = Color.LightGray.copy(alpha = 0.1f),
                     focusedIndicatorColor = Color.Transparent,
                     unfocusedIndicatorColor = Color.Transparent
                 ), modifier = Modifier
