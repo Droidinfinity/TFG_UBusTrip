@@ -111,6 +111,7 @@ fun ContenidoParada(modifier: Modifier, viewModel: LineaRTSViewModel) {
                     LineaGraficada(viewModel = viewModel)
                 }
             }
+            2-> MapTestScreen()
         }
 
     }

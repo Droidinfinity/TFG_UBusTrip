@@ -1,3 +1,5 @@
+import org.jetbrains.kotlin.konan.properties.Properties
+
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
@@ -25,18 +27,16 @@ android {
         vectorDrawables {
             useSupportLibrary = true
         }
+        
 
-        val apiKey = project.findProperty("GOOGLE_MAPS_API_KEY") ?: ""
-        resValue("string", "GOOGLE_MAPS_API_KEY", apiKey.toString())
-
-        /*val localProps = Properties().apply {
+        val localProps = Properties().apply {
             val file = rootProject.file("local.properties")
             if (file.exists()) {
                 load(file.inputStream())
             }
         }
         val apiKey = localProps.getProperty("GOOGLE_MAPS_API_KEY") ?: ""
-        resValue("string", "GOOGLE_MAPS_API_KEY", apiKey)*/
+        resValue("string", "GOOGLE_MAPS_API_KEY", apiKey)
 
 
 
