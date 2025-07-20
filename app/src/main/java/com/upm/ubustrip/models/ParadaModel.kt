@@ -4,17 +4,24 @@ import android.util.Log
 import com.google.gson.Gson
 import com.upm.ubustrip.database.AppDatabase
 
+data class Ubicacion(
+    val long: String,
+    val lat: String
+)
+
 data class ParadaModel(
     val paradaId: String,
     val nombreParada: String,
     val lineas: MutableList<String>,
-    val numeroParada: String
+    val numeroParada: String,
+    val ubicacion: Ubicacion? // puede ser null si no está
 )
 
 class Parada(
     var id: String? ,
     var nombreParada: String = "",
-    var numeroParada: String  = ""
+    var numeroParada: String  = "",
+    var ubicacion: Ubicacion? = null
 ) {
 
     var paradaId : String? = null
@@ -57,6 +64,8 @@ class Parada(
         this.nombreParada = paradaModel.nombreParada
         this.numeroParada = paradaModel.numeroParada
         this.paradaId = id
+        this.ubicacion = paradaModel.ubicacion
+        Log.d("UBICA","nombre: ${this.nombreParada} ${ubicacion?.long} y ${ubicacion?.lat}")
 
         //asignamos las lineas, si hay mas de una
         for (linea in paradaModel.lineas) {

@@ -38,6 +38,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.navigation.NavController
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
+import com.upm.ubustrip.features.linea.viewModels.LineaRTSViewModel
 import com.upm.ubustrip.models.Bus
 import com.upm.ubustrip.models.Coordenada
 import com.upm.ubustrip.models.CordenadasUtils
@@ -46,7 +47,11 @@ import com.upm.ubustrip.models.Segmento
 import com.upm.ubustrip.ui.theme.UBusTripBlueColor
 import com.upm.ubustrip.ui.theme.UbusTripFilledButton2Color
 
-
+/*PANTALLA PRINCIPAL CON TOP BAR Y CONTENIDO:
+Tiempos de espera
+Tiempo real (graficada)
+Mapa
+*/
 @Composable
 fun LineaRTScreen(viewModel: LineaRTSViewModel, navController: NavController) {
 
@@ -84,9 +89,9 @@ fun ContenidoParada(modifier: Modifier, viewModel: LineaRTSViewModel) {
             //caso TIEMPOS DE ESPERA
             0 -> Box(
                 modifier = Modifier.fillMaxSize(),
-                contentAlignment = Alignment.Center
+                contentAlignment = Alignment.TopCenter
             ) {
-                Text("Pantalla Opción 1")
+                TiemposDeEspera(viewModel = viewModel)
             }
             //caso TIEMPO REAL
             1 -> Box(

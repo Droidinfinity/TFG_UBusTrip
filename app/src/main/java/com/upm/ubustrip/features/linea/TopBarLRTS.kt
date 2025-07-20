@@ -23,6 +23,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.navigation.NavController
+import com.upm.ubustrip.features.linea.viewModels.LineaRTSViewModel
 import com.upm.ubustrip.ui.theme.UBusTripBlueColor
 
 

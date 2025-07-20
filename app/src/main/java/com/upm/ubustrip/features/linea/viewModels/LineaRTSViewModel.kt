@@ -1,5 +1,6 @@
-package com.upm.ubustrip.features.linea
+package com.upm.ubustrip.features.linea.viewModels
 
+import android.annotation.SuppressLint
 import android.util.Log
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateListOf
@@ -10,24 +11,25 @@ import com.google.firebase.database.ChildEventListener
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
-import com.google.firebase.database.ValueEventListener
 import com.upm.ubustrip.database.AppDatabase
 import com.upm.ubustrip.models.Bus
 import com.upm.ubustrip.models.Coordenada
 import com.upm.ubustrip.models.LineaRTModel
 import com.upm.ubustrip.models.Parada
-import com.upm.ubustrip.models.ParadaModel
 import com.upm.ubustrip.viewModels.ParadaViewModel
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.async
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
 
 
 class LineaRTSViewModel : ViewModel() {
-    var busesLinea = mutableListOf<Bus>()
+    var busesLinea = mutableStateListOf<Bus>()
     var refreshScreen = mutableStateOf(0)
+
+    var isLoading = mutableStateOf(true)
+        private set
+    var firstRefresh = true
 
     val database = FirebaseDatabase.getInstance(AppDatabase.REALTIME_DATABASE_URL)
     val dbRef = database.reference // Referencia raíz de la base de datos
@@ -103,8 +105,11 @@ class LineaRTSViewModel : ViewModel() {
         _selectedTabIndex.value = index
     }
 
-    fun initPorParada(id: String) {
+    @SuppressLint("SuspiciousIndentation")
+    suspend fun initPorParada(id: String) {
 
+        isLoading.value = true
+        busesLinea.clear()
         //limpieza
         _parada.value = null
         _lineasRTModel.value = mutableListOf()
@@ -127,8 +132,10 @@ class LineaRTSViewModel : ViewModel() {
                         lineasRTModel.value?.add(linea) // Agrega la línea a la lista después de cargarla
                         lineasRTModelMod.value++
 
+
                 }
             }
+            isLoading.value = false
 
         }
     }
@@ -151,5 +158,16 @@ class LineaRTSViewModel : ViewModel() {
             busesIdRef.removeEventListener(childListener)
         }
 
+    }
+
+    fun iniciarCambioDeTabs() {
+        viewModelScope.launch {
+            if (firstRefresh) {
+                firstRefresh = false
+                setSelectedTabIndex(1)
+                delay(50)
+                setSelectedTabIndex(0) // ✅ Se ejecuta incluso si el composable se desmonta
+            }
+        }
     }
 }

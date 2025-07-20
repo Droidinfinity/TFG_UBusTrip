@@ -19,7 +19,7 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.navigation.NavController
 import com.upm.ubustrip.features.favorites.Favorites
 import com.upm.ubustrip.database.LoginViewModel
-import com.upm.ubustrip.features.linea.LineaRTSViewModel
+import com.upm.ubustrip.features.linea.viewModels.LineaRTSViewModel
 
 
 data class TabBarItem(

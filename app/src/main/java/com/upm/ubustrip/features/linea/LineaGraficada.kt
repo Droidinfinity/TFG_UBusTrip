@@ -35,6 +35,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
+import com.upm.ubustrip.features.linea.viewModels.LineaRTSViewModel
 import com.upm.ubustrip.models.Bus
 import com.upm.ubustrip.models.Coordenada
 import com.upm.ubustrip.models.CordenadasUtils
@@ -188,10 +189,10 @@ fun Line(height: Int, viewModel: LineaRTSViewModel) {
 @Composable
 fun LineaSegmento(segmento: Segmento, viewModel: LineaRTSViewModel) {
 
-    // TODO: Lista de autobuses debería estar en el ViewModel al traernos los datos de la base de datos
+    // TODO: Lista de autobuses debería estar en el ViewModel al traernos los datos de la base de datos (creo que ya esta hecho)
     val listaBus = mutableListOf<Bus>()
-    listaBus.add(Bus(ubicacion = Coordenada(longitud = 40.42555, latitud = -3.549921)))
-    listaBus.add(Bus(ubicacion = Coordenada(longitud = 40.42600, latitud = -3.551466)))
+   /* listaBus.add(Bus(ubicacion = Coordenada(longitud = 40.42555, latitud = -3.549921)))
+    listaBus.add(Bus(ubicacion = Coordenada(longitud = 40.42600, latitud = -3.551466)))*/
     // Distancia del segmento calculada usando Haversine
     val distanciaSegmento = CordenadasUtils.distanciaCoordenadasHaversineSegmento(segmento)
 

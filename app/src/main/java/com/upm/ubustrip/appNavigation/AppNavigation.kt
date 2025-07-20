@@ -17,8 +17,8 @@ import com.upm.ubustrip.features.register.NewAccountViewModel
 import com.upm.ubustrip.features.register.SignUp
 import com.upm.ubustrip.features.search.SearchScreen
 import com.upm.ubustrip.database.LoginViewModel
-import com.upm.ubustrip.features.linea.LineaRTSViewModel
 import com.upm.ubustrip.features.linea.LineaRTScreen
+import com.upm.ubustrip.features.linea.viewModels.LineaRTSViewModel
 
 @Composable
 fun AppNavigation(){

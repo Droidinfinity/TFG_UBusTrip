@@ -27,7 +27,7 @@ android {
         vectorDrawables {
             useSupportLibrary = true
         }
-        
+
 
         val localProps = Properties().apply {
             val file = rootProject.file("local.properties")

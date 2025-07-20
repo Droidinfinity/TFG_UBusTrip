@@ -19,9 +19,12 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-import com.upm.ubustrip.features.linea.LineaRTSViewModel
+import com.upm.ubustrip.features.linea.viewModels.LineaRTSViewModel
 import com.upm.ubustrip.ui.theme.UbusTripBottomBar
 import com.upm.ubustrip.ui.theme.UbusTripBottomBarSelected
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 @Composable
 fun BottomBar(
@@ -53,9 +56,9 @@ fun BottomBar(
                 ), selected = selectedTabIndex == index, onClick = {
                     selectedTabIndex = index
                     //pruebas linea
-                    lineaViewModel.initPorParada(
-                        id = "67743e7b812b47c0083d0061"
-                    )
+                    CoroutineScope(Dispatchers.IO).launch { lineaViewModel.initPorParada(
+                        id = "679d3052a5f8ba8f3264385d"
+                    ) }
                     navController.navigate(tabBarItem.navLocation)
 
                     viewModel.updateTitle(tabBarItem.title)
