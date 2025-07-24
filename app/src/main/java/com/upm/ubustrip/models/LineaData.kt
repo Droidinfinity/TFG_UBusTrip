@@ -15,5 +15,6 @@ data class LineaData(
     val lineaId: String,
     val segmentos: List<SegmentoData>,
     val direccion: String,
-    val nombre: String
+    val nombre: String,
+    val number : String
 )

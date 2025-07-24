@@ -66,7 +66,7 @@ fun TiemposDeEspera(viewModel: LineaRTSViewModel) {
                 for (bus in buses) {
                     BusItem(
                         route = lineas[lineaSeleccionada].nombreLinea,
-                        lineNumber = "361", // <-- esto debería ser dinámico idealmente
+                        lineNumber = lineas[lineaSeleccionada].number, // <-- esto debería ser dinámico idealmente
                         timeMinutes = 3     // <-- también este
                     )
                 }

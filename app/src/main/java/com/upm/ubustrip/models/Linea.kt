@@ -22,7 +22,8 @@ class LineaRTModel(
     var nombreLinea: String = "",
     var lineaId: String = "",
     var segmentosLinea: MutableList<Segmento> = mutableListOf(),
-    var direccion: String = ""
+    var direccion: String = "",
+    var number: String = ""
 ) {
 
     companion object {
@@ -73,6 +74,7 @@ class LineaRTModel(
         this.nombreLinea = lineaData.nombre
         this.lineaId = lineaData.lineaId
         this.direccion = lineaData.direccion
+        this.number = lineaData.number
 
         //asignamos los segmentos, el último segmento se le activa la flag de último segmento
         for ((index, segmento) in lineaData.segmentos.withIndex()) {

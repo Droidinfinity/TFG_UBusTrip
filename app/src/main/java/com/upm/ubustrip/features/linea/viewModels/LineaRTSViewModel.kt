@@ -160,13 +160,15 @@ class LineaRTSViewModel : ViewModel() {
 
     }
 
+    //Esto lo uso para refrescar el la pantalla de tiempos de espera : (cargaba la info, pero no refrescaba el composable)
     fun iniciarCambioDeTabs() {
         viewModelScope.launch {
             if (firstRefresh) {
                 firstRefresh = false
                 setSelectedTabIndex(1)
                 delay(50)
-                setSelectedTabIndex(0) // ✅ Se ejecuta incluso si el composable se desmonta
+
+                setSelectedTabIndex(0)
             }
         }
     }
