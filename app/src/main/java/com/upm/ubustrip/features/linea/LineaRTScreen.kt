@@ -91,6 +91,8 @@ fun ContenidoParada(modifier: Modifier, viewModel: LineaRTSViewModel) {
                 modifier = Modifier.fillMaxSize(),
                 contentAlignment = Alignment.TopCenter
             ) {
+
+
                 TiemposDeEspera(viewModel = viewModel)
             }
             //caso TIEMPO REAL

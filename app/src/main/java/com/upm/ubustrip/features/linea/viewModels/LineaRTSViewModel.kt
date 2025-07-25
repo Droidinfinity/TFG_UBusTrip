@@ -27,6 +27,9 @@ class LineaRTSViewModel : ViewModel() {
     var busesLinea = mutableStateListOf<Bus>()
     var refreshScreen = mutableStateOf(0)
 
+    //Contiene todos los buses de todas las lineas que correspondan a la parada
+    val busesPorLinea = mutableMapOf<String, MutableList<Bus>>()
+
     var isLoading = mutableStateOf(true)
         private set
     var firstRefresh = true
@@ -57,6 +60,8 @@ class LineaRTSViewModel : ViewModel() {
 
 
     //LISTENERS-----------------------------------------------------------
+    private val listenersActivos = mutableMapOf<String, ChildEventListener>()
+
     val childListener  = object : ChildEventListener {
         override fun onChildAdded(snapshot: DataSnapshot, previousChildName: String?) {
 
@@ -99,6 +104,8 @@ class LineaRTSViewModel : ViewModel() {
         }
     }
 
+
+
     //FIN LISTENERS----------------------------------------------------------------------------------
 
     fun setSelectedTabIndex(index: Int) {
@@ -135,6 +142,7 @@ class LineaRTSViewModel : ViewModel() {
 
                 }
             }
+            initListenerAllLineas()
             isLoading.value = false
 
         }
@@ -151,6 +159,8 @@ class LineaRTSViewModel : ViewModel() {
 
 
     }
+
+
     public fun removeBusesListener(linea:  String){
 
         if (linea.isNotEmpty()){
@@ -172,4 +182,65 @@ class LineaRTSViewModel : ViewModel() {
             }
         }
     }
+
+    fun crearYRegistrarListener(lineaId: String): ChildEventListener {
+        val listener = object : ChildEventListener {
+            override fun onChildAdded(snapshot: DataSnapshot, previousChildName: String?) {
+                val busData = snapshot.value as Map<*, *>
+                val ubicacionBus = busData["ubicacion"] as Map<*, *>
+
+                val bus = Bus(ubicacion = Coordenada(longitud = ubicacionBus["long"] as Double, latitud = ubicacionBus["lat"] as Double), matricula = busData["matricula"] as String)
+
+                if (busesPorLinea[lineaId] == null) {
+                    busesPorLinea[lineaId] = mutableListOf()
+                }
+                busesPorLinea[lineaId]?.add(bus)
+                Log.d("FirebaseDBRefactor", "Nuevo bus añadido: ${busData["matricula"]}")
+            }
+
+            override fun onChildChanged(snapshot: DataSnapshot, previousChildName: String?) {
+                // Tu lógica
+            }
+
+            override fun onChildRemoved(snapshot: DataSnapshot) {
+                // Tu lógica
+            }
+
+            override fun onChildMoved(snapshot: DataSnapshot, previousChildName: String?) {}
+            override fun onCancelled(error: DatabaseError) {
+                Log.e("FirebaseDB", "Error: ${error.message}")
+            }
+        }
+
+        // Registrar listener en el nodo correspondiente
+        val ref = dbRef.child("lineas").child(lineaId)
+        ref.addChildEventListener(listener)
+
+        return listener
+    }
+
+    fun iniciarListenerLinea(lineaId: String) {
+        if (listenersActivos[lineaId] == null) {
+            val listener = crearYRegistrarListener(lineaId)
+            listenersActivos[lineaId] = listener
+        }
+    }
+
+    fun eliminarListenerLinea(lineaId: String) {
+        val listener = listenersActivos.remove(lineaId)
+        if (listener != null) {
+            dbRef.child("lineas").child(lineaId).removeEventListener(listener)
+        }
+    }
+
+    public fun initListenerAllLineas(){
+
+        if (lineasRTModel.value != null) {
+            for (linea in lineasRTModel.value!!) {
+                iniciarListenerLinea(lineaId = linea.id)
+            }
+        }
+
+    }
+
 }

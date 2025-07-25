@@ -34,7 +34,7 @@ fun TiemposDeEspera(viewModel: LineaRTSViewModel) {
     val parada = viewModel.parada.value
     val lineas = viewModel.lineasRTModel.value
     val lineaSeleccionada = viewModel.lineaSeleccionada.value
-    val buses = viewModel.busesLinea
+    val buses = viewModel.busesPorLinea
 
     when {
         isLoading -> {
@@ -58,18 +58,24 @@ fun TiemposDeEspera(viewModel: LineaRTSViewModel) {
         else -> {
             Log.d("erasmus","Datos cargados")
                 if (viewModel.firstRefresh){
-                    viewModel.iniciarCambioDeTabs()
+               //     viewModel.iniciarCambioDeTabs()
                 }
 
 
             Column {
-                for (bus in buses) {
-                    BusItem(
-                        route = lineas[lineaSeleccionada].nombreLinea,
-                        lineNumber = lineas[lineaSeleccionada].number, // <-- esto debería ser dinámico idealmente
-                        timeMinutes = 3     // <-- también este
-                    )
+                for ((lineaId, busList) in buses) {
+                    val nombreLinea = viewModel.lineasRTModel.value?.find { it.id == lineaId }?.nombreLinea ?: "Desconocida"
+                    val numeroLinea = viewModel.lineasRTModel.value?.find { it.id == lineaId }?.number ?: "¿L?"
+
+                    for (bus in busList) {
+                        BusItem(
+                            route = nombreLinea,  // Usando la ID de la línea
+                            lineNumber = numeroLinea, // Nombre de la línea
+                            timeMinutes = 3     // Tiempo dinámico si es necesario
+                        )
+                    }
                 }
+
             }
         }
     }
