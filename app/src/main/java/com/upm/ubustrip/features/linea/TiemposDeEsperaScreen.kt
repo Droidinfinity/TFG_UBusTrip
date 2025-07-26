@@ -19,13 +19,17 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.upm.ubustrip.features.MapsUtils.MapsRoutes.Companion.getTiempoDesdeHasta
 import com.upm.ubustrip.features.linea.viewModels.LineaRTSViewModel
+import com.upm.ubustrip.models.Coordenada
 import kotlinx.coroutines.delay
 
 @Composable
@@ -72,10 +76,43 @@ fun TiemposDeEspera(viewModel: LineaRTSViewModel) {
 
                     for (bus in busList) {
                         if (bus.nextStop <= stop) {
+
+                            val origen = Coordenada(latitud = bus.ubicacion.latitud, longitud = bus.ubicacion.longitud)
+                            val detsLat = parada.ubicacion?.lat?.toDoubleOrNull()
+                            val detLong = parada.ubicacion?.long?.toDoubleOrNull()
+                            val tiempoLlegadaState = remember(bus.matricula) { mutableStateOf<Int?>(-1) }
+
+                            val o = Coordenada(latitud = -3.549559, longitud = 40.428229)
+                            val d = Coordenada(latitud = -3.518797, longitud = 40.413201)
+
+                            if (detsLat != null && detLong != null) {
+                                val destino = Coordenada(latitud = detsLat, longitud = detLong)
+
+                                Log.d("TiempoRuta", "Origen: ${origen.toString()}")
+                                Log.d("TiempoRuta", "Destino: ${destino.toString()}")
+                                LaunchedEffect(origen,destino) {
+                                    try {
+                                        val tiempo = getTiempoDesdeHasta(origen, destino)
+                                        if (tiempo != null) {
+                                            tiempoLlegadaState.value = tiempo
+                                        } else
+                                            tiempoLlegadaState.value = -1
+
+                                        Log.d("TiempoRuta", "Tiempo estimado: $tiempo")
+                                    } catch (e: Exception) {
+                                        Log.e("TiempoRuta", "Error al obtener tiempo: ${e.message}")
+                                    }
+
+                                }
+
+                            }else
+                                Log.e("TiempoRuta", "Error al obtener la ubicación de la parada,")
+
+
                             BusItem(
                                 route = nombreLinea,  // Usando la ID de la línea
                                 lineNumber = numeroLinea, // Nombre de la línea
-                                timeMinutes = 3     // Tiempo dinámico si es necesario
+                                timeMinutes = tiempoLlegadaState.value ?: -1     // Tiempo dinámico si es necesario
                             )
                         }
                     }
@@ -84,6 +121,8 @@ fun TiemposDeEspera(viewModel: LineaRTSViewModel) {
             }
         }
     }
+
+
 }
 
 
@@ -128,6 +167,7 @@ fun BusItem(
             modifier = Modifier.align(Alignment.CenterVertically)
         )
         Spacer(modifier = Modifier.padding(end = 5.dp))
+
     }
 
     HorizontalDivider()

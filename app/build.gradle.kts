@@ -38,6 +38,8 @@ android {
         val apiKey = localProps.getProperty("GOOGLE_MAPS_API_KEY") ?: ""
         resValue("string", "GOOGLE_MAPS_API_KEY", apiKey)
 
+        buildConfigField("String", "GOOGLE_MAPS_API_KEY", "\"$apiKey\"")
+
 
 
     }
@@ -68,6 +70,7 @@ android {
     }
     buildFeatures {
         compose = true
+        buildConfig = true
     }
     composeOptions {
         kotlinCompilerExtensionVersion = "1.5.1"
