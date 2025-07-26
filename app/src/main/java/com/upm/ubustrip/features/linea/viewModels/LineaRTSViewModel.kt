@@ -188,8 +188,9 @@ class LineaRTSViewModel : ViewModel() {
             override fun onChildAdded(snapshot: DataSnapshot, previousChildName: String?) {
                 val busData = snapshot.value as Map<*, *>
                 val ubicacionBus = busData["ubicacion"] as Map<*, *>
+                val nextStop = (busData["nextStop"] as? Long)?.toInt() ?: 0
 
-                val bus = Bus(ubicacion = Coordenada(longitud = ubicacionBus["long"] as Double, latitud = ubicacionBus["lat"] as Double), matricula = busData["matricula"] as String)
+                val bus = Bus(ubicacion = Coordenada(longitud = ubicacionBus["long"] as Double, latitud = ubicacionBus["lat"] as Double), matricula = busData["matricula"] as String, nextStop = nextStop)
 
                 if (busesPorLinea[lineaId] == null) {
                     busesPorLinea[lineaId] = mutableListOf()

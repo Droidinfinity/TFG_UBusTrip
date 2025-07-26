@@ -14,14 +14,16 @@ data class ParadaModel(
     val nombreParada: String,
     val lineas: MutableList<String>,
     val numeroParada: String,
-    val ubicacion: Ubicacion? // puede ser null si no está
+    val ubicacion: Ubicacion?, // puede ser null si no está
+    var stops: Map<String, Int>?
 )
 
 class Parada(
     var id: String? ,
     var nombreParada: String = "",
     var numeroParada: String  = "",
-    var ubicacion: Ubicacion? = null
+    var ubicacion: Ubicacion? = null,
+    var stops: Map<String, Int>? = null
 ) {
 
     var paradaId : String? = null
@@ -65,8 +67,9 @@ class Parada(
         this.numeroParada = paradaModel.numeroParada
         this.paradaId = id
         this.ubicacion = paradaModel.ubicacion
+        this.stops = paradaModel.stops
         Log.d("UBICA","nombre: ${this.nombreParada} ${ubicacion?.long} y ${ubicacion?.lat}")
-
+        Log.d("UBICA","STOPS: ${this.stops.toString()}")
         //asignamos las lineas, si hay mas de una
         for (linea in paradaModel.lineas) {
             lineasParada.add(linea)

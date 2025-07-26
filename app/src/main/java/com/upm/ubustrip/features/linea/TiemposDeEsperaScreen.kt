@@ -66,13 +66,18 @@ fun TiemposDeEspera(viewModel: LineaRTSViewModel) {
                 for ((lineaId, busList) in buses) {
                     val nombreLinea = viewModel.lineasRTModel.value?.find { it.id == lineaId }?.nombreLinea ?: "Desconocida"
                     val numeroLinea = viewModel.lineasRTModel.value?.find { it.id == lineaId }?.number ?: "¿L?"
+                    val stop: Int = viewModel.parada.value?.stops?.get(lineaId) ?: 0
+
+
 
                     for (bus in busList) {
-                        BusItem(
-                            route = nombreLinea,  // Usando la ID de la línea
-                            lineNumber = numeroLinea, // Nombre de la línea
-                            timeMinutes = 3     // Tiempo dinámico si es necesario
-                        )
+                        if (bus.nextStop <= stop) {
+                            BusItem(
+                                route = nombreLinea,  // Usando la ID de la línea
+                                lineNumber = numeroLinea, // Nombre de la línea
+                                timeMinutes = 3     // Tiempo dinámico si es necesario
+                            )
+                        }
                     }
                 }
 
