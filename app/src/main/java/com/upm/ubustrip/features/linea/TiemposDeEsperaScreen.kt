@@ -19,6 +19,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -27,6 +28,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.upm.ubustrip.enums.LineColors
 import com.upm.ubustrip.features.MapsUtils.MapsRoutes.Companion.getTiempoDesdeHasta
 import com.upm.ubustrip.features.linea.viewModels.LineaRTSViewModel
 import com.upm.ubustrip.models.Coordenada
@@ -35,10 +37,13 @@ import kotlinx.coroutines.delay
 @Composable
 fun TiemposDeEspera(viewModel: LineaRTSViewModel) {
     val isLoading = viewModel.isLoading.value
+    var listIsReady = remember { mutableStateOf(false) }
     val parada = viewModel.parada.value
     val lineas = viewModel.lineasRTModel.value
     val lineaSeleccionada = viewModel.lineaSeleccionada.value
     val buses = viewModel.busesPorLinea
+
+    val busesOrdenados = remember { mutableStateListOf<Triple<String, String, Int>>() }
 
     when {
         isLoading -> {
@@ -95,6 +100,9 @@ fun TiemposDeEspera(viewModel: LineaRTSViewModel) {
                                         val tiempo = getTiempoDesdeHasta(origen, destino)
                                         if (tiempo != null) {
                                             tiempoLlegadaState.value = tiempo
+                                            busesOrdenados.add(Triple(nombreLinea, numeroLinea, tiempo))
+                                            busesOrdenados.sortBy { it.third }
+
                                         } else
                                             tiempoLlegadaState.value = -1
 
@@ -109,13 +117,19 @@ fun TiemposDeEspera(viewModel: LineaRTSViewModel) {
                                 Log.e("TiempoRuta", "Error al obtener la ubicación de la parada,")
 
 
-                            BusItem(
-                                route = nombreLinea,  // Usando la ID de la línea
-                                lineNumber = numeroLinea, // Nombre de la línea
-                                timeMinutes = tiempoLlegadaState.value ?: -1     // Tiempo dinámico si es necesario
-                            )
+
                         }
                     }
+
+                    for ((nombreLinea, numeroLinea, tiempo) in busesOrdenados) {
+                        BusItem(
+                            route = nombreLinea,
+                            lineNumber = numeroLinea,
+                            timeMinutes = tiempo,
+
+                        )
+                    }
+                    listIsReady.value = true
                 }
 
             }
@@ -130,24 +144,25 @@ fun TiemposDeEspera(viewModel: LineaRTSViewModel) {
 fun BusItem(
     lineNumber: String,
     route: String,
-    timeMinutes: Int
+    timeMinutes: Int,
+
 ) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(vertical = 8.dp)
+            .padding(vertical = 8.dp, horizontal = 3.dp)
     ) {
         // Caja con número de línea
         Box(
             modifier = Modifier
                 .size(50.dp, 40.dp)
-                .background(Color.LightGray, shape = RoundedCornerShape(6.dp)),
+                .background(LineColors.AZUL.color, shape = RoundedCornerShape(6.dp)),
             contentAlignment = Alignment.Center
         ) {
             Text(
                 text = lineNumber,
                 fontWeight = FontWeight.Bold,
-                color = Color.Black
+                color = Color.White
             )
         }
 
@@ -162,7 +177,7 @@ fun BusItem(
         }
 
         Text(
-            text = "In $timeMinutes minutes",
+            text = "En $timeMinutes minutos",
             fontWeight = FontWeight.Bold,
             modifier = Modifier.align(Alignment.CenterVertically)
         )

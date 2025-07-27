@@ -1,5 +1,7 @@
 package com.upm.ubustrip.models
 
+import androidx.compose.ui.graphics.Color
+
 /**
  * Modelo obtenido del JSON de la linea
  *
@@ -16,5 +18,6 @@ data class LineaData(
     val segmentos: List<SegmentoData>,
     val direccion: String,
     val nombre: String,
-    val number : String
+    val number : String,
+    val color : String
 )

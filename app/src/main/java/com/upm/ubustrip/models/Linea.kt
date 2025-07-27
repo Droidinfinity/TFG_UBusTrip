@@ -1,8 +1,10 @@
 package com.upm.ubustrip.models
 
 import android.util.Log
+import androidx.compose.ui.graphics.Color
 import com.google.gson.Gson
 import com.upm.ubustrip.database.AppDatabase
+import com.upm.ubustrip.enums.LineColors
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -23,7 +25,8 @@ class LineaRTModel(
     var lineaId: String = "",
     var segmentosLinea: MutableList<Segmento> = mutableListOf(),
     var direccion: String = "",
-    var number: String = ""
+    var number: String = "",
+    var color: Color = Color.Gray
 ) {
 
     companion object {
@@ -75,6 +78,7 @@ class LineaRTModel(
         this.lineaId = lineaData.lineaId
         this.direccion = lineaData.direccion
         this.number = lineaData.number
+        this.color = asignarColor(lineaData.color)
 
         //asignamos los segmentos, el último segmento se le activa la flag de último segmento
         for ((index, segmento) in lineaData.segmentos.withIndex()) {
@@ -87,6 +91,17 @@ class LineaRTModel(
                 paradaFinalId = segmento.paradaFinalId
             )
             segmentosLinea.add(s)
+        }
+    }
+
+    private fun asignarColor(color: String): Color{
+
+        when (color){
+
+        "rojo"-> return LineColors.ROJO.color
+         "azul" -> return  LineColors.AZUL.color
+         else -> return Color.Gray
+
         }
     }
 }
