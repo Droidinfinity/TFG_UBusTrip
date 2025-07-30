@@ -12,6 +12,7 @@ import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
 import com.upm.ubustrip.database.AppDatabase
+import com.upm.ubustrip.database.HorariosParadaDB
 import com.upm.ubustrip.models.Bus
 import com.upm.ubustrip.models.Coordenada
 import com.upm.ubustrip.models.LineaRTModel
@@ -126,7 +127,7 @@ class LineaRTSViewModel : ViewModel() {
 
         viewModelScope.launch {
 
-
+            HorariosParadaDB.getHorariosSemana("679d2cc2a5f8ba8f3264385a","688640a30e657dcfad76624d")
             val paradaCargada = ParadaViewModel().getParadaById(id)
             _parada.value = paradaCargada // Actualiza el estado observado
 
