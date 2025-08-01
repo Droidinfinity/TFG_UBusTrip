@@ -5,8 +5,10 @@ import android.util.Log
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.ui.graphics.Color
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.google.android.gms.maps.model.LatLng
 import com.google.firebase.database.ChildEventListener
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
@@ -275,6 +277,21 @@ class LineaRTSViewModel : ViewModel() {
             }
         }
     }
+    /*Éste método convierte nuestras polilineas a una lista de coordenadas de un tipo que el SDK de Google puede leer*/
+    fun transformPolylinesToGoogle(): List<Pair<List<LatLng>, Color>> {
+        return lineasRTModel.value
+            ?.mapNotNull { linea ->
+                val puntosLinea = linea.segmentosLinea
+                    .flatMap { segmento ->
+                        segmento.segmento.map { LatLng(it.longitud, it.latitud) }
+                    }
+
+                if (puntosLinea.isNotEmpty()) Pair(puntosLinea, linea.color) else null
+            }
+            ?: emptyList()
+    }
+
+
 
 
 }

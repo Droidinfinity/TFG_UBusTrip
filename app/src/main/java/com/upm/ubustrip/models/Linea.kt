@@ -98,7 +98,7 @@ class LineaRTModel(
 
         when (color){
 
-        "rojo"-> return LineColors.ROJO.color
+        "verde"-> return LineColors.VERDE.color
          "azul" -> return  LineColors.AZUL.color
          else -> return Color.Gray
 

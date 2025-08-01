@@ -143,10 +143,14 @@ fun TiemposDeEspera(viewModel: LineaRTSViewModel) {
                     }
 
                     for ((nombreLinea, numeroLinea, tiempo) in busesOrdenados) {
+                        val linea = viewModel.lineasRTModel.value!!.find { it.nombreLinea == nombreLinea }
+                        val color: Color = (linea as? LineaRTModel)?.color ?: LineColors.AZUL.color
+
                         BusItem(
                             route = nombreLinea,
                             lineNumber = numeroLinea,
                             timeMinutes = tiempo,
+                            color = color
 
                         )
                     }
@@ -183,11 +187,15 @@ fun TiemposDeEspera(viewModel: LineaRTSViewModel) {
 
                 //Por último iteramos la lista e imprimimos los Horarios ordenados
                 for ((numeroLinea, nombreLinea, hora) in listaHorarios) {
+                    val linea = viewModel.lineasRTModel.value!!.find { it.nombreLinea == nombreLinea }
+                    val color: Color = (linea as? LineaRTModel)?.color ?: LineColors.AZUL.color
+
                     BusItem(
                         lineNumber = numeroLinea,
                         route = nombreLinea,
                         timeMinutes = -2,
-                        hour = hora.toString()
+                        hour = hora.toString(),
+                        color = color
                     )
                 }
 
@@ -204,7 +212,8 @@ fun BusItem(
     lineNumber: String,
     route: String,
     timeMinutes: Int,
-    hour : String = ""
+    hour : String = "",
+    color: Color = LineColors.AZUL.color
 
 ) {
     Row(
@@ -217,7 +226,7 @@ fun BusItem(
         Box(
             modifier = Modifier
                 .size(50.dp, 40.dp)
-                .background(LineColors.AZUL.color, shape = RoundedCornerShape(6.dp)),
+                .background(color = color, shape = RoundedCornerShape(6.dp)),
             contentAlignment = Alignment.Center
         ) {
             Text(
