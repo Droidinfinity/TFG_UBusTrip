@@ -15,6 +15,7 @@ import com.upm.ubustrip.database.AppDatabase
 import com.upm.ubustrip.database.HorariosParadaDB
 import com.upm.ubustrip.models.Bus
 import com.upm.ubustrip.models.Coordenada
+import com.upm.ubustrip.models.HorarioParada
 import com.upm.ubustrip.models.LineaRTModel
 import com.upm.ubustrip.models.Parada
 import com.upm.ubustrip.viewModels.ParadaViewModel
@@ -22,6 +23,9 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import java.time.DayOfWeek
+import java.time.LocalDateTime
+import java.time.LocalTime
 
 
 class LineaRTSViewModel : ViewModel() {
@@ -45,6 +49,7 @@ class LineaRTSViewModel : ViewModel() {
      var lineaSeleccionada = mutableStateOf<Int>(0)
     var idLineaSeleccionada = ""
 
+    val horariosParadaMap: MutableMap<String, HorarioParada> = mutableMapOf()
 
     private val _lineasRTModel =  mutableStateOf<MutableList<LineaRTModel>?>(mutableListOf())
     val lineasRTModel : State<MutableList<LineaRTModel>?> = _lineasRTModel
@@ -127,7 +132,6 @@ class LineaRTSViewModel : ViewModel() {
 
         viewModelScope.launch {
 
-            HorariosParadaDB.getHorariosSemana("679d2cc2a5f8ba8f3264385a","688640a30e657dcfad76624d")
             val paradaCargada = ParadaViewModel().getParadaById(id)
             _parada.value = paradaCargada // Actualiza el estado observado
 
@@ -146,6 +150,7 @@ class LineaRTSViewModel : ViewModel() {
             initListenerAllLineas()
             isLoading.value = false
 
+            cargarHorarios()
         }
     }
 
@@ -244,5 +249,32 @@ class LineaRTSViewModel : ViewModel() {
         }
 
     }
+
+    private suspend fun cargarHorarios() {
+        parada.value?.let { paradaActual ->
+            if (paradaActual.lineasParada.isNotEmpty()) {
+                val diaActual = LocalDateTime.now().dayOfWeek
+
+                for (linea in paradaActual.lineasParada) {
+                    val idParada = paradaActual.id ?: continue
+
+                    try {
+                        val horarios = when (diaActual) {
+                            DayOfWeek.SATURDAY -> HorariosParadaDB.getHorariosSabado(linea, idParada)
+                            DayOfWeek.SUNDAY -> HorariosParadaDB.getHorariosDomingo(linea, idParada)
+                            else -> HorariosParadaDB.getHorariosSemana(linea, idParada)
+                        }
+
+                        val horarioParada = HorarioParada(horarios)
+                        horariosParadaMap[linea] = horarioParada
+
+                    } catch (e: Exception) {
+                        Log.e("cargarHorarios", "Error cargando horarios de línea $linea: ${e.message}")
+                    }
+                }
+            }
+        }
+    }
+
 
 }

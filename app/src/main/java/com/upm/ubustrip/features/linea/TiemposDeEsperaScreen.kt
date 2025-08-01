@@ -11,10 +11,17 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.AccessTime
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Divider
 import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -32,7 +39,10 @@ import com.upm.ubustrip.enums.LineColors
 import com.upm.ubustrip.features.MapsUtils.MapsRoutes.Companion.getTiempoDesdeHasta
 import com.upm.ubustrip.features.linea.viewModels.LineaRTSViewModel
 import com.upm.ubustrip.models.Coordenada
+import com.upm.ubustrip.models.LineaRTModel
 import kotlinx.coroutines.delay
+import java.time.LocalTime
+
 
 @Composable
 fun TiemposDeEspera(viewModel: LineaRTSViewModel) {
@@ -70,8 +80,13 @@ fun TiemposDeEspera(viewModel: LineaRTSViewModel) {
                //     viewModel.iniciarCambioDeTabs()
                 }
 
+            val scrollState = rememberScrollState()
+            Column(modifier = Modifier
+                .fillMaxSize()
+                .verticalScroll(scrollState)) {
 
-            Column {
+                CabeceraHorarios("Buses en circulación")
+
                 for ((lineaId, busList) in buses) {
                     val nombreLinea = viewModel.lineasRTModel.value?.find { it.id == lineaId }?.nombreLinea ?: "Desconocida"
                     val numeroLinea = viewModel.lineasRTModel.value?.find { it.id == lineaId }?.number ?: "¿L?"
@@ -112,11 +127,12 @@ fun TiemposDeEspera(viewModel: LineaRTSViewModel) {
                                         Log.e("TiempoRuta", "Error al obtener tiempo: ${e.message}")
                                     }
 
+
+
                                 }
 
                             }else
                                 Log.e("TiempoRuta", "Error al obtener la ubicación de la parada,")
-
 
 
                         }
@@ -133,6 +149,30 @@ fun TiemposDeEspera(viewModel: LineaRTSViewModel) {
                     listIsReady.value = true
                 }
 
+                CabeceraHorarios("Próximos horarios")
+
+                //GENERACIÓN DE LOS HORARIOS PRESTABLECIDOS (EN LA BD)
+
+                val listaOrdenada = mutableListOf<Triple<String, String, LocalTime>>() // (numeroLinea, nombreLinea, hora)
+                for ((linea, horario) in viewModel.horariosParadaMap) {
+
+                    val lineaRTM: LineaRTModel? = viewModel.lineasRTModel.value?.find { it.id == linea }
+                    var nombreLinea = "¿¿¿Linea Desconocida???"
+                    var numeroLinea = "¿¿L??"
+
+                    if (lineaRTM != null) {
+                        nombreLinea = lineaRTM.nombreLinea
+                        numeroLinea = lineaRTM.number
+                    }
+
+                    val horaActual: LocalTime = LocalTime.now()
+                    val horas = horario.getHorariosFrom(horaActual,3)
+                    for (hora in horas){
+                    BusItem(lineNumber = numeroLinea,nombreLinea, timeMinutes = -2, hour = hora.toString())
+
+                    }
+                }
+
             }
         }
     }
@@ -146,12 +186,14 @@ fun BusItem(
     lineNumber: String,
     route: String,
     timeMinutes: Int,
+    hour : String = ""
 
 ) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
             .padding(vertical = 8.dp, horizontal = 3.dp)
+
     ) {
         // Caja con número de línea
         Box(
@@ -177,6 +219,13 @@ fun BusItem(
             )
         }
 
+        if (timeMinutes == -2)
+            Text(
+                    text = "$hour ",
+                fontWeight = FontWeight.Bold,
+                modifier = Modifier.align(Alignment.CenterVertically)
+            )
+        else
         Text(
             text = "En $timeMinutes minutos",
             fontWeight = FontWeight.Bold,
@@ -187,4 +236,32 @@ fun BusItem(
     }
 
     HorizontalDivider()
+}
+
+@Composable
+fun CabeceraHorarios(titulo: String) {
+    Surface(
+        modifier = Modifier.fillMaxWidth(),
+        color = MaterialTheme.colorScheme.background,
+        shadowElevation = 4.dp,
+        shape = RoundedCornerShape(bottomStart = 16.dp, bottomEnd = 16.dp)
+    ) {
+        Row(
+            modifier = Modifier
+                .padding(horizontal = 16.dp, vertical = 12.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Icon(Icons.Default.AccessTime, contentDescription = null, tint = Color(0xFF4A4A4A))
+            Spacer(modifier = Modifier.width(8.dp))
+            Text(
+                text = titulo,
+                fontSize = 24.sp,
+                fontWeight = FontWeight.Bold,
+                color = Color(0xFF2C2C2C)
+            )
+
+        }
+    }
+
+    Spacer(modifier = Modifier.padding(bottom = 10.dp))
 }

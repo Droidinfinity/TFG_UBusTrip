@@ -1,5 +1,7 @@
 package com.upm.ubustrip.models
 
+import java.time.LocalTime
+
 data class HorarioParadaModel(
-    val frecuencias: MutableList<String> = mutableListOf()
+    val frecuencias: List<LocalTime>
 )

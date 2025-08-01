@@ -18,7 +18,7 @@ android {
 
     defaultConfig {
         applicationId = "com.upm.ubustrip"
-        minSdk = 24
+        minSdk = 26
         targetSdk = 35
         versionCode = 1
         versionName = "1.0-alpha.1"
@@ -107,6 +107,8 @@ dependencies {
     implementation("org.mongodb:bson-kotlinx:5.2.1")
 
     implementation("com.squareup.okhttp3:okhttp:4.11.0")
+
+    implementation("androidx.compose.material:material-icons-extended:1.6.0")
 
     // Android Maps Compose composables for the Maps SDK for Android
     implementation("com.google.maps.android:maps-compose:6.4.1")
