@@ -3,8 +3,11 @@ package com.upm.ubustrip.features.linea.viewModels
 import android.annotation.SuppressLint
 import android.util.Log
 import androidx.compose.runtime.State
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
+import androidx.compose.runtime.mutableStateMapOf
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.graphics.Color
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -35,7 +38,9 @@ class LineaRTSViewModel : ViewModel() {
     var refreshScreen = mutableStateOf(0)
 
     //Contiene todos los buses de todas las lineas que correspondan a la parada
-    val busesPorLinea = mutableMapOf<String, MutableList<Bus>>()
+    val busesPorLinea = mutableStateMapOf<String, MutableList<Bus>>()
+    var refreshMap by mutableStateOf(false)
+        private set
 
     var isLoading = mutableStateOf(true)
         private set
@@ -205,14 +210,54 @@ class LineaRTSViewModel : ViewModel() {
                 }
                 busesPorLinea[lineaId]?.add(bus)
                 Log.d("FirebaseDBRefactor", "Nuevo bus añadido: ${busData["matricula"]}")
+
+                toggleRefreshMap()
             }
 
             override fun onChildChanged(snapshot: DataSnapshot, previousChildName: String?) {
-                // Tu lógica
+
+                val busData = snapshot.value as Map<*, *>
+                val ubicacionBus = busData["ubicacion"] as Map<*, *>
+                val nextStop = (busData["nextStop"] as? Long)?.toInt() ?: 0
+                val matricula = busData["matricula"] as String
+
+                val busActualizado = Bus(
+                    ubicacion = Coordenada(
+                        longitud = ubicacionBus["long"] as Double,
+                        latitud = ubicacionBus["lat"] as Double
+                    ),
+                    matricula = matricula,
+                    nextStop = nextStop
+                )
+
+                val listaBuses = busesPorLinea[lineaId]
+                if (listaBuses != null) {
+                    val index = listaBuses.indexOfFirst { it.matricula == matricula }
+                    if (index != -1) {
+                        listaBuses[index] = busActualizado
+                        busesPorLinea[lineaId] = listaBuses.toMutableList() // Forzar recomposición
+                        Log.d("FirebaseDBRefactor", "Bus actualizado: $matricula")
+                    }
+                }
+
+                toggleRefreshMap()
             }
 
             override fun onChildRemoved(snapshot: DataSnapshot) {
-                // Tu lógica
+
+                val busData = snapshot.value as Map<*, *>
+                val matricula = busData["matricula"] as String
+
+                val listaBuses = busesPorLinea[lineaId]
+                if (listaBuses != null) {
+                    val index = listaBuses.indexOfFirst { it.matricula == matricula }
+                    if (index != -1) {
+                        listaBuses.removeAt(index)
+                        busesPorLinea[lineaId] = listaBuses.toMutableList() // Forzar recomposición
+                        Log.d("FirebaseDBRefactor", "Bus eliminado: $matricula")
+                    }
+                }
+                toggleRefreshMap()
             }
 
             override fun onChildMoved(snapshot: DataSnapshot, previousChildName: String?) {}
@@ -292,6 +337,8 @@ class LineaRTSViewModel : ViewModel() {
     }
 
 
-
+    fun toggleRefreshMap() {
+        refreshMap = !refreshMap
+    }
 
 }

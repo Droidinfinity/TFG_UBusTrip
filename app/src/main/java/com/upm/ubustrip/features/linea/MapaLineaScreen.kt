@@ -29,7 +29,7 @@ import com.upm.ubustrip.features.linea.viewModels.LineaRTSViewModel
 @SuppressLint("UnrememberedMutableState")
 @Composable
 fun MapTestScreen(viewModel: LineaRTSViewModel) {
-    if (viewModel.parada.value != null) {
+    if (viewModel.parada.value != null && viewModel.refreshMap != null) {
         val coordenadasLineas: List<Pair<List<LatLng>, Color>> = viewModel.transformPolylinesToGoogle()
 
         val latParada = viewModel.parada.value?.ubicacion?.lat?.toDoubleOrNull() ?: -3.7038
