@@ -16,6 +16,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccessTime
+import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Divider
 import androidx.compose.material3.HorizontalDivider
@@ -76,16 +77,19 @@ fun TiemposDeEspera(viewModel: LineaRTSViewModel) {
 
         else -> {
             Log.d("erasmus","Datos cargados")
+
+            //AYUDA A QUE SE VEAN LOS HORARIOS (temporal, pero funcional)
+            //TODO: En caso de encontrar el motivo, reorganizarlo y eliminar ésto
                 if (viewModel.firstRefresh){
-               //     viewModel.iniciarCambioDeTabs()
+                    viewModel.iniciarCambioDeTabs()
                 }
 
-            val scrollState = rememberScrollState()
+            val scrollState = rememberScrollState() //Scroll para el Colum, alternativa a LazyColum si no se los elementos exactos
             Column(modifier = Modifier
                 .fillMaxSize()
                 .verticalScroll(scrollState)) {
 
-                CabeceraHorarios("Buses en circulación")
+                CabeceraHorarios("Buses en circulación",1)
 
                 for ((lineaId, busList) in buses) {
                     val nombreLinea = viewModel.lineasRTModel.value?.find { it.id == lineaId }?.nombreLinea ?: "Desconocida"
@@ -149,28 +153,42 @@ fun TiemposDeEspera(viewModel: LineaRTSViewModel) {
                     listIsReady.value = true
                 }
 
-                CabeceraHorarios("Próximos horarios")
+                CabeceraHorarios("Horarios")
 
                 //GENERACIÓN DE LOS HORARIOS PRESTABLECIDOS (EN LA BD)
 
-                val listaOrdenada = mutableListOf<Triple<String, String, LocalTime>>() // (numeroLinea, nombreLinea, hora)
+                /*Pasos a seguir
+
+                1º: Iteramos todos los horarios
+                2º: Los guardamos en nuestra lista con atributos triples
+                3º: Ordenamos la lista
+                4º: Iteramos la lista ordenada y colocamos nuestros BusItems
+                */
+                val listaHorarios = mutableListOf<Triple<String, String, LocalTime>>() // (numeroLinea, nombreLinea, hora)
+                //Iteramos los horarios...
                 for ((linea, horario) in viewModel.horariosParadaMap) {
-
                     val lineaRTM: LineaRTModel? = viewModel.lineasRTModel.value?.find { it.id == linea }
-                    var nombreLinea = "¿¿¿Linea Desconocida???"
-                    var numeroLinea = "¿¿L??"
-
-                    if (lineaRTM != null) {
-                        nombreLinea = lineaRTM.nombreLinea
-                        numeroLinea = lineaRTM.number
-                    }
+                    val nombreLinea = lineaRTM?.nombreLinea ?: "¿¿¿Linea Desconocida???"
+                    val numeroLinea = lineaRTM?.number ?: "¿¿L??"
 
                     val horaActual: LocalTime = LocalTime.now()
-                    val horas = horario.getHorariosFrom(horaActual,3)
-                    for (hora in horas){
-                    BusItem(lineNumber = numeroLinea,nombreLinea, timeMinutes = -2, hour = hora.toString())
-
+                    val horas = horario.getHorariosFrom(horaActual, 3)
+                    //Cogemos los n horarios que estén por delante de la hora actual
+                    for (hora in horas) {
+                        listaHorarios.add(Triple(numeroLinea, nombreLinea, hora))
                     }
+                }
+
+                listaHorarios.sortBy { it.third } //Ordenamos la lista
+
+                //Por último iteramos la lista e imprimimos los Horarios ordenados
+                for ((numeroLinea, nombreLinea, hora) in listaHorarios) {
+                    BusItem(
+                        lineNumber = numeroLinea,
+                        route = nombreLinea,
+                        timeMinutes = -2,
+                        hour = hora.toString()
+                    )
                 }
 
             }
@@ -239,7 +257,7 @@ fun BusItem(
 }
 
 @Composable
-fun CabeceraHorarios(titulo: String) {
+fun CabeceraHorarios(titulo: String, tipo : Int = 0) {
     Surface(
         modifier = Modifier.fillMaxWidth(),
         color = MaterialTheme.colorScheme.background,
@@ -251,7 +269,12 @@ fun CabeceraHorarios(titulo: String) {
                 .padding(horizontal = 16.dp, vertical = 12.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            Icon(Icons.Default.AccessTime, contentDescription = null, tint = Color(0xFF4A4A4A))
+            if(tipo == 0 )
+                Icon(Icons.Default.AccessTime, contentDescription = null, tint = Color(0xFF4A4A4A))
+            else
+                Icon(Icons.Default.Refresh, contentDescription = null, tint = Color(0xFF4A4A4A))
+
+
             Spacer(modifier = Modifier.width(8.dp))
             Text(
                 text = titulo,
