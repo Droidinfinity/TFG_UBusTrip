@@ -23,7 +23,7 @@ class AppDatabase {
      */
     companion object MongoCRUD{
         private val localhost = "10.0.2.2"
-        private val redURL = "10.10.63.101" //Si quiero testearlo en dispositivo físico (PONER LA IPv4 del PC O wifi)
+        private val redURL = "192.168.137.1" //Si quiero testearlo en dispositivo físico (PONER LA IPv4 del PC O wifi)
         private val URL = "http:${redURL}:3000/api"
          val REALTIME_DATABASE_URL = "https://ubustrip-81feb-default-rtdb.europe-west1.firebasedatabase.app"
 

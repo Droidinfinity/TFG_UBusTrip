@@ -92,8 +92,11 @@ fun TiemposDeEspera(viewModel: LineaRTSViewModel) {
                 CabeceraHorarios("Buses en circulación",1)
 
                 for ((lineaId, busList) in buses) {
-                    val nombreLinea = viewModel.lineasRTModel.value?.find { it.id == lineaId }?.nombreLinea ?: "Desconocida"
-                    val numeroLinea = viewModel.lineasRTModel.value?.find { it.id == lineaId }?.number ?: "¿L?"
+                    val nombreLinea =
+                        viewModel.lineasRTModel.value?.find { it.id == lineaId }?.nombreLinea
+                            ?: "Desconocida"
+                    val numeroLinea =
+                        viewModel.lineasRTModel.value?.find { it.id == lineaId }?.number ?: "¿L?"
                     val stop: Int = viewModel.parada.value?.stops?.get(lineaId) ?: 0
 
 
@@ -101,10 +104,14 @@ fun TiemposDeEspera(viewModel: LineaRTSViewModel) {
                     for (bus in busList) {
                         if (bus.nextStop <= stop) {
 
-                            val origen = Coordenada(latitud = bus.ubicacion.latitud, longitud = bus.ubicacion.longitud)
+                            val origen = Coordenada(
+                                latitud = bus.ubicacion.latitud,
+                                longitud = bus.ubicacion.longitud
+                            )
                             val detsLat = parada.ubicacion?.lat?.toDoubleOrNull()
                             val detLong = parada.ubicacion?.long?.toDoubleOrNull()
-                            val tiempoLlegadaState = remember(bus.matricula) { mutableStateOf<Int?>(-1) }
+                            val tiempoLlegadaState =
+                                remember(bus.matricula) { mutableStateOf<Int?>(-1) }
 
                             val o = Coordenada(latitud = -3.549559, longitud = 40.428229)
                             val d = Coordenada(latitud = -3.518797, longitud = 40.413201)
@@ -114,13 +121,19 @@ fun TiemposDeEspera(viewModel: LineaRTSViewModel) {
 
                                 Log.d("TiempoRuta", "Origen: ${origen.toString()}")
                                 Log.d("TiempoRuta", "Destino: ${destino.toString()}")
-                                LaunchedEffect(origen,destino) {
+                                LaunchedEffect(origen, destino) {
                                     try {
                                         //val tiempo = getTiempoDesdeHasta(origen, destino)
                                         val tiempo = -1 //TODO: ÉSTO ES SOLO PARA NO REVENTAR A LLAMADAS A LA API (QUITAR CUANDO SE QUIERA FUNCIONAL)
                                         if (tiempo != null) {
                                             tiempoLlegadaState.value = tiempo
-                                            busesOrdenados.add(Triple(nombreLinea, numeroLinea, tiempo))
+                                            busesOrdenados.add(
+                                                Triple(
+                                                    nombreLinea,
+                                                    numeroLinea,
+                                                    tiempo
+                                                )
+                                            )
                                             busesOrdenados.sortBy { it.third }
 
                                         } else
@@ -132,15 +145,15 @@ fun TiemposDeEspera(viewModel: LineaRTSViewModel) {
                                     }
 
 
-
                                 }
 
-                            }else
+                            } else
                                 Log.e("TiempoRuta", "Error al obtener la ubicación de la parada,")
 
 
                         }
                     }
+                }
 
                     for ((nombreLinea, numeroLinea, tiempo) in busesOrdenados) {
                         val linea = viewModel.lineasRTModel.value!!.find { it.nombreLinea == nombreLinea }
@@ -153,9 +166,11 @@ fun TiemposDeEspera(viewModel: LineaRTSViewModel) {
                             color = color
 
                         )
+
                     }
                     listIsReady.value = true
-                }
+
+                Log.d("TiempoRutaR", "Buses ordenados: ${busesOrdenados.toString()}")
 
                 CabeceraHorarios("Horarios")
 
@@ -246,18 +261,22 @@ fun BusItem(
             )
         }
 
-        if (timeMinutes == -2)
+        //MODO HORARIO
+        if (timeMinutes == -2) {
             Text(
-                    text = "$hour ",
+                text = "$hour ",
                 fontWeight = FontWeight.Bold,
                 modifier = Modifier.align(Alignment.CenterVertically)
             )
-        else
-        Text(
-            text = "En $timeMinutes minutos",
-            fontWeight = FontWeight.Bold,
-            modifier = Modifier.align(Alignment.CenterVertically)
-        )
+        }
+        //TIEMPO RESTANTE (BUSES EN CIRCULACIÓN)
+        else {
+            Text(
+                text = "En $timeMinutes minutos",
+                fontWeight = FontWeight.Bold,
+                modifier = Modifier.align(Alignment.CenterVertically)
+            )
+        }
         Spacer(modifier = Modifier.padding(end = 5.dp))
 
     }
