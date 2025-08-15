@@ -1,7 +1,7 @@
 package com.upm.ubustrip.models
 
 /**
- * Modelo obtenido desde el  JSON de la linea
+ * DTO obtenido desde el  JSON de la linea
  *
  * @property polyline
  * @property paradaId

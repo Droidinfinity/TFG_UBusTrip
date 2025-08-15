@@ -123,8 +123,8 @@ fun TiemposDeEspera(viewModel: LineaRTSViewModel) {
                                 Log.d("TiempoRuta", "Destino: ${destino.toString()}")
                                 LaunchedEffect(origen, destino) {
                                     try {
-                                        //val tiempo = getTiempoDesdeHasta(origen, destino)
-                                        val tiempo = -1 //TODO: ÉSTO ES SOLO PARA NO REVENTAR A LLAMADAS A LA API (QUITAR CUANDO SE QUIERA FUNCIONAL)
+                                        val tiempo = getTiempoDesdeHasta(origen, destino)
+                                        //val tiempo = -1 //TODO: ÉSTO ES SOLO PARA NO REVENTAR A LLAMADAS A LA API (QUITAR CUANDO SE QUIERA FUNCIONAL)
                                         if (tiempo != null) {
                                             tiempoLlegadaState.value = tiempo
                                             busesOrdenados.add(
