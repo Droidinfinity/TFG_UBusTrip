@@ -61,6 +61,7 @@ fun TopBarLineaRTS(viewModel: LineaRTSViewModel, navController: NavController) {
                     )
                 }
             },
+
         )
 
         TabRow(selectedTabIndex = selectedTabIndex, indicator = { tabPositions ->

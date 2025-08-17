@@ -16,9 +16,11 @@ import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.upm.ubustrip.features.favorites.Favorites
 import com.upm.ubustrip.database.LoginViewModel
+import com.upm.ubustrip.features.favorites.viewModel.FavoritesViewModel
 import com.upm.ubustrip.features.linea.viewModels.LineaRTSViewModel
 
 
@@ -41,6 +43,7 @@ fun Menu(
 
     val isLogged = loginViewModel.getAuth().currentUser != null
     var accountNavigation = ""
+    val favViewModel : FavoritesViewModel = viewModel()
 
     if(isLogged)
         accountNavigation = "accountScreen"
@@ -87,7 +90,7 @@ fun Menu(
         Scaffold(
             bottomBar = { BottomBar(tabBarItems, navigator, viewModel = MenuViewModel(), lineaViewModel = lineaRTSViewModel) },
             topBar = { TopBar(viewModel = MenuViewModel()) },
-            content = { paddingValues -> Favorites(paddingValues) }
+            content = { paddingValues -> Favorites(paddingValues,favViewModel,navigator,lineaRTSViewModel) }
 
         )
     }

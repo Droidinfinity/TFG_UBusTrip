@@ -114,6 +114,8 @@ dependencies {
     implementation("com.google.maps.android:maps-compose:6.4.1")
     implementation ("com.google.android.gms:play-services-maps:18.2.0")
 
+    implementation("androidx.datastore:datastore-preferences:1.1.1")
+
     implementation(libs.androidx.navigation.runtime.ktx)
     implementation(libs.firebase.auth.ktx)
     testImplementation(libs.junit)
