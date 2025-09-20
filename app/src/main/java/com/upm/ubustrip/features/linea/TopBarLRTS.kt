@@ -1,6 +1,7 @@
 package com.upm.ubustrip.features.linea
 
 
+import android.app.Application
 import androidx.compose.foundation.layout.Column
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
@@ -16,15 +17,22 @@ import androidx.compose.material3.TabRowDefaults.tabIndicatorOffset
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
+import com.upm.ubustrip.features.favorites.viewModel.FavoritesViewModel
 import com.upm.ubustrip.features.linea.viewModels.LineaRTSViewModel
+import com.upm.ubustrip.features.linea.viewModels.TopBarLRTSViewModel
+import com.upm.ubustrip.models.ParadaFavorita
 import com.upm.ubustrip.ui.theme.UBusTripBlueColor
 
 
@@ -34,6 +42,15 @@ fun TopBarLineaRTS(viewModel: LineaRTSViewModel, navController: NavController) {
     val parada = viewModel.parada.value
     var selectedTabIndex by remember { mutableStateOf(0) }
     val opciones = listOf("Tiempos de espera", "Tiempo real", "Mapa")
+    val topBarLRTSViewModel : TopBarLRTSViewModel = viewModel()
+
+    val favorites by topBarLRTSViewModel.favorites.collectAsState()
+
+    // ⭐ CALcular si es favorito basado en el estado actual
+    val esFav = remember(parada?.id, favorites) {
+        parada?.id?.let { id -> favorites.any { it.id == id } } ?: false
+    }
+
 
     Column {
         CenterAlignedTopAppBar(
@@ -62,14 +79,30 @@ fun TopBarLineaRTS(viewModel: LineaRTSViewModel, navController: NavController) {
                 }
             },
             actions = {
-                IconButton(onClick = {
-                    // Acción que quieras (ej: guardar en favoritos)
-                }) {
-                    Icon(
-                        imageVector = Icons.Default.Star,
-                        contentDescription = "Favorito",
-                        tint = Color.White
-                    )
+
+                val fav = ParadaFavorita(
+                    id = viewModel.parada.value?.id ?: "",
+                    numeroParada = viewModel.parada.value?.numeroParada ?: "DESCONOCIDA",
+                    nombre = viewModel.parada.value?.nombreParada ?: "DESCONOCIDA"
+                )
+
+                if(viewModel.parada.value !=null) {
+                    IconButton(onClick = {
+
+
+                        if (esFav) {
+                            topBarLRTSViewModel.removeFavorite(fav)
+                        } else {
+                            topBarLRTSViewModel.addFavorite(fav)
+                        }
+
+                    }) {
+                        Icon(
+                            imageVector = Icons.Default.Star,
+                            contentDescription = "Favorito",
+                            tint = if (esFav) Color.White else Color.LightGray
+                        )
+                    }
                 }
             }
         )

@@ -32,6 +32,7 @@ fun AppNavigation(){
     val forgotUPassWordViewModel: ForgotUPassViewModel = ForgotUPassViewModel()
     val lineaRTSViewModel : LineaRTSViewModel = LineaRTSViewModel()
 
+
     NavHost(navController, startDestination = AppScreens.MenuScreen.route){
 
         composable(route = AppScreens.MenuScreen.route) { Menu(navController, menuViewModel = menuViewModel, loginViewModel = loginViewModel, lineaRTSViewModel = lineaRTSViewModel) }

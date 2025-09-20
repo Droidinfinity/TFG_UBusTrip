@@ -10,11 +10,11 @@ import com.upm.ubustrip.models.ParadaFavorita
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 
-class DataStoreManager(private val context: Context) {
+class DataStoreManager(private val context: Context,name: String,s: String) {
 
     val Context.dataStore by preferencesDataStore(name = "app_prefs")
 
-    private val KEY_FAVORITOS = stringPreferencesKey("favoritos")
+    private val KEY_FAVORITOS = stringPreferencesKey(s)
     private val gson = Gson()
 
     // Guardar lista de paradas favoritas

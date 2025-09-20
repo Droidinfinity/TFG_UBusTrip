@@ -22,6 +22,7 @@ import com.upm.ubustrip.features.favorites.Favorites
 import com.upm.ubustrip.database.LoginViewModel
 import com.upm.ubustrip.features.favorites.viewModel.FavoritesViewModel
 import com.upm.ubustrip.features.linea.viewModels.LineaRTSViewModel
+import com.upm.ubustrip.features.linea.viewModels.TopBarLRTSViewModel
 
 
 data class TabBarItem(
@@ -44,6 +45,7 @@ fun Menu(
     val isLogged = loginViewModel.getAuth().currentUser != null
     var accountNavigation = ""
     val favViewModel : FavoritesViewModel = viewModel()
+
 
     if(isLogged)
         accountNavigation = "accountScreen"

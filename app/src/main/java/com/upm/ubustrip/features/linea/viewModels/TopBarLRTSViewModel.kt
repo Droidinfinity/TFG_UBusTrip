@@ -1,6 +1,7 @@
-package com.upm.ubustrip.features.favorites.viewModel
+package com.upm.ubustrip.features.linea.viewModels
 
 import android.app.Application
+import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.upm.ubustrip.DataStore.DataStoreManager
@@ -11,10 +12,9 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 
-class FavoritesViewModel(application: Application) : AndroidViewModel(application) {
+class TopBarLRTSViewModel(application: Application) : AndroidViewModel(application) {
 
-    //private val dataStoreManager = DataStoreManager(application, name = "app_prefs", s = "favoritos")
-
+   // private val dataStoreManager = DataStoreManager(application,"prueba","c")
     // Estado con la lista de favoritos en memoria
     private val _favorites = MutableStateFlow<List<ParadaFavorita>>(emptyList())
     val favorites: StateFlow<List<ParadaFavorita>> = _favorites.asStateFlow()
@@ -22,17 +22,29 @@ class FavoritesViewModel(application: Application) : AndroidViewModel(applicatio
     init {
         // Cargar favoritos desde DataStore al crear el ViewModel
         viewModelScope.launch {
-           // testADD()
-
-            DataStoreManagerSilguenton.leerFavoritos().collect { list ->
-                _favorites.value = list
+            try {
+                DataStoreManagerSilguenton.leerFavoritos().collect { list ->
+                    _favorites.value = list
+                }
+            } catch (e: Exception) {
+                // Manejar error apropiadamente
+                Log.e("TopBarLRTSViewModel", "Error loading favorites", e)
             }
-
         }
 
     }
 
+    fun addFavorite(item: ParadaFavorita) {
 
+        if (!comprobarSiExisteFav(item)) {
+            viewModelScope.launch {
+                val list = _favorites.value.toMutableList().apply {
+                    add(item)
+                }
+                DataStoreManagerSilguenton.guardarFavoritos(list)
+            }
+        }
+    }
 
     // Eliminar un favorito
     fun removeFavorite(item: ParadaFavorita) {
@@ -44,25 +56,16 @@ class FavoritesViewModel(application: Application) : AndroidViewModel(applicatio
         }
     }
 
-    // Vaciar todos los favoritos
-    fun clearFavorites() {
-        viewModelScope.launch {
-            DataStoreManagerSilguenton.eliminarFavoritos()
-            _favorites.value = emptyList()
+     fun comprobarSiExisteFav(item: ParadaFavorita) : Boolean{
+
+        var existe = false
+
+        for(element in _favorites.value){
+
+        if(element.id == item.id)
+            existe = true
+
         }
+        return existe
     }
-
-
-    suspend fun testADD() {
-        val lista = (0..5).map { i ->
-            ParadaFavorita(
-                id = "6760bb3dceaa35d371867bf8",
-                nombre = "Parada de ejemplo $i",
-                numeroParada = "7344"
-            )
-        }
-        DataStoreManagerSilguenton.guardarFavoritos(lista)
-    }
-
-
 }

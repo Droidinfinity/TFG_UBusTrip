@@ -11,6 +11,8 @@ import com.upm.ubustrip.appNavigation.AppNavigation
 import com.upm.ubustrip.appNavigation.AppScreens
 import com.upm.ubustrip.ui.theme.MyApplicationTheme
 import  android.Manifest
+import com.upm.ubustrip.DataStore.DataStoreManager
+import com.upm.ubustrip.DataStore.DataStoreManagerSilguenton
 import com.upm.ubustrip.database.AppDatabase
 import com.upm.ubustrip.models.LineaRTModel
 import kotlinx.coroutines.CoroutineScope
@@ -23,10 +25,9 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
 
         super.onCreate(savedInstanceState)
-
+        DataStoreManagerSilguenton.initialize(applicationContext)
         solicitarPermisoUbicacion()
 
-       // CoroutineScope(Dispatchers.IO).launch { AppDatabase.get("lineas/6774351ab34b449419e3638f") }
         enableEdgeToEdge()
         setContent {
             AppNavigation()

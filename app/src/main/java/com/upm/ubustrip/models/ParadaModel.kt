@@ -13,7 +13,7 @@ data class ParadaModel(
     val paradaId: String,
     val nombreParada: String,
     val lineas: MutableList<String>,
-    val numeroParada: String,
+    val idParada: String, //NO ES LA ID, es el numero de parada, por confusión al nombrar en la BD
     val ubicacion: Ubicacion?, // puede ser null si no está
     var stops: Map<String, Int>?
 )
@@ -64,7 +64,7 @@ class Parada(
     private fun asignarVariables(paradaModel: ParadaModel) {
         Log.d("parada", "Datos de la parada: $paradaModel")
         this.nombreParada = paradaModel.nombreParada
-        this.numeroParada = paradaModel.numeroParada
+        this.numeroParada = paradaModel.idParada
         this.paradaId = id
         this.ubicacion = paradaModel.ubicacion
         this.stops = paradaModel.stops
