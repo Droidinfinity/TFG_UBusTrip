@@ -11,7 +11,9 @@ import com.google.gson.reflect.TypeToken
 import com.upm.ubustrip.models.ParadaFavorita
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
-
+/**
+//según he vito y recomiendan, el uso correcto es aplicar un patrón Singuelton para esta clase para evitar qeu mas de una instancia acceda al mismo fichero a la vez
+ */
 object DataStoreManagerSilguenton {
 
     // Clave para las preferencias
