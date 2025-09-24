@@ -27,13 +27,14 @@ import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import com.upm.ubustrip.features.linea.viewModels.LineaRTSViewModel
 import com.upm.ubustrip.features.menu.TopAppBarContent
 import com.upm.ubustrip.ui.theme.UbusTripBottomBar
 
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun SearchScreen(navigator: NavController) {
+fun SearchScreen(navigator: NavController,lineaRTSViewModel: LineaRTSViewModel) {
 
     val searchModelView = SearchBarViewModel()
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
@@ -48,7 +49,9 @@ fun SearchScreen(navigator: NavController) {
             SearchContent(
                 paddingValues,
                 viewModel = searchModelView,
-                scrollBehavior = scrollBehavior
+                scrollBehavior = scrollBehavior,
+                navigator = navigator,
+                lineaRTSViewModel = lineaRTSViewModel
             )
         })
 
@@ -86,7 +89,9 @@ fun SearchTopAppBar(viewModel: SearchBarViewModel, scrollBehavior: TopAppBarScro
 fun SearchContent(
     paddingValues: PaddingValues,
     viewModel: SearchBarViewModel,
-    scrollBehavior: TopAppBarScrollBehavior
+    scrollBehavior: TopAppBarScrollBehavior,
+    navigator: NavController,
+    lineaRTSViewModel: LineaRTSViewModel
 ) {
 
     //elementos necesarios para dismissear el teclado en caso de hacer scroll
@@ -121,12 +126,13 @@ fun SearchContent(
             ) {
 
                 items(viewModel.lista.size) { index ->
-                    Text(
-                        text = "${viewModel.lista.get(index).nombre} ",
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(16.dp)
-                    )
+
+                    ParadaCard(
+                        numeroLinea = viewModel.lista[index].numeroParada,
+                        lineaRTSViewModel = lineaRTSViewModel,
+                        nombreParada = viewModel.lista[index].nombre,
+                        navController = navigator,
+                        idParada = viewModel.lista[index].id)
                 }
             }
     }

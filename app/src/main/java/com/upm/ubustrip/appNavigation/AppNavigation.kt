@@ -38,7 +38,7 @@ fun AppNavigation(){
         composable(route = AppScreens.MenuScreen.route) { Menu(navController, menuViewModel = menuViewModel, loginViewModel = loginViewModel, lineaRTSViewModel = lineaRTSViewModel) }
         composable(route = AppScreens.FirstScreen.route) { GreetingPreview(navController) }
         composable(route = AppScreens.LogInScreen.route) { LoginScreen(navController, loginViewModel = loginViewModel, loginScreenViewModel = loginScreenViewModel) }
-        composable(route = AppScreens.SearchScreen.route) { SearchScreen(navController) }
+        composable(route = AppScreens.SearchScreen.route) { SearchScreen(navController, lineaRTSViewModel = lineaRTSViewModel) }
         composable(route = AppScreens.AccountScreen.route) { MyAccountScreen(navController, loginViewModel = loginViewModel) }
         composable(route = AppScreens.RegisterScreen.route){ SignUp(navController = navController,newAccountViewModel, loginViewModel = loginViewModel) }
         composable(route = AppScreens.ForgotUPasswordScreen.route){ ForgotUPasswordScreen(loginViewModel = loginViewModel, navController = navController, forgotUPassViewModel = forgotUPassWordViewModel) }

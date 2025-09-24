@@ -92,8 +92,9 @@ fun CustomSearchBar(viewModel: SearchBarViewModel) {
 
                         searchJob = scope.launch {
                             delay(500)
-                            if (it.text.isNotEmpty())
-                            viewModel.setParadasEnLaLista(it.text)
+                            if (it.text.isNotEmpty()) {
+                                viewModel.setParadasEnLaLista(it.text)
+                            }
 
                            Log.d("Búsqueda",viewModel.lista.toString())
 

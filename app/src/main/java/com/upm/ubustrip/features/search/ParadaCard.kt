@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -45,8 +46,8 @@ fun ParadaCard(
         modifier = modifier
             .fillMaxWidth()
             .padding(horizontal = 8.dp, vertical = 4.dp),
-        shape = RoundedCornerShape(12.dp),
-        elevation = CardDefaults.cardElevation(4.dp),
+        shape = RoundedCornerShape(1.dp),
+        //elevation = CardDefaults.cardElevation(4.dp),
         colors = CardDefaults.cardColors(
             containerColor = Color.White
         ),
@@ -73,12 +74,12 @@ fun ParadaCard(
                     .height(40.dp)
                     .width(80.dp)
                     .clip(RoundedCornerShape(8.dp))
-                    .background(Color(0xFFFFD600)),
+                    .background(Color(0xFF00B0FF)),
                 contentAlignment = Alignment.Center
             ) {
                 Text(
                     text = numeroLinea,
-                    color = Color.Black,
+                    color = Color.White,
                     style = MaterialTheme.typography.bodyMedium.copy(fontWeight = FontWeight.Bold)
                 )
             }
@@ -101,5 +102,6 @@ fun ParadaCard(
 
 
         }
+        HorizontalDivider()
     }
 }
