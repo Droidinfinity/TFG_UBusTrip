@@ -1,5 +1,6 @@
 package com.upm.ubustrip.features.search
 
+import android.util.Log
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
@@ -22,9 +23,11 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -39,6 +42,9 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -49,6 +55,8 @@ fun CustomSearchBar(viewModel: SearchBarViewModel) {
     var searchText by remember { mutableStateOf(TextFieldValue("")) }
     //Determina si el contenido aparece
     var expanded by rememberSaveable { mutableStateOf(false) }
+    val scope = rememberCoroutineScope()
+    var searchJob by remember { mutableStateOf<Job?>(null) }
 
     Box(
         Modifier
@@ -73,6 +81,25 @@ fun CustomSearchBar(viewModel: SearchBarViewModel) {
                     searchText = it
                     expanded = it.text.isNotEmpty() // Expande el contenido cuando hay texto
                     viewModel.updateDesplegadoState(it.text.isNotEmpty())
+                    viewModel.updateText(it.text)
+
+                    /**
+                     * Uso job porque las peticiones se duplican debido a que el composable se refresca al escribir rápido, cancelamos
+                     * la coorutina anterior para evitar duplicados y metemos un delay por si se escribe rápido una palabbra no haga
+                     * exactamente 1 petición por letra introducida OPTIMIZAMOS PETICIONES A LA API REST
+                     * */
+                    searchJob?.cancel()
+
+                        searchJob = scope.launch {
+                            delay(500)
+                            if (it.text.isNotEmpty())
+                            viewModel.setParadasEnLaLista(it.text)
+
+                           Log.d("Búsqueda",viewModel.lista.toString())
+
+                        }
+
+
                 },
                 placeholder = {
                     Text("Buscar paradas y líneas", fontSize = 17.sp, lineHeight = 4.sp)

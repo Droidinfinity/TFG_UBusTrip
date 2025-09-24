@@ -70,8 +70,8 @@ fun SearchTopAppBar(viewModel: SearchBarViewModel, scrollBehavior: TopAppBarScro
             modifier = Modifier
                 .statusBarsPadding(),
             colors = TopAppBarDefaults.topAppBarColors(
-                containerColor = Color.White,         // Color de fondo de la TopAppBar
-                titleContentColor = Color.Black,       // Color del título
+                containerColor = Color.White,
+                titleContentColor = Color.Black,
             )
 
         )
@@ -106,6 +106,9 @@ fun SearchContent(
                 modifier = Modifier
                     .fillMaxSize()
                     .nestedScroll(scrollBehavior.nestedScrollConnection) //detectamos el scroll para notificar a la appTopBar
+
+                //TODO: DESHABILITADO POR EL MOMENTO, PROVOCA PARPADEOS AL ACTUALIZARSE LA LISTA
+                   /**
                     .onGloballyPositioned { //dismiseamos el teclado en caso de scroll
 
                         if (viewModel.previousState.value) {
@@ -113,13 +116,13 @@ fun SearchContent(
                             keyboardController?.hide()
                         }
 
-                    }
+                    }*/
 
             ) {
 
-                items(20) { index ->
+                items(viewModel.lista.size) { index ->
                     Text(
-                        text = "Elemento $index",
+                        text = "${viewModel.lista.get(index).nombre} ",
                         modifier = Modifier
                             .fillMaxWidth()
                             .padding(16.dp)
