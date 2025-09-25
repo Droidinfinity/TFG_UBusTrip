@@ -187,14 +187,17 @@ fun TiemposDeEspera(viewModel: LineaRTSViewModel) {
                 //Iteramos los horarios...
                 for ((linea, horario) in viewModel.horariosParadaMap) {
                     val lineaRTM: LineaRTModel? = viewModel.lineasRTModel.value?.find { it.id == linea }
-                    val nombreLinea = lineaRTM?.nombreLinea ?: "¿¿¿Linea Desconocida???"
-                    val numeroLinea = lineaRTM?.number ?: "¿¿L??"
 
-                    val horaActual: LocalTime = LocalTime.now()
-                    val horas = horario.getHorariosFrom(horaActual, 3)
-                    //Cogemos los n horarios que estén por delante de la hora actual
-                    for (hora in horas) {
-                        listaHorarios.add(Triple(numeroLinea, nombreLinea, hora))
+                    if(lineaRTM?.nombreLinea != null) {
+                        val nombreLinea = lineaRTM.nombreLinea
+                        val numeroLinea = lineaRTM.number
+
+                        val horaActual: LocalTime = LocalTime.now()
+                        val horas = horario.getHorariosFrom(horaActual, 3)
+                        //Cogemos los n horarios que estén por delante de la hora actual
+                        for (hora in horas) {
+                            listaHorarios.add(Triple(numeroLinea, nombreLinea, hora))
+                        }
                     }
                 }
 
