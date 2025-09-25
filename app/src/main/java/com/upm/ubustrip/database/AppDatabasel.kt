@@ -47,15 +47,15 @@ class AppDatabase {
 
                     // Verificar si la respuesta es exitosa y retornar el cuerpo
                     if (response.isSuccessful) {
-                        Log.d("mongo","c")
+                        //Log.d("mongo","c")
                         response.body?.string()
 
                     } else {
-                        Log.e("mongo", "Error: ${response.code}")
+                        //Log.d("mongo", "Error: ${response.code}")
                         null
                     }
                 } catch (e: Exception) {
-                    Log.e("mongo", "Excepción: ${e.message}", e)
+                    //Log.d("mongo", "Excepción: ${e.message}", e)
                     null
                 }
             }

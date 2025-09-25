@@ -38,7 +38,7 @@ class HorariosParadaDB() {
             val formatter = DateTimeFormatter.ofPattern("HH:mm")
             val tiempos = horariosList.map { LocalTime.parse(it, formatter) }
 
-            Log.d("HParadaDB", "RESULTADO [$tipo]: $tiempos")
+//            Log.d("HParadaDB", "RESULTADO [$tipo]: $tiempos")
 
             return HorarioParadaModel(frecuencias = tiempos)
         }
