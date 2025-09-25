@@ -86,7 +86,7 @@ fun ParadaCard(
 
             Spacer(modifier = Modifier.width(12.dp))
 
-            // Nombre de la parada
+            
             Text(
                 text = nombreParada,
                 color = Color.Black,
