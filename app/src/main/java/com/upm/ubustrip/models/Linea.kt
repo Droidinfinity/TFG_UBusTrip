@@ -31,7 +31,7 @@ class LineaRTModel(
 
     companion object {
         /**
-         * Crea una instancia de [LineaRTModel] obteniendo mediante los datode la base de datos de remota.
+         * Crea una instancia de [LineaRTModel] obteniendo mediante los datos de la base de datos de remota.
          *
          * @param id Identificador de la línea.
          * @return Una instancia de [LineaRTModel].

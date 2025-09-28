@@ -34,10 +34,10 @@ class Parada(
         suspend fun create(id: String): Parada {
             val responseBody = AppDatabase.get("paradas/$id")
             val paradaData = if (responseBody != null) {
-                Log.d("parada", "Respuesta obtenida: $responseBody")
+                //Log.d("parada", "Respuesta obtenida: $responseBody")
                 decodeJSON(responseBody)
             } else {
-                Log.e("linea", "No se pudo obtener la respuesta")
+                //Log.e("linea", "No se pudo obtener la respuesta")
                 null
             }
 
@@ -62,14 +62,14 @@ class Parada(
     }
 
     private fun asignarVariables(paradaModel: ParadaModel) {
-        Log.d("parada", "Datos de la parada: $paradaModel")
+        //Log.d("parada", "Datos de la parada: $paradaModel")
         this.nombreParada = paradaModel.nombreParada
         this.numeroParada = paradaModel.idParada
         this.paradaId = id
         this.ubicacion = paradaModel.ubicacion
         this.stops = paradaModel.stops
-        Log.d("UBICA","nombre: ${this.nombreParada} ${ubicacion?.long} y ${ubicacion?.lat}")
-        Log.d("UBICA","STOPS: ${this.stops.toString()}")
+        //Log.d("UBICA","nombre: ${this.nombreParada} ${ubicacion?.long} y ${ubicacion?.lat}")
+        //Log.d("UBICA","STOPS: ${this.stops.toString()}")
         //asignamos las lineas, si hay mas de una
         for (linea in paradaModel.lineas) {
             lineasParada.add(linea)
