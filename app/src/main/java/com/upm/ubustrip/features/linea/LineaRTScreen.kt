@@ -38,6 +38,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.navigation.NavController
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
+import com.upm.ubustrip.features.incidencias.IncidenciaScreen
+import com.upm.ubustrip.features.incidencias.viewModels.IncidenciasViewModel
 import com.upm.ubustrip.features.linea.viewModels.LineaRTSViewModel
 import com.upm.ubustrip.models.Bus
 import com.upm.ubustrip.models.Coordenada
@@ -53,21 +55,27 @@ Tiempo real (graficada)
 Mapa
 */
 @Composable
-fun LineaRTScreen(viewModel: LineaRTSViewModel, navController: NavController) {
+fun LineaRTScreen(viewModel: LineaRTSViewModel, navController: NavController, incidenciasViewModel: IncidenciasViewModel) {
 
     //para que la barra de notificaciones se funda con la appBar
     val systemUiController = rememberSystemUiController()
     systemUiController.setStatusBarColor(UBusTripBlueColor)
     //-------------------------------------------------------
+    
 
-    Scaffold(
-        topBar = { TopBarLineaRTS(viewModel = viewModel, navController = navController) },
-        content = { paddingValues ->
-            ContenidoParada(
-                Modifier.padding(paddingValues = paddingValues),
-                viewModel = viewModel
-            )
-        })
+    if (incidenciasViewModel.showIncidencia.value) {
+        IncidenciaScreen(viewModel = incidenciasViewModel)
+    }
+    else {
+        Scaffold(
+            topBar = { TopBarLineaRTS(viewModel = viewModel, navController = navController) },
+            content = { paddingValues ->
+                ContenidoParada(
+                    Modifier.padding(paddingValues = paddingValues),
+                    viewModel = viewModel
+                )
+            })
+    }
 
 }
 
@@ -77,6 +85,8 @@ fun ContenidoParada(modifier: Modifier, viewModel: LineaRTSViewModel) {
 
     val selectedTabIndex by viewModel.selectedTabIndex
     var showDialog by remember { mutableStateOf(true) }
+
+
 
     //si tenemso lineas disponibles y en caso de que haya mas de una lanzamos el modal
     if (viewModel.lineasRTModel.value != null)

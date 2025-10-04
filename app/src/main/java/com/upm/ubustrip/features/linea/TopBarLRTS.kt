@@ -46,7 +46,7 @@ fun TopBarLineaRTS(viewModel: LineaRTSViewModel, navController: NavController) {
 
     val favorites by topBarLRTSViewModel.favorites.collectAsState()
 
-    // ⭐ CALcular si es favorito basado en el estado actual
+    //CALcular si es favorito basado en el estado actual
     val esFav = remember(parada?.id, favorites) {
         parada?.id?.let { id -> favorites.any { it.id == id } } ?: false
     }

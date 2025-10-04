@@ -17,6 +17,7 @@ import com.upm.ubustrip.features.register.NewAccountViewModel
 import com.upm.ubustrip.features.register.SignUp
 import com.upm.ubustrip.features.search.SearchScreen
 import com.upm.ubustrip.database.LoginViewModel
+import com.upm.ubustrip.features.incidencias.viewModels.IncidenciasViewModel
 import com.upm.ubustrip.features.linea.LineaRTScreen
 import com.upm.ubustrip.features.linea.viewModels.LineaRTSViewModel
 
@@ -31,7 +32,7 @@ fun AppNavigation(){
     val loginScreenViewModel : LoginScreenViewModel = LoginScreenViewModel()
     val forgotUPassWordViewModel: ForgotUPassViewModel = ForgotUPassViewModel()
     val lineaRTSViewModel : LineaRTSViewModel = LineaRTSViewModel()
-
+    val incidenciasViewModel = IncidenciasViewModel()
 
     NavHost(navController, startDestination = AppScreens.MenuScreen.route){
 
@@ -42,7 +43,7 @@ fun AppNavigation(){
         composable(route = AppScreens.AccountScreen.route) { MyAccountScreen(navController, loginViewModel = loginViewModel) }
         composable(route = AppScreens.RegisterScreen.route){ SignUp(navController = navController,newAccountViewModel, loginViewModel = loginViewModel) }
         composable(route = AppScreens.ForgotUPasswordScreen.route){ ForgotUPasswordScreen(loginViewModel = loginViewModel, navController = navController, forgotUPassViewModel = forgotUPassWordViewModel) }
-        composable(route = AppScreens.LineaRTScreen.route){ LineaRTScreen(viewModel = lineaRTSViewModel, navController = navController) }
+        composable(route = AppScreens.LineaRTScreen.route){ LineaRTScreen(viewModel = lineaRTSViewModel, navController = navController, incidenciasViewModel = incidenciasViewModel) }
     }
 
 }
