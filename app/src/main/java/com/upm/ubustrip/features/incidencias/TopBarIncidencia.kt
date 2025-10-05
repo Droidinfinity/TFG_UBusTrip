@@ -3,6 +3,7 @@ package com.upm.ubustrip.features.incidencias
 import androidx.compose.foundation.layout.Column
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.Close
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -11,7 +12,10 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.google.accompanist.systemuicontroller.rememberSystemUiController
+import com.upm.ubustrip.enums.IncidenciaColors
 import com.upm.ubustrip.features.incidencias.viewModels.IncidenciasViewModel
 import com.upm.ubustrip.ui.theme.UBusTripBlueColor
 
@@ -19,14 +23,26 @@ import com.upm.ubustrip.ui.theme.UBusTripBlueColor
 @Composable
 fun IncidenciasTopBar(incidenciasViewModel: IncidenciasViewModel){
 
+    val idColor = 0
+    val systemUiController = rememberSystemUiController()
+    systemUiController.setStatusBarColor(
+        color = IncidenciaColors.fromId(idColor)!!.color,
+        darkIcons = true
+    )
+
+
     Column {
 
         CenterAlignedTopAppBar(
            title = {
-               Text("Incidencia en la línea", color = Color.White) },
+               Text("Notificación para la Linea 2 Cosalada - Aeropueto",
+                   color = incidenciasViewModel.setColorTítulo(idColor),
+                   fontSize = 20.sp)
+                   },
+
             colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
-                containerColor = UBusTripBlueColor,
-                titleContentColor = Color.White,
+                containerColor = IncidenciaColors.fromId(idColor)!!.color,
+                titleContentColor = incidenciasViewModel.setColorTítulo(idColor),
             ),
             navigationIcon = {
                 IconButton(onClick = {
@@ -34,9 +50,9 @@ fun IncidenciasTopBar(incidenciasViewModel: IncidenciasViewModel){
 
                 }) {
                     Icon(
-                        imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                        imageVector = Icons.Filled.Close,
                         contentDescription = "Volver",
-                        tint = Color.White
+                        tint = incidenciasViewModel.setColorTítulo(idColor)
                     )
                 }
             }

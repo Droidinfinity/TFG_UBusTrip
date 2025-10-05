@@ -49,8 +49,8 @@ fun TopBar(viewModel: MenuViewModel) {
 
     val systemUiController = rememberSystemUiController()
     systemUiController.setStatusBarColor(
-        color = Color.White,  // Elige tu color aquí
-        darkIcons = true           // Controla el color de los íconos: true para oscuro, false para claro
+        color = Color.White,
+        darkIcons = true
     )
 
     Surface(
@@ -64,8 +64,8 @@ fun TopBar(viewModel: MenuViewModel) {
             title = { TopAppBarContent() },
             modifier = Modifier.statusBarsPadding().height(50.dp),
             colors = TopAppBarDefaults.topAppBarColors(
-                containerColor = Color.White,         // Color de fondo de la TopAppBar
-                titleContentColor = Color.Black,       // Color del título
+                containerColor = Color.White,
+                titleContentColor = Color.Black,
             )
 
         )
