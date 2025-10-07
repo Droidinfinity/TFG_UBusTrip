@@ -23,7 +23,7 @@ import com.upm.ubustrip.ui.theme.UBusTripBlueColor
 @Composable
 fun IncidenciasTopBar(incidenciasViewModel: IncidenciasViewModel){
 
-    val idColor = 0
+    val idColor = incidenciasViewModel.incidencia.nivel
     val systemUiController = rememberSystemUiController()
     systemUiController.setStatusBarColor(
         color = IncidenciaColors.fromId(idColor)!!.color,
@@ -35,7 +35,7 @@ fun IncidenciasTopBar(incidenciasViewModel: IncidenciasViewModel){
 
         CenterAlignedTopAppBar(
            title = {
-               Text("Notificación para la Linea 2 Cosalada - Aeropueto",
+               Text("Notificación para la Línea",
                    color = incidenciasViewModel.setColorTítulo(idColor),
                    fontSize = 20.sp)
                    },
@@ -46,7 +46,7 @@ fun IncidenciasTopBar(incidenciasViewModel: IncidenciasViewModel){
             ),
             navigationIcon = {
                 IconButton(onClick = {
-                    incidenciasViewModel.hideIncidenciaDialog()
+                    incidenciasViewModel.showIncidenciaDialog()
 
                 }) {
                     Icon(

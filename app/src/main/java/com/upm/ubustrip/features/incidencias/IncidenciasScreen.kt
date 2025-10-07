@@ -1,6 +1,7 @@
 package com.upm.ubustrip.features.incidencias
 
 import android.graphics.Bitmap
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -28,6 +29,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -52,7 +54,7 @@ fun IncidenciaScreen(viewModel: IncidenciasViewModel){
         topBar = { IncidenciasTopBar(incidenciasViewModel = viewModel) },
         content = {paddingValues ->
 
-            IncidenciasContent(padding = paddingValues, viewModel = viewModel, incidenciaLevel = 0)
+            IncidenciasContent(padding = paddingValues, viewModel = viewModel, incidenciaLevel = viewModel.incidencia.nivel)
 
         }
 
@@ -75,7 +77,7 @@ fun IncidenciasContent(padding: PaddingValues,viewModel: IncidenciasViewModel,in
         //horizontalAlignment = Alignment.CenterHorizontally
     ) {
 
-        IncidendiaIcon(base64Image = "", viewModel = viewModel, incidenciaLevel = incidenciaLevel)
+        IncidendiaIcon(base64Image = viewModel.incidencia.imgB64, viewModel = viewModel, incidenciaLevel = incidenciaLevel)
 
         Spacer(modifier = Modifier.size(20.dp))
 
@@ -83,21 +85,14 @@ fun IncidenciasContent(padding: PaddingValues,viewModel: IncidenciasViewModel,in
 
         Spacer(modifier = Modifier.size(20.dp))
 
-        IncidenciaTextCard(titulo = "Mantenimiento en la A-2", text = "Estimado viajero, Le informamos que, debido a trabajos de mantenimiento programados en la autovía A-2, el servicio habitual de la línea A-2 se verá temporalmente interrumpido entre los días 6 y 9 de octubre de 2025. Esta intervención forma parte de un plan de mejora de la infraestructura vial que busca garantizar una mayor seguridad y eficiencia en el transporte público a largo plazo.",
-            nivelGravedad = "Medio",
-            paradasAfectadas = "Avenida de América, Canillejas, San Fernando, Torrejón de Ardoz.",
-            inicioIncidencia = "11 de Noviembre del 2025",
-            finIncidencia = "12 de Noviembre del 2025",
-            alternativaText = "Realizar transbordo en la línea 1 antes de llegar al metro de Canillejas.\n" +
-                    "\n" +
-                    "Utilizar la línea 223 desde Torrejón como ruta alternativa hacia Madrid.")
-
-
-
-
-
-
-
+        IncidenciaTextCard(
+            titulo = viewModel.incidencia.titulo,
+            text = viewModel.incidencia.mensaje,
+            nivelGravedad = viewModel.nivelIncidenciaToText(viewModel.incidencia.nivel),
+            paradasAfectadas = viewModel.incidencia.paradasAfectadas,
+            inicioIncidencia = viewModel.incidencia.comienzo,
+            finIncidencia = viewModel.incidencia.final,
+            alternativaText = viewModel.incidencia.alternativa)
 
         }
 
@@ -217,7 +212,7 @@ fun NivelGravedadIncidencia(text: String){
     Text(
         buildAnnotatedString {
             withStyle(style = SpanStyle(fontWeight = FontWeight.Bold)) {
-                append("Gravedad: ")
+                append("Estado: ")
             }
             append(text)
         }, color = Color.DarkGray

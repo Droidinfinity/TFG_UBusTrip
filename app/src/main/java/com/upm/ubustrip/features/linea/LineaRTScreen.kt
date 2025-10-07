@@ -24,6 +24,7 @@ import androidx.compose.material3.ButtonColors
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
@@ -61,12 +62,32 @@ fun LineaRTScreen(viewModel: LineaRTSViewModel, navController: NavController, in
     val systemUiController = rememberSystemUiController()
     systemUiController.setStatusBarColor(UBusTripBlueColor)
     //-------------------------------------------------------
-    
 
-    if (incidenciasViewModel.showIncidencia.value) {
-        IncidenciaScreen(viewModel = incidenciasViewModel)
+
+    if (!viewModel.lineasRTModel.value.isNullOrEmpty()) {
+        val primeraLinea = viewModel.lineasRTModel.value?.firstOrNull()
+
+        if (primeraLinea != null) {
+            LaunchedEffect(Unit) {
+                incidenciasViewModel.initInciidencia(primeraLinea.id)
+            }
+            if (!incidenciasViewModel.incidenciaShowed.value) {
+                IncidenciaScreen(viewModel = incidenciasViewModel)
+            }else{
+
+                Scaffold(
+                    topBar = { TopBarLineaRTS(viewModel = viewModel, navController = navController) },
+                    content = { paddingValues ->
+                        ContenidoParada(
+                            Modifier.padding(paddingValues = paddingValues),
+                            viewModel = viewModel
+                        )
+                    })
+
+            }
+        }
     }
-    else {
+    else  {
         Scaffold(
             topBar = { TopBarLineaRTS(viewModel = viewModel, navController = navController) },
             content = { paddingValues ->
